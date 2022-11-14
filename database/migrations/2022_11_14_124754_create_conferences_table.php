@@ -14,22 +14,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('conferences', function (Blueprint $table) {
             $table->id();
-
-            $table->string('name');
-            $table->string('last_name');
-            $table->string('phone_number');
-            $table->string('type');
-            $table->date('birthdate');
+            $table->string('title');
+            $table->dateTime('date_time_event');
+            $table->float('latitude', 8, 4);
+            $table->float('longitude', 8, 4);
             $table->string('country');
-
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-
-            $table->rememberToken();
-
             $table->timestamps();
         });
     }
@@ -42,7 +33,7 @@ return new class extends Migration
     public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('conferences');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 };
