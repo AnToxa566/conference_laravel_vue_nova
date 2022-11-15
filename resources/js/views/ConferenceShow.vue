@@ -1,4 +1,6 @@
 <template>
+    <p class="text-h4 mb-4">Details</p>
+
     <my-info-card>
         <template v-slot:header> Topic </template>
         <template v-slot:body> Научная выставка </template>
@@ -22,7 +24,7 @@
 
     <v-row>
         <v-col cols="2">
-            <v-btn variant="tonal" color="white" @click.stop="$router.go(-1)"> Back </v-btn>
+            <v-btn variant="tonal" color="white" class="w-100" @click="$router.go(-1)"> Back </v-btn>
         </v-col>
     </v-row>
 </template>

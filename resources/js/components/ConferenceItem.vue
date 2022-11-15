@@ -8,6 +8,7 @@
     <v-card-actions>
       <v-btn variant="tonal" color="white" @click.stop="$router.push(`/`)"> Join </v-btn>
       <v-btn variant="tonal" color="white" @click.stop="$router.push(`/conferences/${1}`)"> Details </v-btn>
+      <v-btn variant="tonal" color="white" @click.stop="$router.push(`/conferences/${1}/edit`)"> Update </v-btn>
     </v-card-actions>
   </v-card>
 </template>

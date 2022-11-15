@@ -3,7 +3,6 @@
         v-for="i in 10"
         :key="i"
     >
-
     </conference-item>
 </template>
 

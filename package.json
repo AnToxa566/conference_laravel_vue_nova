@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^3.2.0",
+        "@vuepic/vue-datepicker": "^3.5.3",
         "material-design-icons-iconfont": "^6.7.0",
         "vite-plugin-vuetify": "^1.0.0",
         "vue": "^3.2.36",

@@ -3,7 +3,7 @@
         <my-app-bar></my-app-bar>
 
         <v-main>
-            <v-container>
+            <v-container class="w-75 mx-auto">
                 <router-view></router-view>
             </v-container>
         </v-main>
