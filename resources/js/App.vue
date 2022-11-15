@@ -1,17 +1,22 @@
 <template>
     <v-app>
-        <v-container fluid>
-            <h1>Welcome!</h1>
-            <v-btn>
-                Button
-            </v-btn>
-        </v-container>
+        <my-app-bar></my-app-bar>
+
+        <v-main>
+            <v-container>
+                <router-view></router-view>
+            </v-container>
+        </v-main>
     </v-app>
 </template>
 
 <script>
-export default {
+import MyAppBar from './components/UI/MyAppBar.vue';
 
+export default {
+    components: {
+        MyAppBar,
+    }
 }
 </script>
 
