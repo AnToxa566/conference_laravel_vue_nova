@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
     public function run()
     {
         $user = [
-            'name' => 'Admin',
+            'first_name' => 'Admin',
             'last_name' => 'Admin',
             'birthdate' => '2003-03-16',
             'type' => 'admin',

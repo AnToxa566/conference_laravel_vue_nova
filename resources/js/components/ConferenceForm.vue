@@ -51,7 +51,7 @@
         <v-select
             v-model="country"
             :items="countries"
-            :rules="[v => !!v || 'Country is required']"
+            :rules="[v => !!v || 'Country is required!']"
             variant="solo"
             label="Country"
             required

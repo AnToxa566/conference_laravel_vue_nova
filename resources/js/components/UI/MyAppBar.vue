@@ -7,17 +7,34 @@
         </template>
 
         <template v-slot:append>
-            <router-link to="/conferences/add" class="text-decoration-none text-white">Add</router-link>
+            <v-sheet v-if="this.$store.state.auth.authenticated">
+                <div class="d-flex align-center">
+                    <router-link to="/conferences/add" class="mx-2 text-decoration-none text-white"> Add </router-link>
+                    <p class="mb-0 mx-2 text-decoration-none text-white" @click="logout()"> Logout </p>
+                </div>
+            </v-sheet>
+            <v-sheet v-else>
+                <router-link to="/login" class="mx-2 text-decoration-none text-white"> Login </router-link>
+                <router-link to="/register" class="mx-2 text-decoration-none text-white"> Register </router-link>
+            </v-sheet>
         </template>
     </v-app-bar>
 </template>
 
 <script>
-    export default {
-
+export default {
+    name: 'my-app-bar',
+    methods:{
+        logout() {
+            axios.get("/sanctum/csrf-cookie").then(response => {
+                console.log(response);
+                this.$store.dispatch('auth/logout')
+            });
+        }
     }
+}
 </script>
 
-<style>
+<style scoped>
 
 </style>

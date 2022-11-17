@@ -1,13 +1,15 @@
 
 // Bootstrap
 import './bootstrap';
+import '../sass/app.scss'
 
 
-// Vue
-import { createApp } from 'vue';
-import App from './App.vue'
+// Vuex
+import store from './store'
 
-const app = createApp(App)
+
+// Vue-router
+import router from './router'
 
 
 // Vuetify
@@ -27,54 +29,22 @@ const vuetify = createVuetify({
 })
 
 
-// Vue-Router
-import { createRouter, createWebHashHistory } from 'vue-router'
-import ConferenceShow from './views/ConferenceShow.vue'
-import ConferenceEdit from './views/ConferenceEdit.vue'
-import ConferenceAdd from './views/ConferenceAdd.vue'
-import Conferences from './views/Conferences.vue'
-import Home from './views/Home.vue'
-
-const router = createRouter({
-    history: createWebHashHistory(),
-    routes: [
-        {
-            path: '/',
-            name: 'Home',
-            component: Home,
-        },
-        {
-            path: '/conferences',
-            name: 'Conferences',
-            component: Conferences,
-        },
-        {
-            path: '/conferences/:id',
-            name: 'ConferenceShow',
-            component: ConferenceShow,
-        },
-        {
-            path: '/conferences/add',
-            name: 'ConferenceAdd',
-            component: ConferenceAdd,
-        },
-        {
-            path: '/conferences/:id/edit',
-            name: 'ConferenceEdit',
-            component: ConferenceEdit,
-        },
-    ]
-})
-
-
 // Vue Datepicker
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
 
-// App ussing
+// Vue
+import { createApp } from 'vue';
+import App from './App.vue'
+
+
+const app = createApp(App)
+
+
 app
     .component('Datepicker', Datepicker)
     .use(vuetify)
+    .use(store)
     .use(router)
     .mount('#app')

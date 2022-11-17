@@ -20,7 +20,7 @@ class UsersTableSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Anton',
+                'first_name' => 'Anton',
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2003-03-16',
                 'type' => UserConsts::LISTENER,
@@ -30,7 +30,7 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('12345678'),
             ],
             [
-                'name' => 'Bohdan',
+                'first_name' => 'Bohdan',
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2007-05-13',
                 'type' => UserConsts::ANNOUNCER,
@@ -40,7 +40,7 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('12345678'),
             ],
             [
-                'name' => 'Liza',
+                'first_name' => 'Liza',
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2004-04-28',
                 'type' => UserConsts::ANNOUNCER,

@@ -14,9 +14,10 @@
 import MyAppBar from './components/UI/MyAppBar.vue';
 
 export default {
+    name: 'app',
     components: {
         MyAppBar,
-    }
+    },
 }
 </script>
 
