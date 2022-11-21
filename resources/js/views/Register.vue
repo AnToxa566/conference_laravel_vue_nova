@@ -119,17 +119,8 @@
 </template>
 
 <script>
-import { ref } from "vue";
-
 export default {
-    name:'register',
-    // setup() {
-    //     const birthdate = ref();
-
-    //     return {
-    //         birthdate,
-    //     };
-    // },
+    name:'Register',
     data: () => ({
         user: {
             first_name: "",

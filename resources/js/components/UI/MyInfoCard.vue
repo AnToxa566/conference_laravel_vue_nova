@@ -1,12 +1,11 @@
 <template>
     <v-card class="py-4 px-8 mb-4" variant="tonal">
         <v-row>
-            <v-col cols="2">
-                <p class="text-grey font-weight-bold"> <slot name="header"></slot> </p>
+            <v-col class="d-flex align-center" cols="2">
+                <p class="text-grey font-weight-bold mb-0"> <slot name="header"></slot> </p>
             </v-col>
-            <v-col>
-                <p> <slot name="body"></slot> </p>
-                <slot name="map"></slot>
+            <v-col class="d-flex align-center">
+                <p class="mb-0"> <slot name="body"></slot> </p>
             </v-col>
         </v-row>
     </v-card>
