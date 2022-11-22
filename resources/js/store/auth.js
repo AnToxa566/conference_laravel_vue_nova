@@ -3,10 +3,12 @@ import router from '../router'
 
 export default {
     namespaced: true,
+
     state: {
         authenticated: false,
         user: {}
     },
+
     getters: {
         authenticated(state) {
             return state.authenticated
@@ -15,6 +17,7 @@ export default {
             return state.user
         }
     },
+
     mutations: {
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -23,12 +26,13 @@ export default {
             state.user = value
         }
     },
+
     actions: {
         login({ commit }, user) {
             axios.post('/api/login', user)
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        commit('SET_USER', res.data)
+                        commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
                         router.push({ name: 'conferences' })
                     }
@@ -39,11 +43,12 @@ export default {
                     console.log(err.response)
                 })
         },
+
         register({ commit }, user) {
             axios.post('/api/register', user)
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        commit('SET_USER', res.data)
+                        commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
                         router.push({ name: 'conferences' })
                     }
@@ -54,6 +59,7 @@ export default {
                     console.log(err.response)
                 })
         },
+
         logout({ commit }) {
             axios.get('/api/logout')
                 .then(res => {

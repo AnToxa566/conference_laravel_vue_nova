@@ -58,7 +58,7 @@
 
         <v-select
             v-model="conference.country"
-            :items="countries"
+            :items="countriesName"
             :rules="[v => !!v || 'Country is required!']"
             variant="solo"
             label="Country"
@@ -110,9 +110,13 @@ export default {
         longitudeRules: [
             v => ('' || v >= -180 && v <= 180) || 'Latitude value must be range -180 to 180!',
         ],
-
-        countries: ['Foo', 'Bar', 'Fizz', 'Buzz'],
     }),
+
+    computed: {
+        countriesName() {
+            return this.$store.getters['conference/countriesName']
+        },
+    },
 
     methods: {
         hiddenMessage() {

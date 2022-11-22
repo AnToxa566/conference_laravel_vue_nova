@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Conference;
+use App\Models\Country;
 
 class ConferenceController extends Controller
 {
@@ -28,13 +29,15 @@ class ConferenceController extends Controller
     public function fetchAll()
     {
         $conferences = Conference::all();
+        $countries = Country::all();
 
         if (!$conferences) {
-            return response()->json(['error' => 'Failed to receive conferences.'], 401);
+            return response()->json(['error' => 'ConferenceController::fetchAll: Failed to receive conferences.'], 401);
         }
 
         $res = [
             'conferences' => $conferences,
+            'countries' => $countries,
             'status' => 'ok',
         ];
 
@@ -46,7 +49,7 @@ class ConferenceController extends Controller
         $conference = Conference::where('id', $id)->first();
 
         if (!$conference) {
-            return response()->json(['error' => 'Conference with the given id were not found.'], 401);
+            return response()->json(['error' => 'ConferenceController::fetchDetail: Conference with the given id were not found.'], 401);
         }
 
         $res = [
@@ -81,7 +84,7 @@ class ConferenceController extends Controller
         $conference = Conference::where('id', $id)->first();
 
         if (!$conference) {
-            return response()->json(['error' => 'Conference with the given id were not found.'], 401);
+            return response()->json(['error' => 'ConferenceController::edit: Conference with the id were not found.'], 401);
         }
 
         $res = [
@@ -98,7 +101,7 @@ class ConferenceController extends Controller
         $conference = Conference::where('id', $id)->first();
 
         if (!$conference) {
-            return response()->json(['error' => 'Conference with the given id were not found.'], 401);
+            return response()->json(['error' => 'ConferenceController::update: Conference with the given id were not found.'], 401);
         }
 
         ConferenceController::validation($request);
@@ -123,7 +126,7 @@ class ConferenceController extends Controller
         $conference = Conference::where('id', $id)->first();
 
         if (!$conference) {
-            return response()->json(['error' => 'Conference with the given id were not found.'], 401);
+            return response()->json(['error' => 'ConferenceController::destroy: Conference with the given id were not found.'], 401);
         }
 
         $conference->delete();

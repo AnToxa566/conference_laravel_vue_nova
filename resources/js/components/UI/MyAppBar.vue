@@ -10,7 +10,7 @@
             <v-sheet v-if="this.$store.state.auth.authenticated">
                 <div class="d-flex align-center">
                     <router-link to="/conferences/add" class="mx-2 text-decoration-none text-white"> Add </router-link>
-                    <p class="mb-0 mx-2 text-decoration-none text-white" @click="logout()"> Logout </p>
+                    <p class="mb-0 mx-2 text-decoration-none text-white" @click="logout()" style="cursor: pointer;"> Logout </p>
                 </div>
             </v-sheet>
             <v-sheet v-else>
@@ -27,7 +27,7 @@ export default {
     methods:{
         logout() {
             axios.get("/sanctum/csrf-cookie").then(response => {
-                console.log(response);
+                this.$store.dispatch('user_conferences/removeJoinedConferences')
                 this.$store.dispatch('auth/logout')
             });
         }

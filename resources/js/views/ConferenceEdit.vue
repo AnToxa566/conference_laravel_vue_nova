@@ -8,7 +8,7 @@
         v-model="valid"
     >
         <v-text-field
-            v-model="this['conference/conference'].title"
+            v-model="conference.title"
             label="Topic"
             :counter="255"
             :rules="titleRules"
@@ -20,7 +20,7 @@
         <Datepicker
             placeholder="When"
             dark="true"
-            v-model="this['conference/conference'].date_time_event"
+            v-model="conference.date_time_event"
             @update:modelValue="hiddenMessage"
             modelType="yyyy-MM-dd HH:mm:ss"
             :minDate="new Date()"
@@ -34,7 +34,7 @@
             <v-col cols="6">
                 <v-text-field
                     type="number"
-                    v-model="this['conference/conference'].latitude"
+                    v-model="conference.latitude"
                     :rules="latitudeRules"
                     label="Latitude"
                     variant="solo"
@@ -45,7 +45,7 @@
             <v-col cols="6">
                 <v-text-field
                     type="number"
-                    v-model="this['conference/conference'].longitude"
+                    v-model="conference.longitude"
                     :rules="longitudeRules"
                     label="Longitude"
                     variant="solo"
@@ -57,8 +57,8 @@
         <my-map></my-map>
 
         <v-select
-            v-model="this['conference/conference'].country"
-            :items="countries"
+            v-model="conference.country"
+            :items="countriesName"
             :rules="[v => !!v || 'Country is required!']"
             variant="solo"
             label="Country"
@@ -73,6 +73,10 @@
             <v-col cols="2">
                 <v-btn type="submit" variant="tonal" color="success" class="w-100" @click.prevent="update"> Save </v-btn>
             </v-col>
+
+            <v-col cols="2">
+                <v-btn variant="tonal" color="red" class="w-100" @click="this.delete()"> Delete </v-btn>
+            </v-col>
         </v-row>
     </v-form>
 </template>
@@ -80,7 +84,6 @@
 
 <script>
 import MyMap from '../components/UI/MyMap.vue'
-import { mapGetters } from "vuex";
 
 export default {
     components: {
@@ -104,12 +107,15 @@ export default {
         longitudeRules: [
             v => ('' || v >= -180 && v <= 180) || 'Latitude value must be range -180 to 180!',
         ],
-
-        countries: ['Foo', 'Bar', 'Fizz', 'Buzz'],
     }),
 
     computed: {
-        ...mapGetters(["conference/conference"]),
+        conference() {
+            return this.$store.getters['conference/conference']
+        },
+        countriesName() {
+            return this.$store.getters['conference/countriesName']
+        },
     },
 
     mounted() {
@@ -122,10 +128,13 @@ export default {
             let message = document.getElementById("message__wrapper")
             message.classList.add("hidden__message")
         },
+        delete() {
+            this.$store.dispatch('conference/deleteConference', this.id)
+        },
         async update() {
             const { valid } = await this.$refs.form.validate()
 
-            if (this['conference/conference'].date_time_event === '') {
+            if (this.conference.date_time_event === '') {
                 let message = document.getElementById("message__wrapper")
                 message.classList.remove("hidden__message")
             }
@@ -133,11 +142,11 @@ export default {
                 if (valid) {
                     this.$store.dispatch('conference/updateConference', {
                         id: this.id,
-                        title: this['conference/conference'].title,
-                        date_time_event: this['conference/conference'].date_time_event,
-                        latitude: this['conference/conference'].latitude,
-                        longitude: this['conference/conference'].longitude,
-                        country: this['conference/conference'].country,
+                        title: this.conference.title,
+                        date_time_event: this.conference.date_time_event,
+                        latitude: this.conference.latitude,
+                        longitude: this.conference.longitude,
+                        country: this.conference.country,
                     })
                 }
             }

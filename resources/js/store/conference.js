@@ -4,27 +4,49 @@ import moment from 'moment'
 
 export default {
     namespaced: true,
+
     state: {
         conferences: [],
-        conference: {},
+        countries: [],
+        conference: null,
+        conferencesPaginatedDate: null,
     },
+
     getters: {
         conferences(state) {
             return state.conferences
         },
+        countriesName(state) {
+            return state.countries.map(country => country.name)
+        },
         conference(state) {
             return state.conference
         },
+        conferencesPaginatedDate(state) {
+            return state.conferencesPaginatedDate
+        },
         formatedDateTime(state) {
-            return moment(String(state.conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
+            return id => {
+                const index = state.conferences.map(conference => conference.id).indexOf(id);
+                const conference = state.conferences[index];
+
+                return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
+            }
         }
     },
+
     mutations: {
         SET_CONFERENCES (state, value) {
             state.conferences = value
         },
+        SET_COUNTRIES (state, value) {
+            state.countries = value
+        },
         SET_CONFERENCE (state, value) {
             state.conference = value
+        },
+        SET_CONFERENCES_PAGINATED_DATE (state, value) {
+            state.conferencesPaginatedDate = value
         },
         ADD_CONFERENCE (state, value) {
             state.conferences.push(value)
@@ -38,18 +60,27 @@ export default {
             state.conferences.splice(index, 1);
         },
     },
+
     actions: {
-        fetchAllConferences({ commit }) {
+        fetchAllConferences({ commit }, page) {
             axios.get('/api/conferences')
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CONFERENCES', res.data.conferences)
+                        commit('SET_COUNTRIES', res.data.countries)
+
+                        const pagination = {
+                            current_page: page,
+                        }
+
+                        commit('SET_CONFERENCES_PAGINATED_DATE', pagination)
                     }
                 })
                 .catch(err => {
                     console.log(err.response)
                 })
         },
+
         fetchDetailConference({ commit }, id) {
             axios.get(`/api/conferences/${id}`)
                 .then(res => {
@@ -61,6 +92,7 @@ export default {
                     console.log(err.response)
                 })
         },
+
         storeConference({ commit }, conference) {
             axios.post('/api/conferences/add', conference)
                 .then(res => {
@@ -73,6 +105,7 @@ export default {
                     console.log(err.response)
                 })
         },
+
         updateConference({ commit }, conference) {
             axios.post(`/api/conferences/${conference.id}/update`, conference)
                 .then(res => {
@@ -85,6 +118,7 @@ export default {
                     console.log(err.response)
                 })
         },
+
         deleteConference({ commit }, id) {
             axios.get(`/api/conferences/${id}/delete`)
                 .then(res => {
