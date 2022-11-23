@@ -34,6 +34,10 @@ import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
 
+// Vue Social Sharing
+import VueSocialSharing from 'vue-social-sharing'
+
+
 // Vue
 import { createApp } from 'vue';
 import App from './App.vue'
@@ -41,10 +45,10 @@ import App from './App.vue'
 
 const app = createApp(App)
 
-
 app
     .component('Datepicker', Datepicker)
     .use(vuetify)
     .use(store)
     .use(router)
+    .use(VueSocialSharing)
     .mount('#app')

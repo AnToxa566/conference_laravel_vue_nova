@@ -25,6 +25,7 @@
         "vite-plugin-vuetify": "^1.0.0",
         "vue": "^3.2.36",
         "vue-router": "^4.1.6",
+        "vue-social-sharing": "^4.0.0-alpha4",
         "vuetify": "^3.0.1",
         "vuex": "^4.1.0",
         "vuex-persistedstate": "^4.1.0",

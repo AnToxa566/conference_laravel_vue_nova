@@ -41,8 +41,6 @@ export default {
         },
 
         joinConference({ commit }, query) {
-            console.log(query.conference_id)
-
             axios.get(`/api/conferences/join/${query.user_id}/${query.conference_id}`)
                 .then(res => {
                     if (res.data.status === 'ok') {
@@ -55,8 +53,6 @@ export default {
         },
 
         cancelParticipation({ commit }, query) {
-            console.log(query.conference_id)
-
             axios.get(`/api/conferences/cancel/${query.user_id}/${query.conference_id}`)
                 .then(res => {
                     if (res.data.status === 'ok') {
