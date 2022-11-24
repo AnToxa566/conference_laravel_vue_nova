@@ -18,6 +18,8 @@
         "vue": "^3.2.37"
     },
     "dependencies": {
+        "@fawmi/vue-google-maps": "^0.9.72",
+        "@googlemaps/markerclusterer": "^2.0.13",
         "@vitejs/plugin-vue": "^3.2.0",
         "@vuepic/vue-datepicker": "^3.5.3",
         "material-design-icons-iconfont": "^6.7.0",

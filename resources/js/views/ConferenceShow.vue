@@ -11,12 +11,31 @@
         <template v-slot:body> {{ this.formatedDateTime }} </template>
     </my-info-card>
 
-    <my-info-card>
+    <my-info-card v-if="isHasAddress">
         <template v-slot:header> Address </template>
-        <template v-slot:body> TODO </template>
+        <template v-slot:body> {{ this.formatedAddress }} </template>
     </my-info-card>
 
-    <my-map></my-map>
+    <v-card v-if="isHasAddress" class="mb-4">
+        <GMapMap
+            :center="addressPosition"
+            :zoom="16"
+            :options="{
+                zoomControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+            }"
+            map-type-id="roadmap"
+            class="w-100"
+            style="height: 500px"
+        >
+            <GMapMarker
+                :position="addressPosition"
+                :clickable="true"
+                :draggable="false"
+            />
+        </GMapMap>
+    </v-card>
 
     <my-info-card>
         <template v-slot:header> Country </template>
@@ -25,7 +44,7 @@
 
     <div class="d-flex justify-space-between">
         <div>
-            <v-btn variant="tonal" color="white" class="me-2" @click="$router.push(`/`)"> Back </v-btn>
+            <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
 
             <my-join-cancel-buttons
                 v-if="!isAdmin"
@@ -45,14 +64,12 @@
 import MyJoinCancelButtons from '../components/UI/MyJoinCancelButtons.vue'
 import MyShareButtons from '../components/UI/MyShareButtons.vue'
 import MyInfoCard from '../components/UI/MyInfoCard.vue'
-import MyMap from '../components/UI/MyMap.vue'
 
 export default {
     components: {
         MyJoinCancelButtons,
         MyShareButtons,
         MyInfoCard,
-        MyMap,
     },
 
     data() {
@@ -68,17 +85,30 @@ export default {
         formatedDateTime() {
             return this.$store.getters['conference/formatedDateTime'](this.id)
         },
+        formatedAddress() {
+            return this.$store.getters['conference/formatedAddress']
+        },
+        tryGetAddressPosition() {
+            return this.$store.getters['conference/tryGetAddressPosition']
+        },
 
         joinedConferencesId() {
-            return (this.$store.getters['user_conferences/joinedConferencesId'])
+            return this.$store.getters['user_conferences/joinedConferencesId']
         },
+
+        addressPosition() {
+            return this.$store.getters['conference/addressPosition']
+        },
+
         isJoined() {
             return this.joinedConferencesId.includes(this.id)
         },
-
         isAdmin() {
             return this.$store.getters['auth/user'].type === 'admin'
         },
+        isHasAddress() {
+            return this.addressPosition?.lat !== null && this.addressPosition?.lng !== null
+        }
     },
 
     created() {

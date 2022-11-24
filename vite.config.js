@@ -32,4 +32,10 @@ export default defineConfig({
             '@': '/resources/js',
         },
     },
+    optimizeDeps: {
+        include: [
+          "@fawmi/vue-google-maps",
+          "fast-deep-equal",
+        ],
+    },
 });

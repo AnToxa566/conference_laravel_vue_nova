@@ -2,7 +2,7 @@
     <ShareNetwork
         network="facebook"
         v-bind:url="this.share_url"
-        v-bind:title="Confy"
+        title="Confy"
         v-bind:description="this.share_text"
         hashtags="bwt,quest"
         class="text-decoration-none"

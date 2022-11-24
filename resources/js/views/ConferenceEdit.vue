@@ -54,7 +54,7 @@
             </v-col>
         </v-row>
 
-        <my-map></my-map>
+        <!-- <my-map></my-map> -->
 
         <v-select
             v-model="conference.country"
@@ -75,13 +75,7 @@
 
 
 <script>
-import MyMap from '../components/UI/MyMap.vue'
-
 export default {
-    components: {
-        MyMap,
-    },
-
     data: () => ({
         id: null,
         valid: false,

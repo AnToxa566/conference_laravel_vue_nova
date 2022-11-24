@@ -38,6 +38,10 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import VueSocialSharing from 'vue-social-sharing'
 
 
+// Vue Google Maps
+import VueGoogleMaps from '@fawmi/vue-google-maps'
+
+
 // Vue
 import { createApp } from 'vue';
 import App from './App.vue'
@@ -51,4 +55,8 @@ app
     .use(store)
     .use(router)
     .use(VueSocialSharing)
-    .mount('#app')
+    .use(VueGoogleMaps, {
+        load: {
+            key: import.meta.env.VITE_PUSHER_GOOGLE_MAPS_API_KEY,
+        },
+    }).mount('#app')

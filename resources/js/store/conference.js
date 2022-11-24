@@ -6,10 +6,14 @@ export default {
     namespaced: true,
 
     state: {
-        conferences: [],
-        countries: [],
         conference: null,
+        conferences: [],
         conferencesPaginatedDate: null,
+
+        countries: [],
+
+        addressPosition: null,
+        formatedAddress: null,
     },
 
     getters: {
@@ -25,6 +29,7 @@ export default {
         conferencesPaginatedDate(state) {
             return state.conferencesPaginatedDate
         },
+
         formatedDateTime(state) {
             return id => {
                 const conferencesId = state.conferences.map(conference => conference.id);
@@ -33,7 +38,14 @@ export default {
 
                 return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
             }
-        }
+        },
+
+        addressPosition(state) {
+            return state.addressPosition
+        },
+        formatedAddress(state) {
+            return state.formatedAddress
+        },
     },
 
     mutations: {
@@ -48,6 +60,12 @@ export default {
         },
         SET_CONFERENCES_PAGINATED_DATE (state, value) {
             state.conferencesPaginatedDate = value
+        },
+        SET_ADDRESS_POSITION (state, value) {
+            state.addressPosition = value
+        },
+        SET_FORMATED_ADDRESS (state, value) {
+            state.formatedAddress = value
         },
         ADD_CONFERENCE (state, value) {
             state.conferences.push(value)
@@ -82,11 +100,17 @@ export default {
                 })
         },
 
-        fetchDetailConference({ commit }, id) {
+        fetchDetailConference({ commit, dispatch }, id) {
             axios.get(`/api/conferences/${id}`)
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CONFERENCE', res.data.conference)
+                        commit('SET_ADDRESS_POSITION', {
+                            'lat': res.data.conference.latitude,
+                            'lng': res.data.conference.longitude
+                        })
+
+                        dispatch('getFormatedAddress', res.data.conference)
                     }
                 })
                 .catch(err => {
@@ -112,7 +136,7 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('UPDATE_CONFERENCE', res.data.conference)
-                        router.push(`/conferences/${res.data.conference.id}`)
+                        router.go(-1)
                     }
                 })
                 .catch(err => {
@@ -131,6 +155,23 @@ export default {
                 .catch(err => {
                     console.log(err.response)
                 })
+        },
+
+        async getFormatedAddress({commit}, conference) {
+            if (conference.latitude !== null && conference.longitude !== null) {
+                const url = new URL('https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+                            conference.latitude + ',' + conference.longitude +
+                            '&key=' + import.meta.env.VITE_PUSHER_GOOGLE_MAPS_API_KEY)
+
+                const response = await fetch(url)
+                const json = await response.json()
+                const address = await json.results[0].formatted_address
+
+                commit('SET_FORMATED_ADDRESS', address)
+            }
+            else {
+                commit('SET_FORMATED_ADDRESS', 'undefined')
+            }
         },
     }
 }
