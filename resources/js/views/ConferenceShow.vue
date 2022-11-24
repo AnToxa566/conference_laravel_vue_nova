@@ -23,26 +23,34 @@
         <template v-slot:body> {{ this.conference.country }} </template>
     </my-info-card>
 
-    <v-row>
-        <v-col cols="2">
-            <v-btn variant="tonal" color="white" class="w-100" @click="$router.go(-1)"> Back </v-btn>
-        </v-col>
-        <v-col cols="2">
-            <v-btn variant="tonal" color="white" class="w-100" @click="$router.go(-1)"> Join </v-btn>
-        </v-col>
-        <v-col cols="2">
-            <v-btn variant="tonal" color="red" class="w-100" @click="this.delete"> Delete </v-btn>
-        </v-col>
-    </v-row>
+    <div class="d-flex justify-space-between">
+        <div>
+            <v-btn variant="tonal" color="white" class="me-2" @click="$router.push(`/`)"> Back </v-btn>
+
+            <my-join-cancel-buttons
+                v-if="!isAdmin"
+                :isJoined="this.isJoined"
+                :conferenceId="this.id"
+            ></my-join-cancel-buttons>
+            <v-btn v-else variant="tonal" color="red" @click="this.delete"> Delete </v-btn>
+        </div>
+
+        <div v-if="isJoined">
+            <my-share-buttons></my-share-buttons>
+        </div>
+    </div>
 </template>
 
 <script>
+import MyJoinCancelButtons from '../components/UI/MyJoinCancelButtons.vue'
+import MyShareButtons from '../components/UI/MyShareButtons.vue'
 import MyInfoCard from '../components/UI/MyInfoCard.vue'
 import MyMap from '../components/UI/MyMap.vue'
-import { mapGetters } from "vuex";
 
 export default {
     components: {
+        MyJoinCancelButtons,
+        MyShareButtons,
         MyInfoCard,
         MyMap,
     },
@@ -58,12 +66,23 @@ export default {
             return this.$store.getters['conference/conference']
         },
         formatedDateTime() {
-            return this.$store.getters['conference/formatedDateTime'](this.conference.id)
+            return this.$store.getters['conference/formatedDateTime'](this.id)
+        },
+
+        joinedConferencesId() {
+            return (this.$store.getters['user_conferences/joinedConferencesId'])
+        },
+        isJoined() {
+            return this.joinedConferencesId.includes(this.id)
+        },
+
+        isAdmin() {
+            return this.$store.getters['auth/user'].type === 'admin'
         },
     },
 
-    mounted() {
-        this.id = this.$route.params.id;
+    created() {
+        this.id = parseInt(this.$route.params.id, 10);
         this.$store.dispatch('conference/fetchDetailConference', this.id)
     },
 

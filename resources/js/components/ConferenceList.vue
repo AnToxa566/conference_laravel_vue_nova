@@ -3,7 +3,8 @@
         v-for="conference in conferences"
         :key="conference.id"
         :conference="conference"
-        :isJoined="joinedConferencesId.includes(conference.id)"
+        :isJoined="joinedConferencesId.includes(parseInt(conference.id, 10))"
+        :isAdmin="user.type === 'admin'"
     >
     </conference-item>
 

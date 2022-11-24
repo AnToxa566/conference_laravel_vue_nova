@@ -65,19 +65,11 @@
             required
         ></v-select>
 
-        <v-row>
-            <v-col cols="2">
-                <v-btn variant="tonal" color="white" class="w-100" @click="$router.go(-1)"> Back </v-btn>
-            </v-col>
-
-            <v-col cols="2">
-                <v-btn type="submit" variant="tonal" color="success" class="w-100" @click.prevent="update"> Save </v-btn>
-            </v-col>
-
-            <v-col cols="2">
-                <v-btn variant="tonal" color="red" class="w-100" @click="this.delete()"> Delete </v-btn>
-            </v-col>
-        </v-row>
+        <div class="d-flex justify-content-start">
+            <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
+            <v-btn type="submit" variant="tonal" color="success" class="me-2" @click.prevent="update"> Save </v-btn>
+            <v-btn variant="tonal" color="red" class="" @click="this.delete()"> Delete </v-btn>
+        </div>
     </v-form>
 </template>
 

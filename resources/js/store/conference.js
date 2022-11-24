@@ -27,7 +27,8 @@ export default {
         },
         formatedDateTime(state) {
             return id => {
-                const index = state.conferences.map(conference => conference.id).indexOf(id);
+                const conferencesId = state.conferences.map(conference => conference.id);
+                const index = conferencesId.indexOf(parseInt(id, 10));
                 const conference = state.conferences[index];
 
                 return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
