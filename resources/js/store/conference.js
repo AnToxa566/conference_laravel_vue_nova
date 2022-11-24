@@ -123,7 +123,7 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('ADD_CONFERENCE', res.data.conference)
-                        router.push({ name: 'conferences' })
+                        router.push({ name: 'conferenceShow', params: { id: res.data.conference.id } })
                     }
                 })
                 .catch(err => {
