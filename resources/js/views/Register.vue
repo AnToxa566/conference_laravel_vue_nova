@@ -6,6 +6,15 @@
 
                     <v-card-title class="text-h4 mb-4 font-weight-bold"> Register </v-card-title>
 
+                    <v-alert
+                        v-if="hasAuthErrors"
+                        type="error"
+                        variant="tonal"
+                        class="mb-6"
+                    >
+                        {{ this.authErrors }}
+                    </v-alert>
+
                     <v-form
                         action=""
                         @submit="register(user)"
@@ -190,13 +199,17 @@ export default {
         userTypes() {
             return this.$store.getters['auth/userTypes']
         },
-        registerErrors() {
-            return this.$store.getters['auth/registerErrors']
+
+        hasAuthErrors() {
+            return this.$store.getters['auth/hasAuthErrors']
+        },
+        authErrors() {
+            return this.$store.getters['auth/authErrors']
         },
     },
 
     created() {
-        this.$store.dispatch('auth/removeRegisterErrors')
+        this.$store.dispatch('auth/removeAuthErrors')
         this.countries = this.$store.getters['conference/countriesName']
     },
 
@@ -242,7 +255,7 @@ export default {
                 })
             }
 
-            if (this.registerErrors.hasOwnProperty('email')) {
+            if (this.authErrors.hasOwnProperty('email')) {
                 this.user.email = this.registerErrors['email'][0]
             }
         },

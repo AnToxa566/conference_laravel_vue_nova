@@ -9,7 +9,8 @@ export default {
         userTypes: ['Listener', 'Speaker'],
         authenticated: false,
 
-        registerErrors: {},
+        authErrors: {},
+        hasAuthErrors: false,
     },
 
     getters: {
@@ -22,8 +23,11 @@ export default {
         authenticated(state) {
             return state.authenticated
         },
-        registerErrors(state) {
-            return state.registerErrors
+        authErrors(state) {
+            return state.authErrors
+        },
+        hasAuthErrors(state) {
+            return state.hasAuthErrors
         },
     },
 
@@ -34,8 +38,11 @@ export default {
         SET_USER (state, value) {
             state.user = value
         },
-        SET_REGISTER_ERRORS (state, value) {
-            state.registerErrors = value
+        SET_AUTH_ERRORS (state, value) {
+            state.authErrors = value
+        },
+        SET_HAS_AUTH_ERRORS (state, value) {
+            state.hasAuthErrors = value
         },
     },
 
@@ -52,7 +59,11 @@ export default {
                 .catch(err => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
-                    console.log(err.response)
+
+                    console.log(err.response.data.error)
+
+                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_HAS_AUTH_ERRORS', true)
                 })
         },
 
@@ -70,8 +81,8 @@ export default {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    console.log(err.response)
-                    commit('SET_REGISTER_ERRORS', err.response.data.error)
+                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_HAS_AUTH_ERRORS', true)
                 })
         },
 
@@ -89,8 +100,9 @@ export default {
                 })
         },
 
-        removeRegisterErrors({ commit }) {
-            commit('SET_REGISTER_ERRORS', {})
+        removeAuthErrors({ commit }) {
+            commit('SET_AUTH_ERRORS', {})
+            commit('SET_HAS_AUTH_ERRORS', false)
         },
     }
 }

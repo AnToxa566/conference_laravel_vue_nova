@@ -25,7 +25,6 @@ export default {
             return state.countries
         },
         countriesName(state) {
-            console.log('getters -> countriesName')
             return state.countriesName
         },
         conference(state) {
@@ -90,8 +89,6 @@ export default {
 
     actions: {
         fetchAllConferences({ commit }) {
-            console.log('actions => fetchAllConferences')
-
             axios.get('/api/conferences')
                 .then(res => {
                     if (res.data.status === 'ok') {
