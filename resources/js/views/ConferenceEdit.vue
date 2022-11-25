@@ -54,16 +54,38 @@
             </v-col>
         </v-row>
 
-        <!-- <my-map></my-map> -->
+        <v-card class="mb-4">
+            <GMapMap
+                :center="latLng"
+                :zoom="16"
+                :options="{
+                    zoomControl: false,
+                    scaleControl: false,
+                    streetViewControl: false,
+                }"
+                map-type-id="roadmap"
+                class="w-100"
+                style="height: 500px"
+                @click="updateMakerPosition"
+            >
+                <GMapMarker
+                    :position="latLng"
+                    :clickable="true"
+                    :draggable="true"
+                    :visible="markerVisible"
+                    @dragend="updateMakerPosition"
+                />
+            </GMapMap>
+        </v-card>
 
-        <v-select
+        <v-autocomplete
             v-model="conference.country"
-            :items="countriesName"
+            :items="countries"
             :rules="[v => !!v || 'Country is required!']"
             variant="solo"
             label="Country"
             required
-        ></v-select>
+        ></v-autocomplete>
 
         <div class="d-flex justify-content-start">
             <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
@@ -79,6 +101,8 @@ export default {
     data: () => ({
         id: null,
         valid: false,
+
+        countries: [],
 
         titleRules: [
             v => !!v || 'Topic is required!',
@@ -102,6 +126,28 @@ export default {
         countriesName() {
             return this.$store.getters['conference/countriesName']
         },
+
+        latLng() {
+            if (this.conference.latitude === '' || this.conference.longitude === '' || this.conference.latitude === null || this.conference.longitude === null) {
+                return {
+                    lat: parseFloat(import.meta.env.VITE_DEFAULT_LATITUDE, 10),
+                    lng: parseFloat(import.meta.env.VITE_DEFAULT_LONGITUDE, 10),
+                }
+            }
+            else {
+                return {
+                    lat: parseFloat(this.conference.latitude, 10),
+                    lng: parseFloat(this.conference.longitude, 10),
+                }
+            }
+        },
+        markerVisible() {
+            return this.conference.latitude !== '' && this.conference.longitude !== ''
+        },
+    },
+
+    created() {
+        this.countries = this.$store.getters['conference/countriesName']
     },
 
     mounted() {
@@ -114,9 +160,11 @@ export default {
             let message = document.getElementById("message__wrapper")
             message.classList.add("hidden__message")
         },
-        delete() {
-            this.$store.dispatch('conference/deleteConference', this.id)
+        updateMakerPosition: function(event) {
+            this.conference.latitude = event.latLng.lat().toFixed(4)
+            this.conference.longitude = event.latLng.lng().toFixed(4)
         },
+
         async update() {
             const { valid } = await this.$refs.form.validate()
 
@@ -136,7 +184,11 @@ export default {
                     })
                 }
             }
-        }
+        },
+
+        delete() {
+            this.$store.dispatch('conference/deleteConference', this.id)
+        },
     }
 };
 </script>

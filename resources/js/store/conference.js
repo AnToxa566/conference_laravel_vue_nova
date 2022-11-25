@@ -11,6 +11,7 @@ export default {
         conferencesPaginatedDate: null,
 
         countries: [],
+        countriesName: [],
 
         addressPosition: null,
         formatedAddress: null,
@@ -20,8 +21,12 @@ export default {
         conferences(state) {
             return state.conferences
         },
+        countries(state) {
+            return state.countries
+        },
         countriesName(state) {
-            return state.countries.map(country => country.name)
+            console.log('getters -> countriesName')
+            return state.countriesName
         },
         conference(state) {
             return state.conference
@@ -55,6 +60,9 @@ export default {
         SET_COUNTRIES (state, value) {
             state.countries = value
         },
+        SET_COUNTRIES_NAME (state, value) {
+            state.countriesName = value
+        },
         SET_CONFERENCE (state, value) {
             state.conference = value
         },
@@ -81,23 +89,33 @@ export default {
     },
 
     actions: {
-        fetchAllConferences({ commit }, page) {
+        fetchAllConferences({ commit }) {
+            console.log('actions => fetchAllConferences')
+
             axios.get('/api/conferences')
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CONFERENCES', res.data.conferences)
                         commit('SET_COUNTRIES', res.data.countries)
-
-                        const pagination = {
-                            current_page: page,
-                        }
-
-                        commit('SET_CONFERENCES_PAGINATED_DATE', pagination)
+                        commit('SET_COUNTRIES_NAME', res.data.countries.map(country => country.name))
                     }
                 })
                 .catch(err => {
                     console.log(err.response)
                 })
+        },
+
+        fetchPaginatedConferences({ commit, state }, page) {
+            const pagination = {
+                current_page: page,
+                per_page: 15,
+                total_conferences: state.conferences.length,
+                total_pages: Math.ceil(state.conferences.length / 15),
+
+                paginated_conferences: state.conferences.slice((page - 1) * 15, page * 15)
+            }
+
+            commit('SET_CONFERENCES_PAGINATED_DATE', pagination)
         },
 
         fetchDetailConference({ commit, dispatch }, id) {

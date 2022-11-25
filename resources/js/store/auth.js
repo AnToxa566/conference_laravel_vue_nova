@@ -5,17 +5,26 @@ export default {
     namespaced: true,
 
     state: {
+        user: {},
+        userTypes: ['Listener', 'Speaker'],
         authenticated: false,
-        user: {}
+
+        registerErrors: {},
     },
 
     getters: {
+        user(state) {
+            return state.user
+        },
+        userTypes(state) {
+            return state.userTypes
+        },
         authenticated(state) {
             return state.authenticated
         },
-        user(state) {
-            return state.user
-        }
+        registerErrors(state) {
+            return state.registerErrors
+        },
     },
 
     mutations: {
@@ -24,7 +33,10 @@ export default {
         },
         SET_USER (state, value) {
             state.user = value
-        }
+        },
+        SET_REGISTER_ERRORS (state, value) {
+            state.registerErrors = value
+        },
     },
 
     actions: {
@@ -50,13 +62,16 @@ export default {
                     if (res.data.status === 'ok') {
                         commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
+                        commit('SET_REGISTER_ERRORS', {})
                         router.push({ name: 'conferences' })
                     }
                 })
                 .catch(err => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
+
                     console.log(err.response)
+                    commit('SET_REGISTER_ERRORS', err.response.data.error)
                 })
         },
 
@@ -72,6 +87,10 @@ export default {
                 .catch(err => {
                     console.log(err.response)
                 })
-        }
+        },
+
+        removeRegisterErrors({ commit }) {
+            commit('SET_REGISTER_ERRORS', {})
+        },
     }
 }

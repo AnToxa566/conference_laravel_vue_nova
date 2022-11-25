@@ -78,14 +78,14 @@
             </GMapMap>
         </v-card>
 
-        <v-select
+        <v-autocomplete
             v-model="conference.country"
-            :items="countriesName"
+            :items="countries"
             :rules="[v => !!v || 'Country is required!']"
             variant="solo"
             label="Country"
             required
-        ></v-select>
+        ></v-autocomplete>
 
         <v-row>
             <v-col cols="2">
@@ -113,6 +113,8 @@ export default {
             country: '',
         },
 
+        countries: [],
+
         titleRules: [
             v => !!v || 'Topic is required!',
             v => (v && v.length >= 2) || 'Topic must be 2 characters or longer!',
@@ -128,10 +130,11 @@ export default {
         ],
     }),
 
+    created() {
+        this.countries = this.$store.getters['conference/countriesName']
+    },
+
     computed: {
-        countriesName() {
-            return this.$store.getters['conference/countriesName']
-        },
         markerVisible() {
             return this.conference.latitude !== '' && this.conference.longitude !== ''
         },

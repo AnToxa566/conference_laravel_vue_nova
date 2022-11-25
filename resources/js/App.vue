@@ -15,8 +15,13 @@ import MyAppBar from './components/UI/MyAppBar.vue';
 
 export default {
     name: 'app',
+
     components: {
         MyAppBar,
+    },
+
+    mounted() {
+        this.$store.dispatch('conference/fetchAllConferences')
     },
 }
 </script>

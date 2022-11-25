@@ -1,6 +1,6 @@
 <template>
     <conference-item
-        v-for="conference in conferences"
+        v-for="conference in conferencesPaginatedDate.paginated_conferences"
         :key="conference.id"
         :conference="conference"
         :isJoined="joinedConferencesId.includes(parseInt(conference.id, 10))"
@@ -11,8 +11,7 @@
     <div class="text-center">
         <v-pagination
             v-model="page"
-            :length="15"
-            :total-visible="7"
+            :length="conferencesPaginatedDate.total_pages"
             @update:modelValue="getResults"
         ></v-pagination>
     </div>
@@ -40,9 +39,6 @@ export default {
             return this.$store.getters['auth/user']
         },
 
-        conferences() {
-            return this.$store.getters['conference/conferences']
-        },
         conferencesPaginatedDate() {
             return this.$store.getters['conference/conferencesPaginatedDate']
         },
@@ -53,7 +49,7 @@ export default {
     },
 
     mounted() {
-        this.$store.dispatch('conference/fetchAllConferences', this.page)
+        this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
 
         if (this.authenticated) {
             this.$store.dispatch('user_conferences/fetchJoinedConferences', this.user.id)
@@ -61,8 +57,9 @@ export default {
     },
 
     methods: {
-        getResults() {
-            this.$store.dispatch('conference/fetchAllConferences', this.page)
+        getResults(event) {
+            this.page = event
+            this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
         },
     },
 }

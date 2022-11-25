@@ -3,95 +3,136 @@
         <v-layout class='align-center justify-center'>
             <v-flex class='login-form text-center'>
                 <v-card class="pa-5" variant="tonal">
+
                     <v-card-title class="text-h4 mb-4 font-weight-bold"> Register </v-card-title>
 
-                    <v-form action="" @submit="register(user)">
+                    <v-form
+                        action=""
+                        @submit="register(user)"
+                        ref="form"
+                        v-model="valid"
+                    >
+
+                        <!-- First name -->
+
                         <v-text-field
                             v-model="user.first_name"
                             label="First name"
                             type="text"
-                            :rules="firstNameRules"
+                            :rules="[v => !!v || 'First name is required!']"
                             variant="solo"
                             placeholder="Enter the first name"
+                            autofocus
                             required
                         ></v-text-field>
+
+                        <!-- Last name -->
 
                         <v-text-field
                             v-model="user.last_name"
                             label="Last name"
                             type="text"
-                            :rules="lastNameRules"
+                            :rules="[v => !!v || 'Last name is required!']"
                             variant="solo"
                             placeholder="Enter the last name"
                             required
                         ></v-text-field>
 
+                        <!-- Date of birthday -->
+
                         <Datepicker
-                            class="mb-6"
                             placeholder="Date of birthday"
-                            dark="true"
+                            dark
                             v-model="user.birthdate"
                             modelType="yyyy-MM-dd"
                             :maxDate="new Date()"
                             :enableTimePicker="false"
+                            @update:modelValue="hiddenMessage"
                             required
                         />
 
-                        <v-select
+                        <div id="message__wrapper" class="hidden__message">
+                            <p class="message">Date of birthday is required!</p>
+                        </div>
+
+                        <!-- Country -->
+
+                        <v-autocomplete
                             v-model="user.country"
                             :items="countries"
                             :rules="[v => !!v || 'Country is required!']"
                             variant="solo"
                             label="Country"
                             required
-                        ></v-select>
+                        ></v-autocomplete>
+
+                        <!-- Phone number -->
 
                         <v-text-field
                             v-model="user.phone_number"
-                            label="phone_number"
+                            label="Phone number"
                             type="text"
-                            :rules="phone_numberRules"
+                            :rules="[
+                                v => !!v || 'Phone numper is required!',
+                                v => (v && v.length >= 11) || 'Phone numper must be 11 characters or longer!',
+                            ]"
                             variant="solo"
-                            placeholder="Enter phone_number number"
+                            placeholder="Enter phone number"
                             required
                         ></v-text-field>
 
+                        <!-- User type -->
+
                         <v-select
                             v-model="user.type"
-                            :items="types"
+                            :items="this.userTypes"
                             :rules="[v => !!v || 'User type is required!']"
                             variant="solo"
                             label="Type"
                             required
                         ></v-select>
 
+                        <!-- E-mail -->
+
                         <v-text-field
                             v-model="user.email"
                             label="E-mail"
                             type="email"
-                            :rules="emailRules"
+                            :rules="[
+                                v => !!v || 'Email is required!',
+                                v => /.+@.+/.test(v) || 'E-mail must be valid',
+                            ]"
                             variant="solo"
                             placeholder="Enter a email"
                             required
                         ></v-text-field>
 
+                        <!-- Password -->
+
                         <v-text-field
                             v-model="user.password"
                             label="Password"
                             type="password"
-                            :rules="passwordRules"
+                            :rules="[
+                                v => !!v || 'Password is required!',
+                                v => (v && v.length >= 8) || 'Password must be 8 characters or longer!',
+                            ]"
                             variant="solo"
                             required
                         ></v-text-field>
+
+                        <!-- Confirm password -->
 
                         <v-text-field
                             v-model="user.password_confirmation"
                             label="Confirm password"
                             type="password"
-                            :rules="passwordConfirmRules"
+                            :rules="[v => !!v || 'Confirm password is required!', matchingPasswords]"
                             variant="solo"
                             required
                         ></v-text-field>
+
+                        <!-- Submit button -->
 
                         <v-btn
                             type="submit"
@@ -102,6 +143,8 @@
                         > Register </v-btn>
                     </v-form>
                 </v-card>
+
+                <!-- Authorization path -->
 
                 <div class="d-flex justify-center align-center mt-3">
                     <p class="mb-0 mx-2"> Already have an account? </p>
@@ -118,10 +161,14 @@
     </v-container>
 </template>
 
+
 <script>
 export default {
     name:'Register',
+
     data: () => ({
+        valid: false,
+
         user: {
             first_name: "",
             last_name: "",
@@ -136,22 +183,85 @@ export default {
             password_confirmation: "",
         },
 
-        countries: ['Foo', 'Bar', 'Fizz', 'Buzz'],
-        types: ['Listener', 'Speaker'],
+        countries: [],
     }),
-    methods:{
-        register(user) {
-            axios.get("/sanctum/csrf-cookie").then(response => {
-                console.log(response);
-                this.$store.dispatch('auth/register', user)
-            });
+
+    computed: {
+        userTypes() {
+            return this.$store.getters['auth/userTypes']
+        },
+        registerErrors() {
+            return this.$store.getters['auth/registerErrors']
+        },
+    },
+
+    created() {
+        this.$store.dispatch('auth/removeRegisterErrors')
+        this.countries = this.$store.getters['conference/countriesName']
+    },
+
+    methods: {
+        matchingPasswords: function() {
+            if (this.user.password === this.user.password_confirmation) {
+                return true;
+            } else {
+                return 'Passwords does not match!';
+            }
+        },
+
+        containsError: function(property) {
+            if (this.registerErrors.hasOwnProperty(property)) {
+                return this.registerErrors[property][0]
+            } else {
+                return true
+            }
+        },
+
+        hiddenMessage() {
+            if (this.user.birthdate === null || this.user.birthdate === '') {
+                let message = document.getElementById("message__wrapper")
+                message.classList.remove("hidden__message")
+            }
+            else {
+                let message = document.getElementById("message__wrapper")
+                message.classList.add("hidden__message")
+            }
+        },
+
+        async register(user) {
+            if (this.user.birthdate === '' || this.user.birthdate === null) {
+                let message = document.getElementById("message__wrapper")
+                message.classList.remove("hidden__message")
+            }
+
+            const { valid } = await this.$refs.form.validate()
+
+            if (valid) {
+                axios.get("/sanctum/csrf-cookie").then(response => {
+                    this.$store.dispatch('auth/register', user)
+                })
+            }
+
+            if (this.registerErrors.hasOwnProperty('email')) {
+                this.user.email = this.registerErrors['email'][0]
+            }
         },
     }
 }
 </script>
 
+
 <style scoped>
     .login-form {
         min-width: 500px;
+    }
+    .hidden__message {
+        visibility: hidden;
+    }
+    .message {
+        color: #cf6679;
+        font-size: 12px;
+        padding: 6px 16px 0 16px;
+        margin-bottom: 0px;
     }
 </style>
