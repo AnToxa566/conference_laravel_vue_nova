@@ -42,6 +42,11 @@ import VueSocialSharing from 'vue-social-sharing'
 import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 
+// Phone Number Input
+import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
+import 'maz-ui/css/main.css'
+
+
 // Vue
 import { createApp } from 'vue';
 import App from './App.vue'
@@ -51,6 +56,7 @@ const app = createApp(App)
 
 app
     .component('Datepicker', Datepicker)
+    .component('MazPhoneNumberInput', MazPhoneNumberInput)
     .use(vuetify)
     .use(store)
     .use(router)

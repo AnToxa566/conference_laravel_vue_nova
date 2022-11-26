@@ -77,22 +77,17 @@
 
                         <!-- Phone number -->
 
-                        <v-text-field
+                        <MazPhoneNumberInput
                             v-model="user.phone_number"
-                            label="Phone number"
-                            type="text"
-                            :rules="[
-                                v => !!v || 'Phone numper is required!',
-                                v => (v && v.length >= 11) || 'Phone numper must be 11 characters or longer!',
-                            ]"
-                            variant="solo"
-                            placeholder="Enter phone number"
-                            required
-                        ></v-text-field>
+                            :preferred-countries="['UA']"
+                            @update="phone_results = $event"
+                            :success="phone_results?.isValid"
+                        />
 
                         <!-- User type -->
 
                         <v-select
+                            class="mt-5"
                             v-model="user.type"
                             :items="this.userTypes"
                             :rules="[v => !!v || 'User type is required!']"
@@ -172,11 +167,19 @@
 
 
 <script>
+import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
+
 export default {
     name:'Register',
 
+    components: {
+        MazPhoneNumberInput,
+    },
+
     data: () => ({
         valid: false,
+
+        phone_results: null,
 
         user: {
             first_name: "",
@@ -249,7 +252,7 @@ export default {
 
             const { valid } = await this.$refs.form.validate()
 
-            if (valid) {
+            if (valid && this.phone_results?.isValid) {
                 axios.get("/sanctum/csrf-cookie").then(response => {
                     this.$store.dispatch('auth/register', user)
                 })

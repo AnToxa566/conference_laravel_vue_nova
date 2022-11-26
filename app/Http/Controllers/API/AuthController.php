@@ -20,7 +20,7 @@ class AuthController extends Controller
             'birthdate' => ['required', 'date', 'before:tomorrow'],
             'country' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string', 'min:11'],
+            'phone_number' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
