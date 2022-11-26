@@ -1,0 +1,391 @@
+{
+	"info": {
+		"_postman_id": "99289f8e-1285-482b-a385-e7019fcbc893",
+		"name": "2022_11_26_104721_PostmanCollection_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24466891"
+	},
+	"item": [
+		{
+			"name": "GET | api/user",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/logout",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/logout",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/conferences",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/conferences",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/conferences/{id}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/conferences/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/conferences/add",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/conferences/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/conferences/{id}/edit",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/conferences/:id/edit",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						":id",
+						"edit"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/conferences/{id}/update",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/conferences/:id/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						":id",
+						"update"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/conferences/{id}/delete",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/conferences/:id/delete",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						":id",
+						"delete"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/conferences/joined/{user_id}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/conferences/joined/:user_id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						"joined",
+						":user_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/conferences/join/{user_id}/{conference_id}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/conferences/join/:user_id/:conference_id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						"join",
+						":user_id",
+						":conference_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"description": "(Required)"
+						},
+						{
+							"key": "conference_id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/conferences/cancel/{user_id}/{conference_id}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/conferences/cancel/:user_id/:conference_id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"conferences",
+						"cancel",
+						":user_id",
+						":conference_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"description": "(Required)"
+						},
+						{
+							"key": "conference_id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
