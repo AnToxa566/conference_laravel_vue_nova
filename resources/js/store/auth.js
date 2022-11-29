@@ -1,12 +1,13 @@
 import axios from 'axios'
 import router from '../router'
+import userTypes from '../config/user_types'
 
 export default {
     namespaced: true,
 
     state: {
         user: {},
-        userTypes: ['Listener', 'Speaker'],
+        userTypes: [],
         authenticated: false,
 
         authErrors: {},
@@ -38,6 +39,9 @@ export default {
         SET_USER (state, value) {
             state.user = value
         },
+        SET_USER_TYPES (state, value) {
+            state.userTypes = value
+        },
         SET_AUTH_ERRORS (state, value) {
             state.authErrors = value
         },
@@ -47,6 +51,10 @@ export default {
     },
 
     actions: {
+        initData({ commit }) {
+            commit('SET_USER_TYPES', [ userTypes.LISTENER, userTypes.ANNOUNCER ])
+        },
+
         login({ commit }, user) {
             axios.post('/api/login', user)
                 .then(res => {

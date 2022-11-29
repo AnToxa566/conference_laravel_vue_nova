@@ -22,12 +22,14 @@
 </template>
 
 <script>
+import userTypes from '../../config/user_types'
+
 export default {
     name: 'my-app-bar',
 
     computed: {
         isAdmin() {
-            return this.$store.getters['auth/user'].type === 'admin'
+            return this.$store.getters['auth/user'].type === userTypes.ADMIN
         },
     },
 

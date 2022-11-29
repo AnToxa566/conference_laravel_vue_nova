@@ -12,6 +12,9 @@ class Lecture extends Model
     protected $table = 'lectures';
 
     protected $fillable = [
+        'user_id',
+        'conference_id',
+
         'title',
         'date_time_start',
         'date_time_end',

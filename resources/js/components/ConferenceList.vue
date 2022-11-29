@@ -1,17 +1,17 @@
 <template>
     <conference-item
-        v-for="conference in conferencesPaginatedDate.paginated_conferences"
+        v-for="conference in conferencesPaginatedData.paginated_conferences"
         :key="conference.id"
         :conference="conference"
         :isJoined="joinedConferencesId.includes(parseInt(conference.id, 10))"
-        :isAdmin="user.type === 'admin'"
+        :isAdmin="user.type === this.adminType"
     >
     </conference-item>
 
     <div class="text-center">
         <v-pagination
             v-model="page"
-            :length="conferencesPaginatedDate.total_pages"
+            :length="conferencesPaginatedData.total_pages"
             @update:modelValue="getResults"
         ></v-pagination>
     </div>
@@ -19,11 +19,13 @@
 
 <script>
 import ConferenceItem from './ConferenceItem.vue'
+import userTypes from '../config/user_types'
 
 export default {
     data() {
         return {
             page: 1,
+            adminType: userTypes.ADMIN
         }
     },
 
@@ -39,8 +41,8 @@ export default {
             return this.$store.getters['auth/user']
         },
 
-        conferencesPaginatedDate() {
-            return this.$store.getters['conference/conferencesPaginatedDate']
+        conferencesPaginatedData() {
+            return this.$store.getters['conference/conferencesPaginatedData']
         },
 
         joinedConferencesId() {

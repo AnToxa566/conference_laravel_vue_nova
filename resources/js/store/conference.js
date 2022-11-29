@@ -8,7 +8,7 @@ export default {
     state: {
         conference: null,
         conferences: [],
-        conferencesPaginatedDate: null,
+        conferencesPaginatedData: null,
 
         countries: [],
         countriesName: [],
@@ -30,8 +30,8 @@ export default {
         conference(state) {
             return state.conference
         },
-        conferencesPaginatedDate(state) {
-            return state.conferencesPaginatedDate
+        conferencesPaginatedData(state) {
+            return state.conferencesPaginatedData
         },
 
         formatedDateTime(state) {
@@ -40,7 +40,9 @@ export default {
                 const index = conferencesId.indexOf(parseInt(id, 10));
                 const conference = state.conferences[index];
 
-                return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
+                if (index !== -1) {
+                    return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
+                }
             }
         },
 
@@ -65,8 +67,8 @@ export default {
         SET_CONFERENCE (state, value) {
             state.conference = value
         },
-        SET_CONFERENCES_PAGINATED_DATE (state, value) {
-            state.conferencesPaginatedDate = value
+        SET_CONFERENCES_PAGINATED_DATA (state, value) {
+            state.conferencesPaginatedData = value
         },
         SET_ADDRESS_POSITION (state, value) {
             state.addressPosition = value
@@ -82,8 +84,11 @@ export default {
             state.conferences.splice(index, 1, value);
         },
         DELETE_CONFERENCE (state, id) {
-            const index = state.conferences.map(conference => conference.id).indexOf(id);
+            let index = state.conferences.map(conference => conference.id).indexOf(id);
             state.conferences.splice(index, 1);
+
+            index = state.conferencesPaginatedData.paginated_conferences.map(conference => conference.id).indexOf(id);
+            state.conferencesPaginatedData.paginated_conferences.splice(index, 1);
         },
     },
 
@@ -112,7 +117,7 @@ export default {
                 paginated_conferences: state.conferences.slice((page - 1) * 15, page * 15)
             }
 
-            commit('SET_CONFERENCES_PAGINATED_DATE', pagination)
+            commit('SET_CONFERENCES_PAGINATED_DATA', pagination)
         },
 
         fetchDetailConference({ commit, dispatch }, id) {
