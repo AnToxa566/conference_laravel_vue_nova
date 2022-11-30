@@ -298,6 +298,12 @@ export default {
                 const formatedLecture = this.getFormatedLecture(lecture)
 
                 this.$store.dispatch('lecture/storeLecture', formatedLecture)
+
+                this.$store.dispatch('user_conferences/joinConference', {
+                    'conference_id': this.conference.id,
+                    'user_id': this.userId,
+                })
+
                 this.dialog = false
             }
         },

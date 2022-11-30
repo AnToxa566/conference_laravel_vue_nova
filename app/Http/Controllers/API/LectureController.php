@@ -28,6 +28,20 @@ class LectureController extends Controller
         }
     }
 
+
+    public function fetchAll()
+    {
+        $lectures = Lecture::all();
+
+        $res = [
+            'lectures' => $lectures,
+            'status' => 'ok',
+        ];
+
+        return response()->json($res, 201);
+    }
+
+
     public function store(Request $request)
     {
         LectureController::validation($request);
@@ -43,6 +57,25 @@ class LectureController extends Controller
 
         $res = [
             'lecture' => $lecture,
+            'status' => 'ok',
+        ];
+
+        return response()->json($res, 201);
+    }
+
+
+    public function destroy($user_id, $conference_id)
+    {
+        $lecture = Lecture::where('conference_id', $conference_id)->where('user_id', $user_id)->first();
+
+        if (!$lecture) {
+            return response()->json(['error' => 'LectureController::destroy: Lecture with the given id were not found.'], 401);
+        }
+
+        $lecture->delete();
+
+        $res = [
+            'lecture_id' => $lecture->id,
             'status' => 'ok',
         ];
 

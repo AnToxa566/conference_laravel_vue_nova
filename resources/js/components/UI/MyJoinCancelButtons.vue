@@ -83,6 +83,13 @@ export default {
                     'conference_id': this.conferenceId,
                     'user_id': this.user.id,
                 })
+
+                if (this.isAnnouncer) {
+                    this.$store.dispatch('lecture/deleteLecture', {
+                    'conference_id': this.conferenceId,
+                    'user_id': this.user.id,
+                })
+                }
             }
         },
     }
