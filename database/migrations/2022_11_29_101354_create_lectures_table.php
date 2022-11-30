@@ -26,12 +26,11 @@ return new class extends Migration
             $table->string('title');
             $table->dateTime('date_time_start');
             $table->dateTime('date_time_end');
-            $table->text('description');
+            $table->text('description')->nullable();
+            $table->text('presentation_path')->nullable();
 
             $table->timestamps();
         });
-
-        DB::statement("ALTER TABLE lectures ADD presentation MEDIUMBLOB");
     }
 
     /**

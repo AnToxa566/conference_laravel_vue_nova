@@ -138,6 +138,8 @@
 
 
 <script>
+import moment from 'moment'
+
 export default {
     data: () => ({
         dialog: false,
@@ -150,8 +152,9 @@ export default {
             title: '',
             date_time_start: '',
             date_time_end: '',
-            description: '',
-            presentation: '',
+
+            description: null,
+            presentation_path: null,
         },
 
         titleRules: [
@@ -248,15 +251,6 @@ export default {
     },
 
     methods: {
-        async addLecture(lecture) {
-            const { valid } = await this.$refs.form.validate()
-
-            if (valid && !this.startTimeErrorMessage && !this.endTimeErrorMessage) {
-                console.log(lecture)
-                this.dialog = false
-            }
-        },
-
         initData() {
             this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
         },
@@ -268,7 +262,44 @@ export default {
                 return
             }
 
-            this.lecture.presentation = files[0]
+            this.lecture.presentation_path = files[0]
+        },
+
+        getFormatedDateTime(lectureTime) {
+            const format = "YYYY-MM-DD HH:mm:ss"
+            let lectureDateTime = new Date(this.conference.date_time_event)
+
+            lectureDateTime.setHours(lectureTime.hours)
+            lectureDateTime.setMinutes(lectureTime.minutes)
+
+            return moment(lectureDateTime).format(format)
+        },
+
+        getFormatedLecture(lecture) {
+            const data = new FormData();
+
+            data.append('user_id', this.userId);
+            data.append('conference_id', this.conference.id);
+
+            data.append('date_time_start', this.getFormatedDateTime(lecture.date_time_start));
+            data.append('date_time_end', this.getFormatedDateTime(lecture.date_time_end));
+
+            data.append('title', lecture.title);
+            data.append('description', lecture.description);
+            data.append('presentation_path', lecture.presentation_path);
+
+            return data
+        },
+
+        async addLecture(lecture) {
+            const { valid } = await this.$refs.form.validate()
+
+            if (valid && !this.startTimeErrorMessage && !this.endTimeErrorMessage) {
+                const formatedLecture = this.getFormatedLecture(lecture)
+
+                this.$store.dispatch('lecture/storeLecture', formatedLecture)
+                this.dialog = false
+            }
         },
     },
 }

@@ -19,7 +19,7 @@ class Lecture extends Model
         'date_time_start',
         'date_time_end',
         'description',
-        'presentation',
+        'presentation_path',
     ];
 
     public function user()

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\LectureController;
 use App\Http\Controllers\API\ConferenceController;
 use App\Http\Controllers\API\UserConferenceController;
 
@@ -39,3 +40,5 @@ Route::get('/conferences/{id}/delete', [ConferenceController::class, 'destroy'])
 Route::get('/conferences/joined/{user_id}', [UserConferenceController::class, 'fetchJoinedConferences']);
 Route::get('/conferences/join/{user_id}/{conference_id}', [UserConferenceController::class, 'joinConference']);
 Route::get('/conferences/cancel/{user_id}/{conference_id}', [UserConferenceController::class, 'cancelParticipation']);
+
+Route::post('/lectures/add', [LectureController::class, 'store']);

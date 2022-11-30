@@ -185,7 +185,11 @@ export default {
 
                 const response = await fetch(url)
                 const json = await response.json()
-                const address = await json.results[0].formatted_address
+                let address = 'undefined'
+
+                if (json.status === 'OK') {
+                    address = await json.results[0].formatted_address
+                }
 
                 commit('SET_FORMATED_ADDRESS', address)
             }
