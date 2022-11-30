@@ -21,6 +21,7 @@ export default {
     },
 
     mounted() {
+        this.$store.dispatch('auth/initData')
         this.$store.dispatch('conference/fetchAllConferences')
     },
 }

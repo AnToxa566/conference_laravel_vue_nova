@@ -7,8 +7,10 @@ export default {
 
     state: {
         user: {},
-        userTypes: [],
         authenticated: false,
+
+        userTypes: [],
+        adminType: null,
 
         authErrors: {},
         hasAuthErrors: false,
@@ -18,12 +20,20 @@ export default {
         user(state) {
             return state.user
         },
-        userTypes(state) {
-            return state.userTypes
-        },
         authenticated(state) {
             return state.authenticated
         },
+
+        userTypes(state) {
+            return state.userTypes
+        },
+        adminType(state) {
+            return state.adminType
+        },
+        isAdmin(state) {
+            return state.user.type === state.adminType
+        },
+
         authErrors(state) {
             return state.authErrors
         },
@@ -33,15 +43,20 @@ export default {
     },
 
     mutations: {
-        SET_AUTHENTICATED (state, value) {
-            state.authenticated = value
-        },
         SET_USER (state, value) {
             state.user = value
         },
+        SET_AUTHENTICATED (state, value) {
+            state.authenticated = value
+        },
+
         SET_USER_TYPES (state, value) {
             state.userTypes = value
         },
+        SET_ADMIN_TYPE (state, value) {
+            state.adminType = value
+        },
+
         SET_AUTH_ERRORS (state, value) {
             state.authErrors = value
         },
@@ -53,6 +68,7 @@ export default {
     actions: {
         initData({ commit }) {
             commit('SET_USER_TYPES', [ userTypes.LISTENER, userTypes.ANNOUNCER ])
+            commit('SET_ADMIN_TYPE', userTypes.ADMIN)
         },
 
         login({ commit }, user) {

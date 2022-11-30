@@ -19,13 +19,11 @@
 
 <script>
 import ConferenceItem from './ConferenceItem.vue'
-import userTypes from '../config/user_types'
 
 export default {
     data() {
         return {
             page: 1,
-            adminType: userTypes.ADMIN
         }
     },
 
@@ -39,6 +37,9 @@ export default {
         },
         user() {
             return this.$store.getters['auth/user']
+        },
+        adminType() {
+            return this.$store.getters['auth/adminType']
         },
 
         conferencesPaginatedData() {

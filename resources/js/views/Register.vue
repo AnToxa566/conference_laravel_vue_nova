@@ -212,7 +212,6 @@ export default {
     },
 
     created() {
-        this.$store.dispatch('auth/initData')
         this.$store.dispatch('auth/removeAuthErrors')
 
         this.countries = this.$store.getters['conference/countriesName']

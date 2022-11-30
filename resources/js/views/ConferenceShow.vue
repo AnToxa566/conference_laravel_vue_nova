@@ -64,7 +64,6 @@
 import MyJoinCancelButtons from '../components/UI/MyJoinCancelButtons.vue'
 import MyShareButtons from '../components/UI/MyShareButtons.vue'
 import MyInfoCard from '../components/UI/MyInfoCard.vue'
-import userTypes from '../config/user_types'
 
 export default {
     components: {
@@ -105,7 +104,7 @@ export default {
             return this.joinedConferencesId.includes(this.id)
         },
         isAdmin() {
-            return this.$store.getters['auth/user'].type === userTypes.ADMIN
+            return this.$store.getters['auth/isAdmin']
         },
         isHasAddress() {
             return this.addressPosition?.lat !== null && this.addressPosition?.lng !== null

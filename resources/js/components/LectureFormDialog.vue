@@ -1,0 +1,285 @@
+<template>
+    <v-dialog
+        v-model="dialog"
+        max-height="100vh"
+        persistent
+    >
+        <template v-slot:activator="{ props }">
+            <v-btn
+                variant="tonal" color="white" class="ms-0"
+                v-bind="props"
+                @click="initData"
+            >
+                Join
+            </v-btn>
+        </template>
+
+        <v-container>
+            <v-card class="pa-8">
+                <v-card-title class="mb-6">
+                    <span class="text-h4">Add Lecture</span>
+                </v-card-title>
+
+                <v-form
+                    action=""
+                    @submit="addLecture(lecture)"
+                    ref="form"
+                    v-model="valid"
+                >
+                    <v-row>
+
+                        <!-- Title -->
+
+                        <v-col
+                            cols="12"
+                        >
+                            <v-text-field
+                                v-model="lecture.title"
+                                label="Lecture's title*"
+                                variant="solo"
+                                :counter="255"
+                                :rules="titleRules"
+                            ></v-text-field>
+                        </v-col>
+
+                        <!-- Start date/time -->
+
+                        <v-col
+                            cols="12"
+                        >
+                            <Datepicker
+                                dark
+                                timePicker
+                                teleportCenter
+                                class="w-100"
+                                placeholder="When the lecture start*"
+                                v-model="lecture.date_time_start"
+                                :minTime="this.minLectureTime"
+                                :maxTime="this.maxLectureTime"
+                            />
+
+                            <div class="message w-100">
+                                <p class="mb-0" v-if="startTimeErrorMessage"> {{ this.startTimeErrorMessage }} </p>
+                            </div>
+                        </v-col>
+
+                        <!-- End date/time -->
+
+                        <v-col
+                            cols="12"
+                        >
+                            <Datepicker
+                                dark
+                                timePicker
+                                teleportCenter
+                                class="w-100"
+                                placeholder="When the lecture end*"
+                                v-model="lecture.date_time_end"
+                                :minTime="this.minLectureTime"
+                                :maxTime="this.maxLectureTime"
+                            />
+
+                            <div class="message w-100">
+                                <p class="mb-0" v-if="endTimeErrorMessage"> {{ this.endTimeErrorMessage }} </p>
+                            </div>
+                        </v-col>
+
+                        <!-- Description -->
+
+                        <v-col
+                            cols="12"
+                        >
+                            <v-textarea
+                                v-model="lecture.description"
+                                label="Lecture's description"
+                                variant="solo"
+                            ></v-textarea>
+                        </v-col>
+
+                        <!-- Presentation -->
+
+                        <v-col
+                            cols="12"
+                        >
+                            <v-file-input
+                                show-size
+                                label="Lecture's presentation"
+                                variant="solo"
+                                prepend-icon="mdi-presentation"
+                                accept=".ppt, .pptx"
+                                v-on:change="onFileChange"
+                                :rules="fileRules"
+                            ></v-file-input>
+                        </v-col>
+                    </v-row>
+
+                    <small>*indicates required field</small>
+
+                    <div class="d-flex justify-content-end">
+                        <v-btn
+                            variant="tonal" color="white" class="mx-2"
+                            @click="dialog = false"
+                        >
+                            Close
+                        </v-btn>
+
+                        <v-btn
+                            variant="tonal" color="white" class="mx-2"
+                            @click.prevent="addLecture(lecture)"
+                        >
+                            Save
+                        </v-btn>
+                    </div>
+                </v-form>
+            </v-card>
+        </v-container>
+    </v-dialog>
+</template>
+
+
+<script>
+export default {
+    data: () => ({
+        dialog: false,
+        valid: false,
+
+        lecture: {
+            user_id: null,
+            conference_id: null,
+
+            title: '',
+            date_time_start: '',
+            date_time_end: '',
+            description: '',
+            presentation: '',
+        },
+
+        titleRules: [
+            value => !!value || 'Title is required!',
+            value => (value && value.length >= 2) || 'Title must be longer than 1 character!',
+            value => (value && value.length <= 255) || 'Title must be less than 256 characters!',
+        ],
+
+        fileRules: [
+            value => {
+                if (value && value.length) {
+                    return value[0].type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||
+                    value[0].type === 'application/vnd.ms-powerpoint' ||
+                    'Presentation file type must be .ppt or .pptx!'
+                }
+                else {
+                    return true
+                }
+            },
+            value => {
+                if (value && value.length) {
+                    return value[0].size < 10000000 || 'Presentation size should be less than 10 MB!'
+                }
+                else {
+                    return true
+                }
+            },
+        ],
+    }),
+
+    props: {
+        conferenceId: {
+            type: Number,
+            required: true,
+        },
+    },
+
+    computed: {
+        conference() {
+            return this.$store.getters['conference/conference']
+        },
+
+        userId() {
+            return this.$store.getters['auth/user'].id
+        },
+
+        startTimeErrorMessage() {
+            if (!this.lecture.date_time_start) {
+                return 'Start time are required!'
+            }
+
+            return '';
+        },
+
+        endTimeErrorMessage() {
+            if (!this.lecture.date_time_end) {
+                return 'End time are required!'
+            }
+            else if (!this.lecture.date_time_start) {
+                return 'Input the start time of the lecture!'
+            }
+            else {
+                const startTotalMinutes = this.lecture.date_time_start.hours * 60 + this.lecture.date_time_start.minutes
+                const endTotalMinutes = this.lecture.date_time_end.hours * 60 + this.lecture.date_time_end.minutes
+
+                if (endTotalMinutes - startTotalMinutes < 0) {
+                    return 'The end time cannot be earlier than the start time!'
+                }
+                else if (endTotalMinutes - startTotalMinutes < 10) {
+                    return 'The lecture cannot last less than 10 minutes!'
+                }
+                else if (endTotalMinutes - startTotalMinutes > 60) {
+                    return 'The lecture should last no more than 60 minutes!'
+                }
+            }
+
+            return '';
+        },
+
+        minLectureTime() {
+            const date = new Date(this.conference.date_time_event)
+
+            return {
+                hours: date.getHours(),
+                minutes: date.getMinutes(),
+            }
+        },
+        maxLectureTime() {
+            return {
+                hours: 23,
+                minutes: 59,
+            }
+        },
+    },
+
+    methods: {
+        async addLecture(lecture) {
+            const { valid } = await this.$refs.form.validate()
+
+            if (valid && !this.startTimeErrorMessage && !this.endTimeErrorMessage) {
+                console.log(lecture)
+                this.dialog = false
+            }
+        },
+
+        initData() {
+            this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
+        },
+
+        onFileChange(event) {
+            var files = event.target.files || event.dataTransfer.files
+
+            if (!files.length) {
+                return
+            }
+
+            this.lecture.presentation = files[0]
+        },
+    },
+}
+</script>
+
+
+<style>
+    .message {
+        color: #cf6679;
+        font-size: 12px;
+        padding: 6px 16px 0 16px;
+        margin-bottom: 0px;
+    }
+</style>
