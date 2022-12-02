@@ -19,8 +19,8 @@ class LectureController extends Controller
             'title' => ['required', 'string', 'min:2', 'max:255'],
             'date_time_start' => ['required', 'date'],
             'date_time_end' => ['required', 'date'],
-            'description' => ['nullable', 'string'],
-            'presentation_path' => ['nullable', 'file', 'size:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
+            'description' => ['string'],
+            'presentation_path' => ['file', 'size:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
         ]);
 
         if ($validator->fails()) {

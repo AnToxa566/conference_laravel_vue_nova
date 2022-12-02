@@ -26,8 +26,8 @@ return new class extends Migration
             $table->string('title');
             $table->dateTime('date_time_start');
             $table->dateTime('date_time_end');
-            $table->text('description')->nullable();
-            $table->text('presentation_path')->nullable();
+            $table->text('description');
+            $table->text('presentation_path');
 
             $table->timestamps();
         });

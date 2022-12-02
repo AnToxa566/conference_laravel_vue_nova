@@ -1,4 +1,10 @@
 <template>
+    <div
+        class="py-3 text-h4 font-weight-bold"
+    >
+        Conferences
+    </div>
+
     <conference-list></conference-list>
 </template>
 

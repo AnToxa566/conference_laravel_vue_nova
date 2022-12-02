@@ -8,7 +8,7 @@
             v-slot:activator="{ props }"
         >
             <v-btn
-                variant="tonal" color="white" class="ms-0"
+                variant="tonal" color="white" class="mx-1"
                 v-bind="props"
                 @click="initData"
                 v-if="this.getFreeStartTime"
@@ -18,7 +18,7 @@
 
             <div
                 v-else
-                class="d-flex align-center"
+                class="d-flex align-center mx-1"
             >
                 <p class="mb-0">Registration is impossible</p>
             </div>
@@ -101,8 +101,9 @@
                         >
                             <v-textarea
                                 v-model="lecture.description"
-                                label="Lecture's description"
+                                label="Lecture's description*"
                                 variant="solo"
+                                :rules="descriptionRules"
                             ></v-textarea>
                         </v-col>
 
@@ -173,7 +174,12 @@ export default {
             value => (value && value.length <= 255) || 'Title must be less than 256 characters!',
         ],
 
+        descriptionRules: [
+            value => !!value || 'Description is required!',
+        ],
+
         fileRules: [
+            value => (!!value && !!value.length) || 'Presentation is required!',
             value => {
                 if (value && value.length) {
                     return value[0].type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||

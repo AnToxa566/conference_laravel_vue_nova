@@ -1,7 +1,7 @@
 <template>
     <v-btn
         v-if="!isJoined && !this.isAnnouncer"
-        variant="tonal" color="white" class="ms-0"
+        variant="tonal" color="white" class="mx-1"
         @click="this.joinConference()"
     >
         Join
@@ -14,7 +14,7 @@
 
     <v-btn
         v-else
-        variant="tonal" color="white" class="ms-0"
+        variant="tonal" color="white" class="mx-1"
         @click="this.cancelParticipation()"
     >
         Сancel participation

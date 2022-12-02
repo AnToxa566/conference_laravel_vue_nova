@@ -6,7 +6,7 @@ export default {
 
     state: {
         lecture: null,
-        lectures: []
+        lectures: [],
     },
 
     getters: {
