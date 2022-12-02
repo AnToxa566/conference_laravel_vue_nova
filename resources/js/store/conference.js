@@ -13,18 +13,24 @@ export default {
         countries: [],
         countriesName: [],
 
-        lecturesOfConference: [],
-
         addressPosition: null,
         formatedAddress: null,
     },
 
     getters: {
-        conferences(state) {
-            return state.conferences
-        },
         conference(state) {
             return state.conference
+        },
+        conferenceById(state) {
+            return id => {
+                const conferencesId = state.conferences.map(conference => conference.id);
+                const index = conferencesId.indexOf(parseInt(id, 10));
+                return state.conferences[index];
+            }
+        },
+
+        conferences(state) {
+            return state.conferences
         },
         conferencesPaginatedData(state) {
             return state.conferencesPaginatedData
@@ -35,10 +41,6 @@ export default {
         },
         countriesName(state) {
             return state.countriesName
-        },
-
-        lecturesOfConference(state) {
-            return state.lecturesOfConference
         },
 
         formatedDateTime(state) {
@@ -77,10 +79,6 @@ export default {
         },
         SET_COUNTRIES_NAME (state, value) {
             state.countriesName = value
-        },
-
-        SET_LECTURES_OF_CONFERENCE (state, value) {
-            state.lecturesOfConference = value
         },
 
         SET_ADDRESS_POSITION (state, value) {
@@ -139,7 +137,6 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CONFERENCE', res.data.conference)
-                        commit('SET_LECTURES_OF_CONFERENCE', res.data.lectures)
 
                         commit('SET_ADDRESS_POSITION', {
                             'lat': res.data.conference.latitude,

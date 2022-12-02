@@ -43,7 +43,6 @@ class ConferenceController extends Controller
     public function fetchDetail($id)
     {
         $conference = Conference::where('id', $id)->first();
-        $lectures = $conference->lectures;
 
         if (!$conference) {
             return response()->json(['error' => 'ConferenceController::fetchDetail: Conference with the given id were not found.'], 404);
@@ -51,7 +50,6 @@ class ConferenceController extends Controller
 
         $res = [
             'conference' => $conference,
-            'lectures' => $lectures,
             'status' => 'ok',
         ];
 

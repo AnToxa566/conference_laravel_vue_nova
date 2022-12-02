@@ -4,14 +4,24 @@
         max-height="100vh"
         persistent
     >
-        <template v-slot:activator="{ props }">
+        <template
+            v-slot:activator="{ props }"
+        >
             <v-btn
                 variant="tonal" color="white" class="ms-0"
                 v-bind="props"
                 @click="initData"
+                v-if="this.getFreeStartTime"
             >
                 Join
             </v-btn>
+
+            <div
+                v-else
+                class="d-flex align-center"
+            >
+                <p class="mb-0">Registration is impossible</p>
+            </div>
         </template>
 
         <v-container>
@@ -145,8 +155,6 @@ export default {
         dialog: false,
         valid: false,
 
-        _conference: null,
-
         lecture: {
             user_id: null,
             conference_id: null,
@@ -195,12 +203,12 @@ export default {
     },
 
     computed: {
-        conference() {
-            return this.$store.getters['conference/conference']
+        conferenceById() {
+            return this.$store.getters['conference/conferenceById'](this.conferenceId)
         },
 
-        lecturesOfConference() {
-            return this.$store.getters['conference/lecturesOfConference']
+        lectures() {
+            return this.$store.getters['lecture/lectures']
         },
 
         userId() {
@@ -216,7 +224,7 @@ export default {
             let errorMessage = ''
 
             if (!this.freeTimeCheck(customerDateTimeStart)) {
-                const nearestFreeTime = this.getFreeStartTime()
+                const nearestFreeTime = this.getFreeStartTime
                 errorMessage = 'At this time, you cannot start the lecture, as this time is already taken! Next free time: ' + nearestFreeTime
             }
 
@@ -253,16 +261,8 @@ export default {
             return '';
         },
 
-        hasFreeTime() {
-            if (this.getFreeStartTime() === 'undefined') {
-                return false
-            }
-
-            return true
-        },
-
         minLectureTime() {
-            const date = new Date(this.conference.date_time_event)
+            const date = new Date(this.conferenceById.date_time_event)
 
             return {
                 hours: date.getHours(),
@@ -275,11 +275,38 @@ export default {
                 minutes: 59,
             }
         },
+
+        getFreeStartTime() {
+            const format = "HH:mm"
+
+            const stepMinutes = 1
+            const minLectureTime = 10
+
+            let startLectureDateTime = new Date(this.conferenceById.date_time_event)
+            let endLectureDateTime = new Date(this.conferenceById.date_time_event)
+            endLectureDateTime.setMinutes(endLectureDateTime.getMinutes() + minLectureTime)
+
+            while (!this.freeTimeCheck(startLectureDateTime) || !this.freeTimeCheck(endLectureDateTime)) {
+                startLectureDateTime.setMinutes(startLectureDateTime.getMinutes() + stepMinutes)
+                endLectureDateTime.setMinutes(endLectureDateTime.getMinutes() + stepMinutes)
+            }
+
+            let deadlineForLecture = new Date(this.conferenceById.date_time_event)
+            deadlineForLecture.setHours(23)
+            deadlineForLecture.setMinutes(50)
+
+            if (startLectureDateTime < deadlineForLecture) {
+                return moment(startLectureDateTime).format(format)
+            }
+            else {
+                return false
+            }
+        },
     },
 
     methods: {
         initData() {
-            this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
+            //this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
         },
 
         onFileChange(event) {
@@ -295,49 +322,24 @@ export default {
         freeTimeCheck(customerDateTime) {
             let result = true
 
-            this.lecturesOfConference.forEach(lecture => {
-                const lectureDateTimeStart = new Date(lecture.date_time_start)
-                const lectureDateTimeEnd = new Date(lecture.date_time_end)
+            this.lectures.forEach(lecture => {
+                if (lecture.conference_id === this.conferenceId) {
+                    const lectureDateTimeStart = new Date(lecture.date_time_start)
+                    const lectureDateTimeEnd = new Date(lecture.date_time_end)
 
-                if (customerDateTime > lectureDateTimeStart && customerDateTime < lectureDateTimeEnd) {
-                    result = false
-                    return
+                    if (customerDateTime > lectureDateTimeStart && customerDateTime < lectureDateTimeEnd) {
+                        result = false
+                        return
+                    }
                 }
             });
 
             return result
         },
 
-        getFreeStartTime() {
-            const format = "HH:mm"
-
-            const stepMinutes = 1
-            const minLectureTime = 10
-
-            let startLectureDateTime = new Date(this.conference.date_time_event)
-            let endLectureDateTime = new Date(this.conference.date_time_event)
-            endLectureDateTime.setMinutes(endLectureDateTime.getMinutes() + minLectureTime)
-
-            while (!this.freeTimeCheck(startLectureDateTime) || !this.freeTimeCheck(endLectureDateTime)) {
-                startLectureDateTime.setMinutes(startLectureDateTime.getMinutes() + stepMinutes)
-                endLectureDateTime.setMinutes(endLectureDateTime.getMinutes() + stepMinutes)
-            }
-
-            let deadlineForLecture = new Date(this.conference.date_time_event)
-            deadlineForLecture.setHours(23)
-            deadlineForLecture.setMinutes(50)
-
-            if (startLectureDateTime < deadlineForLecture) {
-                return moment(startLectureDateTime).format(format)
-            }
-            else {
-                return 'undefined'
-            }
-        },
-
         getFormatedDateTime(lectureTime) {
             const format = "YYYY-MM-DD HH:mm:ss"
-            let lectureDateTime = new Date(this.conference.date_time_event)
+            let lectureDateTime = new Date(this.conferenceById.date_time_event)
 
             lectureDateTime.setHours(lectureTime.hours)
             lectureDateTime.setMinutes(lectureTime.minutes)
@@ -349,7 +351,7 @@ export default {
             const data = new FormData();
 
             data.append('user_id', this.userId);
-            data.append('conference_id', this.conference.id);
+            data.append('conference_id', this.conferenceId);
 
             data.append('date_time_start', this.getFormatedDateTime(lecture.date_time_start));
             data.append('date_time_end', this.getFormatedDateTime(lecture.date_time_end));
@@ -370,7 +372,7 @@ export default {
                 this.$store.dispatch('lecture/storeLecture', formatedLecture)
 
                 this.$store.dispatch('user_conferences/joinConference', {
-                    'conference_id': this.conference.id,
+                    'conference_id': this.conferenceId,
                     'user_id': this.userId,
                 })
 
