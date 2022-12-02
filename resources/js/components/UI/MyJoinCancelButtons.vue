@@ -27,6 +27,8 @@ import LectureFormDialog from '../LectureFormDialog.vue'
 import userTypes from '../../config/user_types'
 
 export default {
+    name: 'my-join-cancel-buttons',
+
     data() {
         return {
             dialog: false,

@@ -40,15 +40,7 @@
 </template>
 
 <script>
-import MyShareButtons from '../components/UI/MyShareButtons.vue'
-import MyJoinCancelButtons from '../components/UI/MyJoinCancelButtons.vue'
-
 export default {
-    components: {
-        MyShareButtons,
-        MyJoinCancelButtons,
-    },
-
     props: {
         conference: {
             type: Object,

@@ -1,5 +1,7 @@
 <template>
-    {{ lecture_id }}
+    <my-header>
+        <template v-slot:header>Lecture details</template>
+    </my-header>
 </template>
 
 

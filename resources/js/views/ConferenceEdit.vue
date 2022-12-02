@@ -1,5 +1,7 @@
 <template>
-    <p class="text-h4 mb-4">Updating</p>
+    <my-header>
+        <template v-slot:header>Update conference</template>
+    </my-header>
 
     <v-form
         action=""

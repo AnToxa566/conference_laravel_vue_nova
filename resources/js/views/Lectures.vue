@@ -1,9 +1,7 @@
 <template>
-    <div
-        class="py-3 text-h4 font-weight-bold"
-    >
-        Lectures
-    </div>
+    <my-header>
+        <template v-slot:header>Lectures</template>
+    </my-header>
 
     <lecture-list
         :conference_id="this.conference_id"

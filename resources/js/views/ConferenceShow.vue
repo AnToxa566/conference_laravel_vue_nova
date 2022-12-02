@@ -1,5 +1,7 @@
 <template>
-    <p class="text-h4 mb-4">Details</p>
+    <my-header>
+        <template v-slot:header>Conference details</template>
+    </my-header>
 
     <my-info-card>
         <template v-slot:header> Topic </template>
@@ -61,17 +63,7 @@
 </template>
 
 <script>
-import MyJoinCancelButtons from '../components/UI/MyJoinCancelButtons.vue'
-import MyShareButtons from '../components/UI/MyShareButtons.vue'
-import MyInfoCard from '../components/UI/MyInfoCard.vue'
-
 export default {
-    components: {
-        MyJoinCancelButtons,
-        MyShareButtons,
-        MyInfoCard,
-    },
-
     data() {
         return {
             id: null,
