@@ -13,6 +13,8 @@ export default {
         countries: [],
         countriesName: [],
 
+        lecturesOfConference: [],
+
         addressPosition: null,
         formatedAddress: null,
     },
@@ -21,17 +23,22 @@ export default {
         conferences(state) {
             return state.conferences
         },
+        conference(state) {
+            return state.conference
+        },
+        conferencesPaginatedData(state) {
+            return state.conferencesPaginatedData
+        },
+
         countries(state) {
             return state.countries
         },
         countriesName(state) {
             return state.countriesName
         },
-        conference(state) {
-            return state.conference
-        },
-        conferencesPaginatedData(state) {
-            return state.conferencesPaginatedData
+
+        lecturesOfConference(state) {
+            return state.lecturesOfConference
         },
 
         formatedDateTime(state) {
@@ -58,24 +65,31 @@ export default {
         SET_CONFERENCES (state, value) {
             state.conferences = value
         },
-        SET_COUNTRIES (state, value) {
-            state.countries = value
-        },
-        SET_COUNTRIES_NAME (state, value) {
-            state.countriesName = value
-        },
         SET_CONFERENCE (state, value) {
             state.conference = value
         },
         SET_CONFERENCES_PAGINATED_DATA (state, value) {
             state.conferencesPaginatedData = value
         },
+
+        SET_COUNTRIES (state, value) {
+            state.countries = value
+        },
+        SET_COUNTRIES_NAME (state, value) {
+            state.countriesName = value
+        },
+
+        SET_LECTURES_OF_CONFERENCE (state, value) {
+            state.lecturesOfConference = value
+        },
+
         SET_ADDRESS_POSITION (state, value) {
             state.addressPosition = value
         },
         SET_FORMATED_ADDRESS (state, value) {
             state.formatedAddress = value
         },
+
         ADD_CONFERENCE (state, value) {
             state.conferences.push(value)
         },
@@ -125,6 +139,8 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CONFERENCE', res.data.conference)
+                        commit('SET_LECTURES_OF_CONFERENCE', res.data.lectures)
+
                         commit('SET_ADDRESS_POSITION', {
                             'lat': res.data.conference.latitude,
                             'lng': res.data.conference.longitude

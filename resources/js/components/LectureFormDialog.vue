@@ -145,6 +145,8 @@ export default {
         dialog: false,
         valid: false,
 
+        _conference: null,
+
         lecture: {
             user_id: null,
             conference_id: null,
@@ -197,6 +199,10 @@ export default {
             return this.$store.getters['conference/conference']
         },
 
+        lecturesOfConference() {
+            return this.$store.getters['conference/lecturesOfConference']
+        },
+
         userId() {
             return this.$store.getters['auth/user'].id
         },
@@ -206,7 +212,15 @@ export default {
                 return 'Start time are required!'
             }
 
-            return '';
+            const customerDateTimeStart = new Date(this.getFormatedDateTime(this.lecture.date_time_start))
+            let errorMessage = ''
+
+            if (!this.freeTimeCheck(customerDateTimeStart)) {
+                const nearestFreeTime = this.getFreeStartTime()
+                errorMessage = 'At this time, you cannot start the lecture, as this time is already taken! Next free time: ' + nearestFreeTime
+            }
+
+            return errorMessage;
         },
 
         endTimeErrorMessage() {
@@ -216,22 +230,35 @@ export default {
             else if (!this.lecture.date_time_start) {
                 return 'Input the start time of the lecture!'
             }
-            else {
-                const startTotalMinutes = this.lecture.date_time_start.hours * 60 + this.lecture.date_time_start.minutes
-                const endTotalMinutes = this.lecture.date_time_end.hours * 60 + this.lecture.date_time_end.minutes
 
-                if (endTotalMinutes - startTotalMinutes < 0) {
-                    return 'The end time cannot be earlier than the start time!'
-                }
-                else if (endTotalMinutes - startTotalMinutes < 10) {
-                    return 'The lecture cannot last less than 10 minutes!'
-                }
-                else if (endTotalMinutes - startTotalMinutes > 60) {
-                    return 'The lecture should last no more than 60 minutes!'
-                }
+            const startTotalMinutes = this.lecture.date_time_start.hours * 60 + this.lecture.date_time_start.minutes
+            const endTotalMinutes = this.lecture.date_time_end.hours * 60 + this.lecture.date_time_end.minutes
+
+            if (endTotalMinutes - startTotalMinutes < 0) {
+                return 'The end time cannot be earlier than the start time!'
+            }
+            else if (endTotalMinutes - startTotalMinutes < 10) {
+                return 'The lecture cannot last less than 10 minutes!'
+            }
+            else if (endTotalMinutes - startTotalMinutes > 60) {
+                return 'The lecture should last no more than 60 minutes!'
+            }
+
+            const customerDateTimeEnd = new Date(this.getFormatedDateTime(this.lecture.date_time_end))
+
+            if (!this.freeTimeCheck(customerDateTimeEnd)) {
+                return 'This time is already taken!'
             }
 
             return '';
+        },
+
+        hasFreeTime() {
+            if (this.getFreeStartTime() === 'undefined') {
+                return false
+            }
+
+            return true
         },
 
         minLectureTime() {
@@ -263,6 +290,49 @@ export default {
             }
 
             this.lecture.presentation_path = files[0]
+        },
+
+        freeTimeCheck(customerDateTime) {
+            let result = true
+
+            this.lecturesOfConference.forEach(lecture => {
+                const lectureDateTimeStart = new Date(lecture.date_time_start)
+                const lectureDateTimeEnd = new Date(lecture.date_time_end)
+
+                if (customerDateTime > lectureDateTimeStart && customerDateTime < lectureDateTimeEnd) {
+                    result = false
+                    return
+                }
+            });
+
+            return result
+        },
+
+        getFreeStartTime() {
+            const format = "HH:mm"
+
+            const stepMinutes = 1
+            const minLectureTime = 10
+
+            let startLectureDateTime = new Date(this.conference.date_time_event)
+            let endLectureDateTime = new Date(this.conference.date_time_event)
+            endLectureDateTime.setMinutes(endLectureDateTime.getMinutes() + minLectureTime)
+
+            while (!this.freeTimeCheck(startLectureDateTime) || !this.freeTimeCheck(endLectureDateTime)) {
+                startLectureDateTime.setMinutes(startLectureDateTime.getMinutes() + stepMinutes)
+                endLectureDateTime.setMinutes(endLectureDateTime.getMinutes() + stepMinutes)
+            }
+
+            let deadlineForLecture = new Date(this.conference.date_time_event)
+            deadlineForLecture.setHours(23)
+            deadlineForLecture.setMinutes(50)
+
+            if (startLectureDateTime < deadlineForLecture) {
+                return moment(startLectureDateTime).format(format)
+            }
+            else {
+                return 'undefined'
+            }
         },
 
         getFormatedDateTime(lectureTime) {
