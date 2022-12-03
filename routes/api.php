@@ -42,6 +42,7 @@ Route::get('/conferences/join/{user_id}/{conference_id}', [UserConferenceControl
 Route::get('/conferences/cancel/{user_id}/{conference_id}', [UserConferenceController::class, 'cancelParticipation']);
 
 Route::get('/lectures', [LectureController::class, 'fetchAll']);
+Route::get('/lectures/{id}', [LectureController::class, 'fetchById']);
 
 Route::post('/lectures/add', [LectureController::class, 'store']);
 Route::get('/lectures/delete/{user_id}/{conference_id}', [LectureController::class, 'destroy']);

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store'
 import router from '../router'
 
 export default {
@@ -15,6 +16,10 @@ export default {
         },
         lectures(state) {
             return state.lectures
+        },
+
+        isUserOwnThisLecture(state) {
+            return parseInt(store.state.auth.user.id, 10) === parseInt(state.lecture.user_id, 10)
         },
     },
 
@@ -41,6 +46,18 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_LECTURES', res.data.lectures)
+                    }
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+        fetchLectureById({ commit }, id) {
+            axios.get(`/api/lectures/${id}`)
+                .then(res => {
+                    if (res.data.status === 'ok') {
+                        commit('SET_LECTURE', res.data.lecture)
                     }
                 })
                 .catch(err => {

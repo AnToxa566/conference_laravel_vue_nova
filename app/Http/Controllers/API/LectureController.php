@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
 
@@ -35,6 +36,23 @@ class LectureController extends Controller
 
         $res = [
             'lectures' => $lectures,
+            'status' => 'ok',
+        ];
+
+        return response()->json($res, 201);
+    }
+
+
+    public function fetchById($id)
+    {
+        $lecture = Lecture::where('id', $id)->first();
+
+        if (!$lecture) {
+            return response()->json(['error' => 'LectureController::fetchById: Lecture with the given id were not found.'], 404);
+        }
+
+        $res = [
+            'lecture' => $lecture,
             'status' => 'ok',
         ];
 

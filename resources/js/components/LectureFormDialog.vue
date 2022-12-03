@@ -8,10 +8,9 @@
             v-slot:activator="{ props }"
         >
             <v-btn
+                v-if="this.getFreeStartTime"
                 variant="tonal" color="white" class="mx-1"
                 v-bind="props"
-                @click="initData"
-                v-if="this.getFreeStartTime"
             >
                 Join
             </v-btn>
@@ -311,10 +310,6 @@ export default {
     },
 
     methods: {
-        initData() {
-            //this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
-        },
-
         onFileChange(event) {
             var files = event.target.files || event.dataTransfer.files
 

@@ -51,7 +51,7 @@ export default {
         },
     },
 
-    mounted() {
+    created() {
         this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
 
         if (this.authenticated) {
