@@ -14,8 +14,8 @@
         @submit="updateLecture"
     >
         <template v-slot:extraButtons>
-            <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
-            <v-btn variant="tonal" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
+            <v-btn variant="text" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
+            <v-btn variant="tonal" color="white" class="mx-1" @click="$router.go(-1)"> Back </v-btn>
         </template>
     </lecture-form>
 </template>

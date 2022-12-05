@@ -99,7 +99,7 @@
             <slot name="extraButtons"></slot>
 
             <v-btn
-                variant="tonal" color="white" class="mx-2"
+                variant="tonal" color="white" class="mx-1"
                 @click.prevent="onSubmit(lecture)"
             >
                 Save

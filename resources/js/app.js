@@ -47,6 +47,11 @@ import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
 import 'maz-ui/css/main.css'
 
 
+// Vue Quill (WYSIWYG Redactor)
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
+
 // My Components
 import MyAppBar from './components/UI/MyAppBar.vue'
 import MyHeader from './components/UI/MyHeader.vue'
@@ -64,6 +69,7 @@ const app = createApp(App)
 
 app
     .component('Datepicker', Datepicker)
+    .component('QuillEditor', QuillEditor)
     .component('MazPhoneNumberInput', MazPhoneNumberInput)
     .component('MyAppBar', MyAppBar)
     .component('MyHeader', MyHeader)

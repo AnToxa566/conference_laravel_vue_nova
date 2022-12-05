@@ -36,15 +36,33 @@
         class="d-flex"
     >
         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conference_id}/lectures/${this.lecture_id}/edit`)"> Edit </v-btn>
-        <v-btn variant="tonal" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
+        <v-btn variant="text" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
     </div>
+
+    <div class="py-3 mt-6 text-h6 font-weight-bold">
+        Comments
+    </div>
+
+    <comment-form
+        :lecture_id="this.lecture_id"
+    ></comment-form>
+    <comment-list
+        :lecture_id="this.lecture_id"
+    ></comment-list>
 </template>
 
 
 <script>
+import CommentForm from '../components/CommentForm.vue'
+import CommentList from '../components/CommentList.vue'
 import moment from 'moment'
 
 export default {
+    components: {
+        CommentForm,
+        CommentList,
+    },
+
     data() {
         return {
             conference_id: null,

@@ -14,7 +14,7 @@
 
     <v-btn
         v-else
-        variant="tonal" color="white" class="mx-1"
+        variant="text" color="white" class="mx-1"
         @click="this.cancelParticipation()"
     >
         Сancel participation
