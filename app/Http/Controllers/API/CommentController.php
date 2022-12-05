@@ -16,7 +16,6 @@ class CommentController extends Controller
             'user_id' => ['required'],
             'lecture_id' => ['required'],
 
-            'published_at' => ['required', 'date'],
             'description' => ['string'],
         ]);
 
@@ -28,7 +27,10 @@ class CommentController extends Controller
 
     public function fetchByLectureId($lecture_id)
     {
-        $comments = Comment::where('lecture_id', $lecture_id)->get();
+        $comments = Comment::where('lecture_id', $lecture_id)
+                            ->join('users', 'comments.user_id', '=', 'users.id')
+                            ->select('comments.*', 'users.first_name', 'users.last_name')
+                            ->get();
 
         $res = [
             'comments' => $comments,
@@ -45,8 +47,13 @@ class CommentController extends Controller
 
         $comment = Comment::create($request->all());
 
+        $userComment = Comment::join('users', 'comments.user_id', '=', 'users.id')
+                                ->select('comments.*', 'users.first_name', 'users.last_name')
+                                ->where('comments.id', $comment->id)
+                                ->first();
+
         $res = [
-            'comment' => $comment,
+            'comment' => $userComment,
             'status' => 'ok',
         ];
 

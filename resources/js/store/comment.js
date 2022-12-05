@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '../store'
 import router from '../router'
+import { comment } from 'postcss'
 
 export default {
     namespaced: true,
@@ -41,6 +42,7 @@ export default {
             axios.post('/api/comments/add', comment)
                 .then(res => {
                     if (res.data.status === 'ok') {
+                        console.log(res.data.comment)
                         commit('PUSH_COMMENT', res.data.comment)
                     }
                 })

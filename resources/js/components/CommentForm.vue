@@ -9,7 +9,7 @@
     />
 
     <div
-        class="d-flex my-4"
+        class="d-flex mt-4 mb-6"
     >
         <v-btn variant="tonal" color="white" class="mx-1" @click="this.saveComment()"> Save </v-btn>
         <v-btn variant="text" color="white" class="mx-1" @click="this.clearContent()"> Cancel </v-btn>
@@ -18,8 +18,6 @@
 
 
 <script>
-import moment from 'moment'
-
 export default {
     data: () => ({
         content: '',
@@ -28,7 +26,6 @@ export default {
         comment: {
             user_id: null,
             lecture_id: null,
-            published_at: null,
 
             description: '',
         },
@@ -55,7 +52,6 @@ export default {
 
         async saveComment() {
             if (this.quill.getText().trim() !== '') {
-                this.comment.published_at = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
                 this.comment.description = this.content
 
                 this.$store.dispatch('comment/storeComment', this.comment)

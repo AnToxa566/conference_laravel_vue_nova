@@ -1,6 +1,6 @@
 <template>
     <comment-item
-        v-for="comment in commentsOfLecture"
+        v-for="comment in reversedСomments"
         :key="comment.id"
         :comment="comment"
     >
@@ -37,6 +37,10 @@ export default {
     computed: {
         commentsOfLecture() {
             return this.$store.getters['comment/commentsOfLecture']
+        },
+
+        reversedСomments() {
+            return [...this.commentsOfLecture].reverse();
         },
     },
 }

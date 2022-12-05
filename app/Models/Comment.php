@@ -15,7 +15,6 @@ class Comment extends Model
         'user_id',
         'lecture_id',
 
-        'published_at',
         'description',
     ];
 
