@@ -10,7 +10,7 @@ export default {
         authenticated: false,
 
         userTypes: [],
-        adminType: null,
+        adminType: '',
 
         authErrors: {},
         hasAuthErrors: false,

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('lecture_id')->references('id')->on('lectures')->onDelete('cascade');
 
-            $table->dateTime('date_time_published');
+            $table->timestamp('published_at');
             $table->text('description');
 
             $table->timestamps();

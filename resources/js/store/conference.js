@@ -6,15 +6,15 @@ export default {
     namespaced: true,
 
     state: {
-        conference: null,
+        conference: {},
         conferences: [],
-        conferencesPaginatedData: null,
+        conferencesPaginatedData: {},
 
         countries: [],
         countriesName: [],
 
-        addressPosition: null,
-        formatedAddress: null,
+        addressPosition: '',
+        formatedAddress: '',
     },
 
     getters: {
@@ -25,6 +25,7 @@ export default {
             return id => {
                 const conferencesId = state.conferences.map(conference => conference.id);
                 const index = conferencesId.indexOf(parseInt(id, 10));
+
                 return state.conferences[index];
             }
         },

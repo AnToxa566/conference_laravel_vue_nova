@@ -82,6 +82,34 @@ class LectureController extends Controller
     }
 
 
+    public function update(Request $request, $id)
+    {
+        $lecture = Lecture::where('id', $id)->first();
+
+        if (!$lecture) {
+            return response()->json(['error' => 'LectureController::update: Lecture with the given id were not found.'], 404);
+        }
+
+        LectureController::validation($request);
+
+        $input = $request->all();
+
+        if ($request->hasFile('presentation_path')) {
+            $path = $request->file('presentation_path')->store('presentations');
+            $input['presentation_path'] = $path;
+        }
+
+        $lecture->update($input);
+
+        $res = [
+            'lecture' => $lecture,
+            'status' => 'ok',
+        ];
+
+        return response()->json($res, 201);
+    }
+
+
     public function destroy($user_id, $conference_id)
     {
         $lecture = Lecture::where('conference_id', $conference_id)->where('user_id', $user_id)->first();

@@ -68,10 +68,7 @@ export default {
         joinConference() {
             if (this.authenticated) {
                 if (!this.isJoined) {
-                    this.$store.dispatch('user_conferences/joinConference', {
-                        'conference_id': this.conferenceId,
-                        'user_id': this.user.id,
-                    })
+                    this.$store.dispatch('user_conferences/joinConference', this.conferenceId)
                 }
             }
             else {
@@ -81,16 +78,10 @@ export default {
 
         cancelParticipation() {
             if (this.isJoined) {
-                this.$store.dispatch('user_conferences/cancelParticipation', {
-                    'conference_id': this.conferenceId,
-                    'user_id': this.user.id,
-                })
+                this.$store.dispatch('user_conferences/cancelParticipation', this.conferenceId)
 
                 if (this.isAnnouncer) {
-                    this.$store.dispatch('lecture/deleteLecture', {
-                    'conference_id': this.conferenceId,
-                    'user_id': this.user.id,
-                })
+                    this.$store.dispatch('lecture/deleteLecture', this.conferenceId)
                 }
             }
         },

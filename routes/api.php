@@ -45,4 +45,5 @@ Route::get('/lectures', [LectureController::class, 'fetchAll']);
 Route::get('/lectures/{id}', [LectureController::class, 'fetchById']);
 
 Route::post('/lectures/add', [LectureController::class, 'store']);
+Route::post('/lectures/{id}/update', [LectureController::class, 'update']);
 Route::get('/lectures/delete/{user_id}/{conference_id}', [LectureController::class, 'destroy']);

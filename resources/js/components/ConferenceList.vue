@@ -55,7 +55,7 @@ export default {
         this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
 
         if (this.authenticated) {
-            this.$store.dispatch('user_conferences/fetchJoinedConferences', this.user.id)
+            this.$store.dispatch('user_conferences/fetchJoinedConferences')
         }
     },
 

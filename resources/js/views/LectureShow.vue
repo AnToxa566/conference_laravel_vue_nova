@@ -93,17 +93,7 @@ export default {
 
     methods: {
         cancelParticipation() {
-            this.$store.dispatch('user_conferences/cancelParticipation', {
-                'conference_id': this.conference_id,
-                'user_id': this.userId,
-            })
-
-            this.$store.dispatch('lecture/deleteLecture', {
-                'conference_id': this.conference_id,
-                'user_id': this.userId,
-            })
-
-            this.$router.push({ name: 'conferences' })
+            this.$store.dispatch('lecture/cancelParticipation', this.conference_id)
         },
     }
 }
