@@ -386,6 +386,263 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GET | api/lectures",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/lectures",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"lectures"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/lectures/{id}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/lectures/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"lectures",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/lectures/add",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/lectures/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"lectures",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/lectures/{id}/update",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/lectures/:id/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"lectures",
+						":id",
+						"update"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/lectures/delete/{user_id}/{conference_id}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/lectures/delete/:user_id/:conference_id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"lectures",
+						"delete",
+                        ":user_id",
+                        ":conference_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"description": "(Required)"
+						},
+                        {
+							"key": "conference_id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET | api/comments/{lecture_id}/limit/{limit}/page/{page}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/comments/:lecture_id/limit/:limit/page/:page",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"comments",
+						":lecture_id",
+                        "limit",
+                        ":limit",
+                        "page",
+                        ":page"
+					],
+					"variable": [
+						{
+							"key": "lecture_id",
+							"description": "(Required)"
+						},
+                        {
+							"key": "limit",
+							"description": "(Required)"
+						},
+                        {
+							"key": "page",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/comments/add",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/comments/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"comments",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST | api/conferences/{id}/update",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n    \\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/comments/:id/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"comments",
+						":id",
+						"update"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"description": "(Required)"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
