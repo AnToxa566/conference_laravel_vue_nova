@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
@@ -32,7 +33,10 @@ class LectureController extends Controller
 
     public function fetchAll()
     {
-        $lectures = Lecture::all();
+        $lectures = Lecture::leftJoin('comments', 'lectures.id', '=', 'comments.lecture_id')
+                        ->select('lectures.*', DB::raw('count(comments.lecture_id) as comments_count'))
+                        ->groupBy('lectures.id')
+                        ->get();
 
         $res = [
             'lectures' => $lectures,

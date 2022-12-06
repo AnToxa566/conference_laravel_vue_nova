@@ -6,7 +6,7 @@
             style="cursor: pointer;"
             @click="$router.push(`/conferences/${lecture.conference_id}/lectures/${lecture.id}`)"
         >
-            {{ lecture.title }}
+            <span class="font-weight-bold text-h5">{{ lecture.title }}</span>
         </v-card-title>
 
         <v-card-subtitle>
@@ -16,7 +16,7 @@
         </v-card-subtitle>
 
         <v-card-text>
-            {{ !this.isTextOverlay || show ? lecture.description : this.slicedDescription }}
+            <span class="text-body-2">Description: {{ !this.isTextOverlay || show ? lecture.description : this.slicedDescription }}</span>
         </v-card-text>
 
         <v-card-actions
@@ -31,6 +31,11 @@
                 {{ !show ? 'More' : 'Less' }}
             </v-btn>
         </v-card-actions>
+
+        <v-card-subtitle>
+            <span class="text-caption">{{ commentsCount + ' comments' }}</span>
+        </v-card-subtitle>
+
     </v-card>
 </template>
 
@@ -69,6 +74,10 @@ export default {
         },
         slicedDescription() {
             return this.lecture.description.slice(0, 100) + '...'
+        },
+
+        commentsCount() {
+            return this.$store.getters['lecture/commentsCounts'].find(counts => parseInt(counts.lecture_id, 10) === this.lecture.id).comments_count
         },
     },
 }

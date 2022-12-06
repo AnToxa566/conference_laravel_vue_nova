@@ -10,6 +10,8 @@ export default {
     state: {
         lecture: {},
         lectures: [],
+
+        commentsCounts: [],
     },
 
     getters: {
@@ -18,6 +20,9 @@ export default {
         },
         lectures(state) {
             return state.lectures
+        },
+        commentsCounts(state) {
+            return state.commentsCounts
         },
 
         titleRules() {
@@ -128,8 +133,18 @@ export default {
         SET_LECTURES (state, value) {
             state.lectures = value
         },
+        SET_COMMENTS_COUNTS (state, lectures) {
+            state.commentsCounts = []
 
-        ADD_LECTURE (state, value) {
+            lectures.forEach(lecture => {
+                state.commentsCounts.push({
+                    'lecture_id': lecture.id,
+                    'comments_count': lecture.comments_count ? lecture.comments_count : 0,
+                })
+            })
+        },
+
+        PUSH_LECTURE (state, value) {
             state.lectures.push(value)
         },
         UPDATE_LECTURE (state, value) {
@@ -140,6 +155,11 @@ export default {
             let index = state.lectures.map(lecture => lecture.id).indexOf(id);
             state.lectures.splice(index, 1);
         },
+
+        COMMENT_INCREMENT (state, lectureId) {
+            const counterIndex = state.commentsCounts.findIndex(counter => counter.lecture_id === lectureId);
+            state.commentsCounts[counterIndex].comments_count++
+        }
     },
 
     actions: {
@@ -148,10 +168,11 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_LECTURES', res.data.lectures)
+                        commit('SET_COMMENTS_COUNTS', res.data.lectures)
                     }
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                 })
         },
 
@@ -163,7 +184,7 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                 })
         },
 
@@ -171,12 +192,11 @@ export default {
             axios.post('/api/lectures/add', lecture)
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        commit('ADD_LECTURE', res.data.lecture)
-                        router.push({ name: 'lectureShow', params: { conference_id: res.data.lecture.conference_id, lecture_id: res.data.lecture.id, } })
+                        commit('PUSH_LECTURE', res.data.lecture)
                     }
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                 })
         },
 
@@ -189,7 +209,7 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                 })
         },
 
@@ -201,8 +221,12 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                 })
+        },
+
+        incrementCommentsCount({ commit }, lecture_id) {
+            commit('COMMENT_INCREMENT', lecture_id)
         },
 
         cancelParticipation({ commit }, conference_id) {

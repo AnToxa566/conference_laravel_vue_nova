@@ -32,9 +32,7 @@ export default {
 
     computed: {
         lecturesOfConference() {
-            return this.$store.getters['lecture/lectures'].filter(lecture => {
-                return lecture.conference_id === this.conference_id
-            })
+            return this.$store.getters['lecture/lectures'].filter(lecture => parseInt(lecture.conference_id, 10) === this.conference_id)
         },
     },
 }

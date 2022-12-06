@@ -117,6 +117,7 @@ export default {
 
         async storeComment(comment) {
             this.$store.dispatch('comment/storeComment', comment)
+            this.$store.dispatch('lecture/incrementCommentsCount', this.lecture_id)
         }
     }
 }
