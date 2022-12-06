@@ -11,14 +11,19 @@
     <div
         class="d-flex mt-4 mb-6"
     >
-        <v-btn variant="tonal" color="white" class="mx-1" @click="this.saveComment()"> Save </v-btn>
-        <v-btn variant="text" color="white" class="mx-1" @click="this.clearContent()"> Cancel </v-btn>
+        <v-btn variant="tonal" color="white" class="mx-1" @click="this.submitOn()"> Save </v-btn>
+        <v-btn variant="text" color="white" class="mx-1" @click="this.cancelOn()"> Cancel </v-btn>
     </div>
 </template>
 
 
 <script>
 export default {
+    emits: [
+        'submit',
+        'cancel',
+    ],
+
     data: () => ({
         content: '',
         quill: null,
@@ -36,6 +41,16 @@ export default {
             type: Number,
             required: true,
         },
+        contentToEdit: {
+            type: String,
+            required: false,
+        },
+    },
+
+    created() {
+        if (this.contentToEdit) {
+            this.content = this.contentToEdit
+        }
     },
 
     mounted() {
@@ -46,16 +61,17 @@ export default {
     },
 
     methods: {
-        clearContent() {
+        cancelOn() {
             this.quill.setContents([])
+            this.$emit('cancel')
         },
 
-        async saveComment() {
+        async submitOn() {
             if (this.quill.getText().trim() !== '') {
                 this.comment.description = this.content
+                this.$emit('submit', this.comment)
 
-                this.$store.dispatch('comment/storeComment', this.comment)
-                this.clearContent()
+                this.quill.setContents([])
             }
         }
     },

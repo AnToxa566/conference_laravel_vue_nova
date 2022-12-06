@@ -25,6 +25,15 @@ class CommentController extends Controller
     }
 
 
+    protected function getUserComment($comment_id)
+    {
+        return Comment::join('users', 'comments.user_id', '=', 'users.id')
+                                ->select('comments.*', 'users.first_name', 'users.last_name')
+                                ->where('comments.id', $comment_id)
+                                ->first();
+    }
+
+
     public function fetchByLectureId($lecture_id)
     {
         $comments = Comment::where('lecture_id', $lecture_id)
@@ -46,11 +55,28 @@ class CommentController extends Controller
         CommentController::validation($request);
 
         $comment = Comment::create($request->all());
+        $userComment = CommentController::getUserComment($comment->id);
 
-        $userComment = Comment::join('users', 'comments.user_id', '=', 'users.id')
-                                ->select('comments.*', 'users.first_name', 'users.last_name')
-                                ->where('comments.id', $comment->id)
-                                ->first();
+        $res = [
+            'comment' => $userComment,
+            'status' => 'ok',
+        ];
+
+        return response()->json($res, 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $comment = Comment::where('id', $id)->first();
+
+        if (!$comment) {
+            return response()->json(['error' => 'CommentController::update: Comment with the given id were not found.'], 404);
+        }
+
+        CommentController::validation($request);
+
+        $comment->update($request->all());
+        $userComment = CommentController::getUserComment($comment->id);
 
         $res = [
             'comment' => $userComment,

@@ -45,6 +45,7 @@
 
     <comment-form
         :lecture_id="this.lecture_id"
+        @submit="storeComment"
     ></comment-form>
     <comment-list
         :lecture_id="this.lecture_id"
@@ -113,6 +114,10 @@ export default {
         cancelParticipation() {
             this.$store.dispatch('lecture/cancelParticipation', this.conference_id)
         },
+
+        async storeComment(comment) {
+            this.$store.dispatch('comment/storeComment', comment)
+        }
     }
 }
 </script>

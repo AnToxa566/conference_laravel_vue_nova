@@ -181,8 +181,6 @@ export default {
         },
 
         updateLecture({ commit }, lecture) {
-            console.log(lecture.id)
-
             axios.post(`/api/lectures/${lecture.id}/update`, lecture)
                 .then(res => {
                     if (res.data.status === 'ok') {

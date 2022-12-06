@@ -21,13 +21,8 @@ export default {
         conference(state) {
             return state.conference
         },
-        conferenceById(state) {
-            return id => {
-                const conferencesId = state.conferences.map(conference => conference.id);
-                const index = conferencesId.indexOf(parseInt(id, 10));
-
-                return state.conferences[index];
-            }
+        conferenceById: (state) => (id) => {
+            return state.conferences.find(conference => conference.id === parseInt(id, 10));
         },
 
         conferences(state) {

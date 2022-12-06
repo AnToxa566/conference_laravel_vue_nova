@@ -1,7 +1,6 @@
 import axios from 'axios'
 import store from '../store'
 import router from '../router'
-import { comment } from 'postcss'
 
 export default {
     namespaced: true,
@@ -14,6 +13,13 @@ export default {
         commentsOfLecture(state) {
             return state.commentsOfLecture
         },
+
+        canBeUpdated: (state) => (id) => {
+            const updated_at = state.commentsOfLecture.find(comment => comment.id === parseInt(id, 10)).updated_at;
+            const passedTime = Date.now() - (new Date(updated_at))
+
+            return (passedTime / 60000) < 10
+        },
     },
 
     mutations: {
@@ -22,6 +28,10 @@ export default {
         },
         PUSH_COMMENT (state, value) {
             state.commentsOfLecture.push(value)
+        },
+        UPDATE_COMMENT (state, value) {
+            const index = state.commentsOfLecture.map(comment => comment.id).indexOf(value.id);
+            state.commentsOfLecture.splice(index, 1, value);
         },
     },
 
@@ -42,8 +52,19 @@ export default {
             axios.post('/api/comments/add', comment)
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        console.log(res.data.comment)
                         commit('PUSH_COMMENT', res.data.comment)
+                    }
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+        updateComment({ commit }, comment) {
+            axios.post(`/api/comments/${comment.id}/update`, comment)
+                .then(res => {
+                    if (res.data.status === 'ok') {
+                        commit('UPDATE_COMMENT', res.data.comment)
                     }
                 })
                 .catch(err => {
