@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 /* Comment Routes */
-    Route::get('/comments/{lecture_id}', [CommentController::class, 'fetchByLectureId']);
+    Route::get('/comments/{lecture_id}/limit/{limit}/page/{page}', [CommentController::class, 'fetchByLectureId']);
 
     Route::post('/comments/add', [CommentController::class, 'store']);
     Route::post('/comments/{id}/update', [CommentController::class, 'update']);

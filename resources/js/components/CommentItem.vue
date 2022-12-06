@@ -37,7 +37,6 @@
             @cancel="(this.editMode = false)"
         ></comment-form>
     </div>
-
 </template>
 
 

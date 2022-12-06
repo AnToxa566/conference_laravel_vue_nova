@@ -27,6 +27,13 @@ export default {
             state.commentsOfLecture = value
         },
         PUSH_COMMENT (state, value) {
+            state.commentsOfLecture.unshift(value)
+        },
+        PUSH_COMMENTS (state, comments) {
+            comments.forEach(comment => {
+                state.commentsOfLecture.push(comment)
+            })
+
             state.commentsOfLecture.push(value)
         },
         UPDATE_COMMENT (state, value) {
@@ -36,11 +43,16 @@ export default {
     },
 
     actions: {
-        fetchCommentsOfLecture({ commit }, lecture_id) {
-            axios.get(`/api/comments/${lecture_id}`)
+        fetchMoreCommentsOfLecture({ commit }, query) {
+            axios.get(`/api/comments/${query.lecture_id}/limit/${query.limit}/page/${query.page}`)
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        commit('SET_COMMENTS_OF_LECTURE', res.data.comments)
+                        if (query.page === 1) {
+                            commit('SET_COMMENTS_OF_LECTURE', res.data.comments)
+                        }
+                        else {
+                            commit('PUSH_COMMENTS', res.data.comments)
+                        }
                     }
                 })
                 .catch(err => {

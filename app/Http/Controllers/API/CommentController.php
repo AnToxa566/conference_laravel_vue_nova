@@ -34,11 +34,13 @@ class CommentController extends Controller
     }
 
 
-    public function fetchByLectureId($lecture_id)
+    public function fetchByLectureId($lecture_id, $limit, $page)
     {
         $comments = Comment::where('lecture_id', $lecture_id)
                             ->join('users', 'comments.user_id', '=', 'users.id')
                             ->select('comments.*', 'users.first_name', 'users.last_name')
+                            ->skip($limit * ($page -1))
+                            ->take($limit)
                             ->get();
 
         $res = [
