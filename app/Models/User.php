@@ -52,4 +52,14 @@ class User extends Authenticatable
     public function conferences() {
         return $this->belongsToMany(Conference::class);
     }
+
+    public function lectures()
+    {
+      return $this->hasMany(Lecture::class);
+    }
+
+    public function comments()
+    {
+      return $this->hasMany(Comment::class);
+    }
 }

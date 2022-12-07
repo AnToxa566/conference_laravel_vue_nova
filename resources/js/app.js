@@ -47,6 +47,19 @@ import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
 import 'maz-ui/css/main.css'
 
 
+// Vue Quill (WYSIWYG Redactor)
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
+
+// My Components
+import MyAppBar from './components/UI/MyAppBar.vue'
+import MyHeader from './components/UI/MyHeader.vue'
+import MyInfoCard from './components/UI/MyInfoCard.vue'
+import MyJoinCancelButtons from './components/UI/MyJoinCancelButtons.vue'
+import MyShareButtons from './components/UI/MyShareButtons.vue'
+
+
 // Vue
 import { createApp } from 'vue';
 import App from './App.vue'
@@ -56,7 +69,13 @@ const app = createApp(App)
 
 app
     .component('Datepicker', Datepicker)
+    .component('QuillEditor', QuillEditor)
     .component('MazPhoneNumberInput', MazPhoneNumberInput)
+    .component('MyAppBar', MyAppBar)
+    .component('MyHeader', MyHeader)
+    .component('MyInfoCard', MyInfoCard)
+    .component('MyJoinCancelButtons', MyJoinCancelButtons)
+    .component('MyShareButtons', MyShareButtons)
     .use(vuetify)
     .use(store)
     .use(router)

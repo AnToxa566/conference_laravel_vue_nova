@@ -27,7 +27,7 @@ export default {
 
     computed: {
         isAdmin() {
-            return this.$store.getters['auth/user'].type === 'admin'
+            return this.$store.getters['auth/isAdmin']
         },
     },
 

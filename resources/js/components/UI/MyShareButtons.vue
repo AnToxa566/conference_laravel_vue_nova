@@ -24,6 +24,8 @@
 
 <script>
 export default {
+    name: 'my-share-buttons',
+
     data() {
         return {
             share_url: import.meta.env.VITE_SHARE_URI,

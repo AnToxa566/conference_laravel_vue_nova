@@ -6,32 +6,37 @@ export default {
     namespaced: true,
 
     state: {
-        conference: null,
+        conference: {},
         conferences: [],
-        conferencesPaginatedDate: null,
+        conferencesPaginatedData: {},
 
         countries: [],
         countriesName: [],
 
-        addressPosition: null,
-        formatedAddress: null,
+        addressPosition: '',
+        formatedAddress: '',
     },
 
     getters: {
+        conference(state) {
+            return state.conference
+        },
+        conferenceById: (state) => (id) => {
+            return state.conferences.find(conference => conference.id === parseInt(id, 10));
+        },
+
         conferences(state) {
             return state.conferences
         },
+        conferencesPaginatedData(state) {
+            return state.conferencesPaginatedData
+        },
+
         countries(state) {
             return state.countries
         },
         countriesName(state) {
             return state.countriesName
-        },
-        conference(state) {
-            return state.conference
-        },
-        conferencesPaginatedDate(state) {
-            return state.conferencesPaginatedDate
         },
 
         formatedDateTime(state) {
@@ -40,7 +45,9 @@ export default {
                 const index = conferencesId.indexOf(parseInt(id, 10));
                 const conference = state.conferences[index];
 
-                return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
+                if (index !== -1) {
+                    return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
+                }
             }
         },
 
@@ -56,24 +63,27 @@ export default {
         SET_CONFERENCES (state, value) {
             state.conferences = value
         },
+        SET_CONFERENCE (state, value) {
+            state.conference = value
+        },
+        SET_CONFERENCES_PAGINATED_DATA (state, value) {
+            state.conferencesPaginatedData = value
+        },
+
         SET_COUNTRIES (state, value) {
             state.countries = value
         },
         SET_COUNTRIES_NAME (state, value) {
             state.countriesName = value
         },
-        SET_CONFERENCE (state, value) {
-            state.conference = value
-        },
-        SET_CONFERENCES_PAGINATED_DATE (state, value) {
-            state.conferencesPaginatedDate = value
-        },
+
         SET_ADDRESS_POSITION (state, value) {
             state.addressPosition = value
         },
         SET_FORMATED_ADDRESS (state, value) {
             state.formatedAddress = value
         },
+
         ADD_CONFERENCE (state, value) {
             state.conferences.push(value)
         },
@@ -82,8 +92,11 @@ export default {
             state.conferences.splice(index, 1, value);
         },
         DELETE_CONFERENCE (state, id) {
-            const index = state.conferences.map(conference => conference.id).indexOf(id);
+            let index = state.conferences.map(conference => conference.id).indexOf(id);
             state.conferences.splice(index, 1);
+
+            index = state.conferencesPaginatedData.paginated_conferences.map(conference => conference.id).indexOf(id);
+            state.conferencesPaginatedData.paginated_conferences.splice(index, 1);
         },
     },
 
@@ -112,7 +125,7 @@ export default {
                 paginated_conferences: state.conferences.slice((page - 1) * 15, page * 15)
             }
 
-            commit('SET_CONFERENCES_PAGINATED_DATE', pagination)
+            commit('SET_CONFERENCES_PAGINATED_DATA', pagination)
         },
 
         fetchDetailConference({ commit, dispatch }, id) {
@@ -120,6 +133,7 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CONFERENCE', res.data.conference)
+
                         commit('SET_ADDRESS_POSITION', {
                             'lat': res.data.conference.latitude,
                             'lng': res.data.conference.longitude
@@ -180,7 +194,11 @@ export default {
 
                 const response = await fetch(url)
                 const json = await response.json()
-                const address = await json.results[0].formatted_address
+                let address = 'undefined'
+
+                if (json.status === 'OK') {
+                    address = await json.results[0].formatted_address
+                }
 
                 commit('SET_FORMATED_ADDRESS', address)
             }

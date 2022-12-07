@@ -22,4 +22,9 @@ class Conference extends Model
     public function users() {
         return $this->belongsToMany(User::class);
     }
+
+    public function lectures()
+    {
+      return $this->hasMany(Lecture::class);
+    }
 }

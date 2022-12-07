@@ -3,6 +3,7 @@
 namespace App;
 
 class UserConsts {
-   const LISTENER = 'listener';
-   const ANNOUNCER = 'announcer';
+   const ADMIN = 'Admin';
+   const LISTENER = 'Listener';
+   const ANNOUNCER = 'Announcer';
 }

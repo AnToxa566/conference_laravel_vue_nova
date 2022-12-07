@@ -13,7 +13,7 @@
 
 <script>
 export default {
-
+    name: 'my-info-card',
 }
 </script>
 

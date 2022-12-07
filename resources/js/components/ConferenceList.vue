@@ -1,17 +1,17 @@
 <template>
     <conference-item
-        v-for="conference in conferencesPaginatedDate.paginated_conferences"
+        v-for="conference in conferencesPaginatedData.paginated_conferences"
         :key="conference.id"
         :conference="conference"
         :isJoined="joinedConferencesId.includes(parseInt(conference.id, 10))"
-        :isAdmin="user.type === 'admin'"
+        :isAdmin="user.type === this.adminType"
     >
     </conference-item>
 
     <div class="text-center">
         <v-pagination
             v-model="page"
-            :length="conferencesPaginatedDate.total_pages"
+            :length="conferencesPaginatedData.total_pages"
             @update:modelValue="getResults"
         ></v-pagination>
     </div>
@@ -38,9 +38,12 @@ export default {
         user() {
             return this.$store.getters['auth/user']
         },
+        adminType() {
+            return this.$store.getters['auth/adminType']
+        },
 
-        conferencesPaginatedDate() {
-            return this.$store.getters['conference/conferencesPaginatedDate']
+        conferencesPaginatedData() {
+            return this.$store.getters['conference/conferencesPaginatedData']
         },
 
         joinedConferencesId() {
@@ -48,11 +51,11 @@ export default {
         },
     },
 
-    mounted() {
+    created() {
         this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
 
         if (this.authenticated) {
-            this.$store.dispatch('user_conferences/fetchJoinedConferences', this.user.id)
+            this.$store.dispatch('user_conferences/fetchJoinedConferences')
         }
     },
 

@@ -21,7 +21,10 @@ export default {
     },
 
     mounted() {
+        this.$store.dispatch('auth/initData')
+        this.$store.dispatch('lecture/fetchAllLectures')
         this.$store.dispatch('conference/fetchAllConferences')
+        this.$store.dispatch('user_conferences/fetchJoinedConferences')
     },
 }
 </script>

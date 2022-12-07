@@ -17,7 +17,8 @@
 
             <v-card-actions class="d-flex justify-space-between">
                 <div class="d-flex">
-                    <v-btn variant="tonal" color="white" class="me-2" @click="$router.push(`/conferences/${conference.id}`)"> Details </v-btn>
+                    <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}`)"> Details </v-btn>
+                    <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/lectures`)"> Lectures </v-btn>
 
                     <my-join-cancel-buttons
                         v-if="!isAdmin"
@@ -39,15 +40,7 @@
 </template>
 
 <script>
-import MyShareButtons from '../components/UI/MyShareButtons.vue'
-import MyJoinCancelButtons from '../components/UI/MyJoinCancelButtons.vue'
-
 export default {
-    components: {
-        MyShareButtons,
-        MyJoinCancelButtons,
-    },
-
     props: {
         conference: {
             type: Object,
