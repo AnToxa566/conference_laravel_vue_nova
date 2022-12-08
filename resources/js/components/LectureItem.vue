@@ -89,20 +89,16 @@ export default {
         },
 
         isFavourite() {
-            return this.$store.getters['favorite/isLectureFavorited'](this.lecture.id)
+            return this.$store.getters['favorite/isLectureFavoritedById'](this.lecture.id)
         },
     },
 
     methods: {
         addLectureToFavorites() {
-            console.log('add')
-
             this.$store.dispatch('favorite/addLectureToFavorite', this.lecture.id)
         },
 
         removeLectureFromFavorites() {
-            console.log('remove')
-
             this.$store.dispatch('favorite/removeLectureFromFavorite', this.lecture.id)
         },
     },

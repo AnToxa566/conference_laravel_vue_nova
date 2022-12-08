@@ -53,10 +53,6 @@ export default {
 
     created() {
         this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
-
-        if (this.authenticated) {
-            this.$store.dispatch('user_conferences/fetchJoinedConferences')
-        }
     },
 
     methods: {

@@ -4,7 +4,7 @@
     </my-header>
 
     <lecture-list
-        :conference_id="this.conference_id"
+        :lectures="this.lecturesOfConference"
     ></lecture-list>
 </template>
 
@@ -17,14 +17,18 @@ export default {
         LectureList,
     },
 
-    data() {
-        return {
-            conference_id: null,
-        };
-    },
+    data: () => ({
+        conferenceId: null,
+    }),
 
     created() {
-        this.conference_id = parseInt(this.$route.params.conference_id, 10);
+        this.conferenceId = parseInt(this.$route.params.conference_id, 10);
+    },
+
+    computed: {
+        lecturesOfConference() {
+            return this.$store.getters['lecture/lectures'].filter(lecture => parseInt(lecture.conference_id, 10) === this.conferenceId)
+        },
     },
 }
 </script>

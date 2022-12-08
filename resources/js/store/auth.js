@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store'
 import router from '../router'
 import userTypes from '../config/user_types'
 
@@ -77,6 +78,9 @@ export default {
                     if (res.data.status === 'ok') {
                         commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
+
+                        store.dispatch('favorite/fetchFavoritedLecturesId')
+                        store.dispatch('user_conferences/fetchJoinedConferences')
 
                         router.push({ name: 'conferences' })
                     }

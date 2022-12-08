@@ -1,13 +1,13 @@
 <template>
     <lecture-item
-        v-for="lecture in lecturesOfConference"
+        v-for="lecture in this.lectures"
         :key="lecture.id"
         :lecture="lecture"
     >
     </lecture-item>
 
     <div
-        v-if="!lecturesOfConference.length"
+        v-if="!this.lectures.length"
         class="text-h6 font-weight-medium text-center"
     >
         Lectures not added yet :(
@@ -24,25 +24,11 @@ export default {
     },
 
     props: {
-        conference_id: {
-            type: Number,
+        lectures: {
+            type: Array,
             required: true,
-        },
-    },
-
-    created() {
-        this.$store.dispatch('favorite/fetchFavoritedLecturesId')
-    },
-
-    computed: {
-        lecturesOfConference() {
-            return this.$store.getters['lecture/lectures'].filter(lecture => parseInt(lecture.conference_id, 10) === this.conference_id)
+            default: [],
         },
     },
 }
 </script>
-
-
-<style scoped>
-
-</style>

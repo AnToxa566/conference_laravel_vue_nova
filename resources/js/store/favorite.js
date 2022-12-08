@@ -13,7 +13,11 @@ export default {
             return state.favoritedLecturesId
         },
 
-        isLectureFavorited: (state) => (lectureId) => {
+        hasFavoritedLectures(state) {
+            return state.favoritedLecturesId.length > 0
+        },
+
+        isLectureFavoritedById: (state) => (lectureId) => {
             return state.favoritedLecturesId.includes(lectureId)
         },
     },
@@ -47,11 +51,8 @@ export default {
         },
 
         addLectureToFavorite({ commit }, lectureId) {
-            console.log('lectureId ' + lectureId + ' userId ' + store.state.auth.user.id)
-
             axios.get(`/api/lectures/favorite/add/${store.state.auth.user.id}/${lectureId}`)
                 .then(res => {
-                    console.log(res.data)
                     if (res.data.status === 'ok') {
                         commit('PUSH_FAVORITE_LECTURE_ID', lectureId)
                     }

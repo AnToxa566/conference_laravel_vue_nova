@@ -2,9 +2,9 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '../store'
 
 
-/* Guest Components */
+/* Error Components */
 const NotFound = () => import('../views/NotFound.vue')
-/* Guest Components */
+/* Error Components */
 
 
 /* Guest Components */
@@ -22,6 +22,8 @@ const ConferenceAdd = () => import('../views/ConferenceAdd.vue')
 const Lectures = () => import('../views/Lectures.vue')
 const LectureShow = () => import('../views/LectureShow.vue')
 const LectureEdit = () => import('../views/LectureEdit.vue')
+
+const FavoriteLectures = () => import('../views/FavoriteLectures.vue')
 /* Authenticated Components */
 
 
@@ -133,6 +135,19 @@ const router = createRouter({
             meta: {
                 middleware: "auth",
                 title: `Edit lecture`
+            }
+        },
+        /* Lecture Components */
+
+
+        /* Lecture Components */
+        {
+            path: '/favorite',
+            name: 'favorite',
+            component: FavoriteLectures,
+            meta: {
+                middleware: "auth",
+                title: `Favorite Lectures`
             }
         },
         /* Lecture Components */
