@@ -15,6 +15,8 @@ const Conferences = () => import('../views/Conferences.vue')
 
 
 /* Authenticated Components */
+const UserProfile = () => import('../views/UserProfile.vue')
+
 const ConferenceShow = () => import('../views/ConferenceShow.vue')
 const ConferenceEdit = () => import('../views/ConferenceEdit.vue')
 const ConferenceAdd = () => import('../views/ConferenceAdd.vue')
@@ -67,6 +69,19 @@ const router = createRouter({
             }
         },
         /* Auth Components */
+
+
+        /* User Components */
+        {
+            name: "profile",
+            path: "/profile",
+            component: UserProfile,
+            meta: {
+                middleware: "auth",
+                title: `Profile`
+            }
+        },
+        /* User Components */
 
 
         /* Conference Components */
@@ -137,10 +152,6 @@ const router = createRouter({
                 title: `Edit lecture`
             }
         },
-        /* Lecture Components */
-
-
-        /* Lecture Components */
         {
             path: '/favorite',
             name: 'favorite',
