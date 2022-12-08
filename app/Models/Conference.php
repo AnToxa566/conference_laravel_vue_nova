@@ -21,7 +21,8 @@ class Conference extends Model
         'country',
     ];
 
-    public function users() {
+    public function users()
+    {
         return $this->belongsToMany(User::class);
     }
 

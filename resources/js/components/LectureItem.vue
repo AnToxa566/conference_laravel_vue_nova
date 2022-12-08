@@ -32,10 +32,18 @@
             </v-btn>
         </v-card-actions>
 
-        <v-card-subtitle>
-            <span class="text-caption">{{ commentsCount + ' comments' }}</span>
-        </v-card-subtitle>
+        <div class="d-flex justify-space-between align-center">
+            <v-card-subtitle>
+                <span class="text-caption">{{ commentsCount + ' comments' }}</span>
+            </v-card-subtitle>
 
+            <custom-favorites
+                :isFavourite="this.isFavourite"
+                @add="addLectureToFavorites"
+                @remove="removeLectureFromFavorites"
+            >
+            </custom-favorites>
+        </div>
     </v-card>
 </template>
 
@@ -78,6 +86,24 @@ export default {
 
         commentsCount() {
             return this.$store.getters['lecture/commentsCounts'].find(counts => parseInt(counts.lecture_id, 10) === this.lecture.id).comments_count
+        },
+
+        isFavourite() {
+            return this.$store.getters['favorite/isLectureFavorited'](this.lecture.id)
+        },
+    },
+
+    methods: {
+        addLectureToFavorites() {
+            console.log('add')
+
+            this.$store.dispatch('favorite/addLectureToFavorite', this.lecture.id)
+        },
+
+        removeLectureFromFavorites() {
+            console.log('remove')
+
+            this.$store.dispatch('favorite/removeLectureFromFavorite', this.lecture.id)
         },
     },
 }

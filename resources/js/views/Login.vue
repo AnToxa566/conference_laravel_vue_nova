@@ -107,7 +107,6 @@ export default {
 
             if (valid) {
                 axios.get("/sanctum/csrf-cookie").then(response => {
-                    console.log(response);
                     this.$store.dispatch('auth/login', user)
                 });
             }

@@ -116,9 +116,9 @@ class LectureController extends Controller
     }
 
 
-    public function destroy($user_id, $conference_id)
+    public function destroy($userId, $conferenceId)
     {
-        $lecture = Lecture::where('conference_id', $conference_id)->where('user_id', $user_id)->first();
+        $lecture = Lecture::where('conference_id', $conferenceId)->where('user_id', $userId)->first();
 
         if (!$lecture) {
             return response()->json(['error' => 'LectureController::destroy: Lecture with the given id were not found.'], 401);

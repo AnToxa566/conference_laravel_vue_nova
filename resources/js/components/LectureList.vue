@@ -30,6 +30,10 @@ export default {
         },
     },
 
+    created() {
+        this.$store.dispatch('favorite/fetchFavoritedLecturesId')
+    },
+
     computed: {
         lecturesOfConference() {
             return this.$store.getters['lecture/lectures'].filter(lecture => parseInt(lecture.conference_id, 10) === this.conference_id)

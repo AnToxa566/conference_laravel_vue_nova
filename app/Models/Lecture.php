@@ -24,6 +24,11 @@ class Lecture extends Model
         'presentation_path',
     ];
 
+    public function followingUsers()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
     public function user()
     {
       return $this->belongsTo(User::class);

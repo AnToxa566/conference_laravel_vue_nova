@@ -21,6 +21,7 @@ export default {
         lectures(state) {
             return state.lectures
         },
+
         commentsCounts(state) {
             return state.commentsCounts
         },
@@ -130,9 +131,11 @@ export default {
         SET_LECTURE (state, value) {
             state.lecture = value
         },
+
         SET_LECTURES (state, value) {
             state.lectures = value
         },
+
         SET_COMMENTS_COUNTS (state, lectures) {
             state.commentsCounts = []
 
@@ -147,10 +150,12 @@ export default {
         PUSH_LECTURE (state, value) {
             state.lectures.push(value)
         },
+
         UPDATE_LECTURE (state, value) {
             const index = state.lectures.map(lecture => lecture.id).indexOf(value.id);
             state.lectures.splice(index, 1, value);
         },
+
         REMOVE_LECTURE (state, id) {
             let index = state.lectures.map(lecture => lecture.id).indexOf(id);
             state.lectures.splice(index, 1);

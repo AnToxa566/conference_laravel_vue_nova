@@ -53,6 +53,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 
 // My Components
+import CustomFavorites from './components/UI/CustomFavorites.vue'
 import MyAppBar from './components/UI/MyAppBar.vue'
 import MyHeader from './components/UI/MyHeader.vue'
 import MyInfoCard from './components/UI/MyInfoCard.vue'
@@ -71,6 +72,7 @@ app
     .component('Datepicker', Datepicker)
     .component('QuillEditor', QuillEditor)
     .component('MazPhoneNumberInput', MazPhoneNumberInput)
+    .component('CustomFavorites', CustomFavorites)
     .component('MyAppBar', MyAppBar)
     .component('MyHeader', MyHeader)
     .component('MyInfoCard', MyInfoCard)

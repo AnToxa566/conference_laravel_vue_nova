@@ -8,6 +8,7 @@ use App\Http\Controllers\API\LectureController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\ConferenceController;
 use App\Http\Controllers\API\UserConferenceController;
+use App\Http\Controllers\API\UserLectureController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::post('/lectures/{id}/update', [LectureController::class, 'update']);
     Route::get('/lectures/delete/{user_id}/{conference_id}', [LectureController::class, 'destroy']);
 /* Lecture Routes */
+
+
+/* User Lectures Routes */
+    Route::get('/lectures/favorited/{user_id}', [UserLectureController::class, 'fetchFavoriteLectures']);
+
+    Route::get('/lectures/favorite/add/{user_id}/{lecture_id}', [UserLectureController::class, 'addFavoriteLecture']);
+    Route::get('/lectures/favorite/remove/{user_id}/{lecture_id}', [UserLectureController::class, 'removeFavoriteLecture']);
+/* User Lectures Routes */
 
 
 /* Comment Routes */
