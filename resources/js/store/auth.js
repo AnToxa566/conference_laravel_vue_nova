@@ -77,6 +77,7 @@ export default {
                     if (res.data.status === 'ok') {
                         commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
+
                         router.push({ name: 'conferences' })
                     }
                 })
@@ -84,10 +85,10 @@ export default {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    console.log(err.response.data.error)
-
                     commit('SET_AUTH_ERRORS', err.response.data.error)
                     commit('SET_HAS_AUTH_ERRORS', true)
+
+                    console.log(err.response.data.error)
                 })
         },
 
@@ -98,6 +99,7 @@ export default {
                         commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
                         commit('SET_REGISTER_ERRORS', {})
+
                         router.push({ name: 'conferences' })
                     }
                 })
@@ -116,6 +118,7 @@ export default {
                     if (res.data === 'ok') {
                         commit('SET_USER', {})
                         commit('SET_AUTHENTICATED', false)
+
                         router.push({ name: 'conferences' })
                     }
                 })

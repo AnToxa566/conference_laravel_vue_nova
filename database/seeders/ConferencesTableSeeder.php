@@ -20,8 +20,7 @@ class ConferencesTableSeeder extends Seeder
     {
         $conferences = array();
 
-        foreach (range(1, 50) as $i)
-        {
+        foreach (range(1, 50) as $i) {
             array_push($conferences, [
                 'title' => 'Conference #' . $i,
                 'date_time_event' => date('Y-m-d H:i'),

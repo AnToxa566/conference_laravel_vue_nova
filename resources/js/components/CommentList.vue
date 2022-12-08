@@ -80,7 +80,6 @@ export default {
                 })
 
                 if (result.data.comments.length) {
-                    //this.comments.push(...result.data.comments)
                     this.page++
                 }
             } catch(err) {

@@ -27,18 +27,18 @@ class CommentController extends Controller
     }
 
 
-    protected function getUserComment($comment_id)
+    protected function getUserComment($commentId)
     {
         return Comment::join('users', 'comments.user_id', '=', 'users.id')
                                 ->select('comments.*', 'users.first_name', 'users.last_name')
-                                ->where('comments.id', $comment_id)
+                                ->where('comments.id', $commentId)
                                 ->first();
     }
 
 
-    public function fetchByLectureId($lecture_id, $limit, $page)
+    public function fetchByLectureId($lectureId, $limit, $page)
     {
-        $comments = Comment::where('lecture_id', $lecture_id)
+        $comments = Comment::where('lecture_id', $lectureId)
                             ->join('users', 'comments.user_id', '=', 'users.id')
                             ->select('comments.*', 'users.first_name', 'users.last_name')
                             ->skip($limit * ($page -1))

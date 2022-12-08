@@ -26,12 +26,10 @@
 export default {
     name: 'my-share-buttons',
 
-    data() {
-        return {
-            share_url: import.meta.env.VITE_SHARE_URI,
-            share_text: import.meta.env.VITE_SHARE_TEXT,
-        }
-    },
+    data: () => ({
+        share_url: import.meta.env.VITE_SHARE_URI,
+        share_text: import.meta.env.VITE_SHARE_TEXT,
+    })
 }
 </script>
 

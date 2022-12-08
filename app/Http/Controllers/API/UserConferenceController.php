@@ -12,23 +12,23 @@ use App\Models\Conference;
 
 class UserConferenceController extends Controller
 {
-    public function fetchJoinedConferences($user_id)
+    public function fetchJoinedConferences($userId)
     {
-        $conferences = User::find($user_id)->conferences()->get()->toArray();
-        $conferences_id = array_column($conferences, 'id');
+        $conferences = User::find($userId)->conferences()->get()->toArray();
+        $conferencesId = array_column($conferences, 'id');
 
         $res = [
-            'conferences_id' => $conferences_id,
+            'conferences_id' => $conferencesId,
             'status' => 'ok',
         ];
 
         return response()->json($res, 201);
     }
 
-    public function joinConference($user_id, $conference_id)
+    public function joinConference($userId, $conferenceId)
     {
-        $user = User::find($user_id);
-        $conference = Conference::find($conference_id);
+        $user = User::find($userId);
+        $conference = Conference::find($conferenceId);
 
         $user->conferences()->attach($conference);
 
@@ -40,10 +40,10 @@ class UserConferenceController extends Controller
     }
 
 
-    public function cancelParticipation($user_id, $conference_id)
+    public function cancelParticipation($userId, $conferenceId)
     {
-        $user = User::find($user_id);
-        $conference = Conference::find($conference_id);
+        $user = User::find($userId);
+        $conference = Conference::find($conferenceId);
 
         $user->conferences()->detach($conference);
 
