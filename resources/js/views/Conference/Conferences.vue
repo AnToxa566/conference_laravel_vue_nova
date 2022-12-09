@@ -7,12 +7,12 @@
 </template>
 
 <script>
-import ConferenceList from '../components/ConferenceList.vue'
+import ConferenceList from '../../components/Conference/ConferenceList.vue'
 
 export default {
-  components: {
-    ConferenceList,
-},
+    components: {
+        ConferenceList,
+    },
 }
 </script>
 

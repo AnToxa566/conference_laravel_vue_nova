@@ -54,8 +54,8 @@
 
 
 <script>
-import CommentForm from '../components/CommentForm.vue'
-import CommentList from '../components/CommentList.vue'
+import CommentForm from '../../components/Comment/CommentForm.vue'
+import CommentList from '../../components/Comment/CommentList.vue'
 import moment from 'moment'
 
 export default {

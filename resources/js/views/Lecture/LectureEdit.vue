@@ -22,7 +22,7 @@
 
 
 <script>
-import LectureForm from '../components/LectureForm.vue'
+import LectureForm from '../../components/Lecture/LectureForm.vue'
 
 export default {
     components: {

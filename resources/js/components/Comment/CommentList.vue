@@ -27,7 +27,6 @@ export default {
     },
 
     data: () => ({
-        //comments: [],
         page: 1,
         limit: 5,
     }),

@@ -3,29 +3,29 @@ import store from '../store'
 
 
 /* Error Components */
-const NotFound = () => import('../views/NotFound.vue')
+const NotFound = () => import('../views/ErrorPages/NotFound.vue')
 /* Error Components */
 
 
 /* Guest Components */
-const Login = () => import('../views/Login.vue')
-const Register = () => import('../views/Register.vue')
-const Conferences = () => import('../views/Conferences.vue')
+const Login = () => import('../views/Auth/Login.vue')
+const Register = () => import('../views/Auth/Register.vue')
+const Conferences = () => import('../views/Conference/Conferences.vue')
 /* Guest Components */
 
 
 /* Authenticated Components */
-const UserProfile = () => import('../views/UserProfile.vue')
+const UserProfile = () => import('../views/User/UserProfile.vue')
 
-const ConferenceShow = () => import('../views/ConferenceShow.vue')
-const ConferenceEdit = () => import('../views/ConferenceEdit.vue')
-const ConferenceAdd = () => import('../views/ConferenceAdd.vue')
+const ConferenceShow = () => import('../views/Conference/ConferenceShow.vue')
+const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
+const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
 
-const Lectures = () => import('../views/Lectures.vue')
-const LectureShow = () => import('../views/LectureShow.vue')
-const LectureEdit = () => import('../views/LectureEdit.vue')
+const Lectures = () => import('../views/Lecture/Lectures.vue')
+const LectureShow = () => import('../views/Lecture/LectureShow.vue')
+const LectureEdit = () => import('../views/Lecture/LectureEdit.vue')
 
-const FavoriteLectures = () => import('../views/FavoriteLectures.vue')
+const FavoriteLectures = () => import('../views/Lecture/FavoriteLectures.vue')
 /* Authenticated Components */
 
 

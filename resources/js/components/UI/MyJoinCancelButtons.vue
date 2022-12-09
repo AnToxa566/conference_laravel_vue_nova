@@ -23,7 +23,7 @@
 
 
 <script>
-import LectureFormDialog from '../LectureFormDialog.vue'
+import LectureFormDialog from '../Lecture/LectureFormDialog.vue'
 import userTypes from '../../config/user_types'
 
 export default {

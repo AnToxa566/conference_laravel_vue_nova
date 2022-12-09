@@ -10,7 +10,7 @@
 
 
 <script>
-import LectureList from '../components/LectureList.vue'
+import LectureList from '../../components/Lecture/LectureList.vue'
 
 export default {
     components: {
