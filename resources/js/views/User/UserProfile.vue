@@ -42,8 +42,6 @@ export default {
 
     methods: {
         async updateUser(user) {
-            console.log(user)
-
             axios.get("/sanctum/csrf-cookie").then(response => {
                 this.$store.dispatch('auth/update', user)
             })

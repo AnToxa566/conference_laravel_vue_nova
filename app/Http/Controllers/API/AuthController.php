@@ -102,6 +102,8 @@ class AuthController extends Controller
         }
 
         $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
+
         $user->update($input);
 
         $res = [
