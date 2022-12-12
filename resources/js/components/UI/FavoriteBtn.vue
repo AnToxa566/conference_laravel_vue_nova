@@ -10,7 +10,7 @@
 
 <script>
 export default {
-    name: 'custom-favorites',
+    name: 'favorite-btn',
 
     data: () => ({
         heartOutline: 'mdi-cards-heart-outline',
@@ -41,8 +41,3 @@ export default {
     },
 }
 </script>
-
-
-<style lang="">
-
-</style>

@@ -37,12 +37,12 @@
                 <span class="text-caption">{{ commentsCount + ' comments' }}</span>
             </v-card-subtitle>
 
-            <custom-favorites
+            <favorite-btn
                 :isFavourite="this.isFavourite"
                 @add="addLectureToFavorites"
                 @remove="removeLectureFromFavorites"
             >
-            </custom-favorites>
+            </favorite-btn>
         </div>
     </v-card>
 </template>

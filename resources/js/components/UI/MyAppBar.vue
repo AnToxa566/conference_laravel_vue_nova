@@ -33,7 +33,9 @@
                         </template>
 
                         <v-list>
-                            <v-list-subheader>
+                            <v-list-subheader
+                                class="font-weight-bold text-white"
+                            >
                                 {{ this.getUserFullName }}
                             </v-list-subheader>
 

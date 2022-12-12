@@ -27,7 +27,8 @@ class AdminSeeder extends Seeder
             'type' => UserConsts::ADMIN,
             'country' => 'Ukraine',
             'email' => 'admin@groupbwt.com',
-            'phone_number' => '+38 (099) 112-4364',
+            'phone_number' => '+380991124364',
+            'country_phone_code' => 'UA',
             'password' => Hash::make('12345678'),
         ];
 

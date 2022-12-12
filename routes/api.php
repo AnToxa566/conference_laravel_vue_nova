@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /* Auth Routes */
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/profile/update', [AuthController::class, 'update']);
+
     Route::get('/logout', [AuthController::class, 'logout']);
 /* Auth Routes */
 

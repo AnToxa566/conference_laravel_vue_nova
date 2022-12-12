@@ -66,22 +66,23 @@
 
                         <!-- Country -->
 
-                        <v-autocomplete
+                        <country-selected
                             v-model="user.country"
-                            :items="countries"
                             :rules="[v => !!v || 'Country is required!']"
-                            variant="solo"
-                            label="Country"
-                            required
-                        ></v-autocomplete>
+                        >
+                        </country-selected>
 
                         <!-- Phone number -->
 
                         <MazPhoneNumberInput
                             v-model="user.phone_number"
+                            :default-country-code="this.user.country_phone_code"
+
                             :preferred-countries="['UA']"
-                            @update="phone_results = $event"
                             :success="phone_results?.isValid"
+
+                            @update="phone_results = $event"
+                            @country-code="countryCodeChange"
                         />
 
                         <!-- User type -->
@@ -182,17 +183,19 @@ export default {
         phone_results: null,
 
         user: {
-            first_name: "",
-            last_name: "",
-            birthdate: "",
-            phone_number: "",
+            first_name: '',
+            last_name: '',
+            birthdate: '',
+
+            phone_number: '',
+            country_phone_code: '',
 
             country: null,
             type: null,
 
-            email: "",
-            password: "",
-            password_confirmation: "",
+            email: '',
+            password: '',
+            password_confirmation: '',
         },
 
         countries: [],
@@ -215,6 +218,7 @@ export default {
         this.$store.dispatch('auth/removeAuthErrors')
 
         this.countries = this.$store.getters['conference/countriesName']
+        this.user.country_phone_code ='UA'
     },
 
     methods: {
@@ -243,6 +247,10 @@ export default {
                 let message = document.getElementById("message__wrapper")
                 message.classList.add("hidden__message")
             }
+        },
+
+        countryCodeChange(event) {
+            this.user.country_phone_code = event
         },
 
         async register(user) {

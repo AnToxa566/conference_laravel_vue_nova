@@ -52,13 +52,21 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 
-// My Components
-import CustomFavorites from './components/UI/CustomFavorites.vue'
+// My UI Components
 import MyAppBar from './components/UI/MyAppBar.vue'
 import MyHeader from './components/UI/MyHeader.vue'
 import MyInfoCard from './components/UI/MyInfoCard.vue'
 import MyJoinCancelButtons from './components/UI/MyJoinCancelButtons.vue'
 import MyShareButtons from './components/UI/MyShareButtons.vue'
+import FavoriteBtn from './components/UI/FavoriteBtn.vue'
+
+
+// My Form Components
+import CustomErrorAlert from './components/UI/CustomErrorAlert.vue'
+import CustomInput from './components/FormComponents/CustomInput.vue'
+import CustomPhoneNumberInput from './components/FormComponents/CustomPhoneNumberInput.vue'
+import CustomDatepicker from './components/FormComponents/CustomDatepicker.vue'
+import CountrySelected from './components/FormComponents/CountrySelected.vue'
 
 
 // Vue
@@ -72,18 +80,28 @@ app
     .component('Datepicker', Datepicker)
     .component('QuillEditor', QuillEditor)
     .component('MazPhoneNumberInput', MazPhoneNumberInput)
-    .component('CustomFavorites', CustomFavorites)
+
+    .component('FavoriteBtn', FavoriteBtn)
+    .component('CustomInput', CustomInput)
+    .component('CustomErrorAlert', CustomErrorAlert)
+    .component('CustomDatepicker', CustomDatepicker)
+    .component('CustomPhoneNumberInput', CustomPhoneNumberInput)
+    .component('CountrySelected', CountrySelected)
+
     .component('MyAppBar', MyAppBar)
     .component('MyHeader', MyHeader)
     .component('MyInfoCard', MyInfoCard)
     .component('MyJoinCancelButtons', MyJoinCancelButtons)
     .component('MyShareButtons', MyShareButtons)
+
     .use(vuetify)
     .use(store)
     .use(router)
     .use(VueSocialSharing)
+
     .use(VueGoogleMaps, {
         load: {
             key: import.meta.env.VITE_PUSHER_GOOGLE_MAPS_API_KEY,
         },
+
     }).mount('#app')

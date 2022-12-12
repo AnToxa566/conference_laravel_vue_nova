@@ -102,7 +102,10 @@ export default {
                     if (res.data.status === 'ok') {
                         commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
-                        commit('SET_REGISTER_ERRORS', {})
+                        commit('SET_AUTH_ERRORS', {})
+
+                        store.dispatch('favorite/fetchFavoritedLecturesId')
+                        store.dispatch('user_conferences/fetchJoinedConferences')
 
                         router.push({ name: 'conferences' })
                     }
@@ -110,6 +113,26 @@ export default {
                 .catch(err => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
+
+                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_HAS_AUTH_ERRORS', true)
+                })
+        },
+
+        update({ commit }, user) {
+            axios.post('/api/profile/update', user)
+                .then(res => {
+                    if (res.data.status === 'ok') {
+                        console.log('save update')
+
+                        commit('SET_USER', res.data.user)
+                        commit('SET_AUTH_ERRORS', {})
+
+                        router.push({ name: 'conferences' })
+                    }
+                })
+                .catch(err => {
+                    console.log('error update')
 
                     commit('SET_AUTH_ERRORS', err.response.data.error)
                     commit('SET_HAS_AUTH_ERRORS', true)
