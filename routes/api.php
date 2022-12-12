@@ -9,6 +9,7 @@ use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\ConferenceController;
 use App\Http\Controllers\API\UserConferenceController;
 use App\Http\Controllers\API\UserLectureController;
+use App\Http\Controllers\API\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,3 +79,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::post('/comments/add', [CommentController::class, 'store']);
     Route::post('/comments/{id}/update', [CommentController::class, 'update']);
 /* Comment Routes */
+
+
+/* Category Routes */
+    Route::get('/category', [CategoryController::class, 'fetchAll']);
+/* Category Routes */

@@ -72,15 +72,22 @@ export default {
             commit('SET_ADMIN_TYPE', userTypes.ADMIN)
         },
 
-        login({ commit }, user) {
+        fetchUserData() {
+            store.dispatch('favorite/fetchFavoritedLecturesId')
+            store.dispatch('user_conferences/fetchJoinedConferences')
+        },
+
+        login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_USER', res.data.user)
                         commit('SET_AUTHENTICATED', true)
 
-                        store.dispatch('favorite/fetchFavoritedLecturesId')
-                        store.dispatch('user_conferences/fetchJoinedConferences')
+                        // store.dispatch('favorite/fetchFavoritedLecturesId')
+                        // store.dispatch('user_conferences/fetchJoinedConferences')
+
+                        dispatch('fetchUserData')
 
                         router.push({ name: 'conferences' })
                     }
@@ -96,7 +103,7 @@ export default {
                 })
         },
 
-        register({ commit }, user) {
+        register({ commit, dispatch }, user) {
             axios.post('/api/register', user)
                 .then(res => {
                     if (res.data.status === 'ok') {
@@ -104,8 +111,10 @@ export default {
                         commit('SET_AUTHENTICATED', true)
                         commit('SET_AUTH_ERRORS', {})
 
-                        store.dispatch('favorite/fetchFavoritedLecturesId')
-                        store.dispatch('user_conferences/fetchJoinedConferences')
+                        // store.dispatch('favorite/fetchFavoritedLecturesId')
+                        // store.dispatch('user_conferences/fetchJoinedConferences')
+
+                        dispatch('fetchUserData')
 
                         router.push({ name: 'conferences' })
                     }
@@ -123,8 +132,6 @@ export default {
             axios.post('/api/profile/update', user)
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        console.log('save update')
-
                         commit('SET_USER', res.data.user)
                         commit('SET_AUTH_ERRORS', {})
 
@@ -132,8 +139,6 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log('error update')
-
                     commit('SET_AUTH_ERRORS', err.response.data.error)
                     commit('SET_HAS_AUTH_ERRORS', true)
                 })

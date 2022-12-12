@@ -42,10 +42,19 @@
                             <v-list-item
                                 v-if="this.isAdmin"
                                 value="true"
-                                prepend-icon="mdi-plus"
+                                prepend-icon="mdi-monitor-account"
                                 @click="this.$router.push('/conferences/add')"
                             >
                                 Add conference
+                            </v-list-item>
+
+                            <v-list-item
+                                v-if="this.isAdmin"
+                                value="true"
+                                prepend-icon="mdi-tag-outline"
+                                @click="this.$router.push('/categories')"
+                            >
+                                Categories
                             </v-list-item>
 
                             <v-list-item

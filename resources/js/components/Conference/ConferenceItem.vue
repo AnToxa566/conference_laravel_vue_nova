@@ -17,8 +17,10 @@
 
             <v-card-actions class="d-flex justify-space-between">
                 <div class="d-flex">
-                    <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}`)"> Details </v-btn>
-                    <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/lectures`)"> Lectures </v-btn>
+                    <div v-if="!isAdmin">
+                        <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}`)"> Details </v-btn>
+                        <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/lectures`)"> Lectures </v-btn>
+                    </div>
 
                     <my-join-cancel-buttons
                         v-if="!isAdmin"
@@ -26,8 +28,8 @@
                         :conferenceId="this.conference.id"
                     ></my-join-cancel-buttons>
                     <div v-else>
-                        <v-btn variant="tonal" color="white" @click="$router.push(`/conferences/${conference.id}/edit`)"> Update </v-btn>
-                        <v-btn variant="tonal" color="red" @click="this.delete"> Delete </v-btn>
+                        <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/edit`)"> Update </v-btn>
+                        <v-btn variant="text" color="red" class="mx-1" @click="this.delete"> Delete </v-btn>
                     </div>
                 </div>
 

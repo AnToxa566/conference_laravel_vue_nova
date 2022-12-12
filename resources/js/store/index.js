@@ -4,6 +4,7 @@ import auth from './auth'
 import comment from './comment'
 import lecture from './lecture'
 import favorite from './favorite'
+import category from './category'
 import conference from './conference'
 import user_conferences from './user_conferences'
 
@@ -16,6 +17,7 @@ const store = createStore({
         lecture,
         comment,
         favorite,
+        category,
         conference,
         user_conferences,
     }

@@ -7,6 +7,13 @@ const NotFound = () => import('../views/ErrorPages/NotFound.vue')
 /* Error Components */
 
 
+/* Admin Components */
+const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
+const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
+const Categories = () => import('../views/Category/Categories.vue')
+/* Admin Components */
+
+
 /* Guest Components */
 const Login = () => import('../views/Auth/Login.vue')
 const Register = () => import('../views/Auth/Register.vue')
@@ -18,8 +25,6 @@ const Conferences = () => import('../views/Conference/Conferences.vue')
 const UserProfile = () => import('../views/User/UserProfile.vue')
 
 const ConferenceShow = () => import('../views/Conference/ConferenceShow.vue')
-const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
-const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
 
 const Lectures = () => import('../views/Lecture/Lectures.vue')
 const LectureShow = () => import('../views/Lecture/LectureShow.vue')
@@ -108,7 +113,7 @@ const router = createRouter({
             name: 'conferenceAdd',
             component: ConferenceAdd,
             meta: {
-                middleware: "auth",
+                middleware: "admin",
                 title: `Add conference`
             }
         },
@@ -117,7 +122,7 @@ const router = createRouter({
             name: 'conferenceEdit',
             component: ConferenceEdit,
             meta: {
-                middleware: "auth",
+                middleware: "admin",
                 title: `Edit conference`
             }
         },
@@ -162,6 +167,19 @@ const router = createRouter({
             }
         },
         /* Lecture Components */
+
+
+        /* Category Components */
+        {
+            path: '/categories',
+            name: 'categories',
+            component: Categories,
+            meta: {
+                middleware: "admin",
+                title: `Categories`
+            }
+        },
+        /* Category Components */
     ]
 })
 
@@ -175,6 +193,14 @@ router.beforeEach((to, from, next) => {
         }
         else {
             next({ name: "login" })
+        }
+    }
+    else if (to.meta.middleware === "admin") {
+        if (store.getters['auth/isAdmin']) {
+            next()
+        }
+        else {
+            next({ name: "404" })
         }
     }
     else {

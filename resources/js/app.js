@@ -52,6 +52,11 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 
+// Vue Treeview
+import Tree from "vue3-treeview";
+import "vue3-treeview/dist/style.css";
+
+
 // My UI Components
 import MyAppBar from './components/UI/MyAppBar.vue'
 import MyHeader from './components/UI/MyHeader.vue'
@@ -77,6 +82,7 @@ import App from './App.vue'
 const app = createApp(App)
 
 app
+    .component('Tree', Tree)
     .component('Datepicker', Datepicker)
     .component('QuillEditor', QuillEditor)
     .component('MazPhoneNumberInput', MazPhoneNumberInput)
