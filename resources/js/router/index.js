@@ -10,6 +10,7 @@ const NotFound = () => import('../views/ErrorPages/NotFound.vue')
 /* Admin Components */
 const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
 const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
+
 const Categories = () => import('../views/Category/Categories.vue')
 /* Admin Components */
 

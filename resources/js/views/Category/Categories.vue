@@ -4,21 +4,41 @@
     </my-header>
 
     <category-tree
-        :roots="this.roots"
-        :nodes="this.nodes"
+        :storeRoots="this.roots"
+        :storeNodes="this.storeNodes"
+
+        @addClick="onAddClick"
+        @removeClick="onRemoveClick"
     >
     </category-tree>
 
-    <v-btn variant="tonal" color="white" @click="$router.go(-1)"> Create category </v-btn>
+    <category-add-dialog
+        v-model:showDialog="showDialog"
+        @saveData="addCategory"
+    >
+    </category-add-dialog>
 </template>
 
 
 <script>
 import CategoryTree from '../../components/Category/CategoryTree.vue'
+import CategoryAddDialog from '../../components/Category/CategoryAddDialog.vue'
 
 export default {
     components: {
         CategoryTree,
+        CategoryAddDialog,
+    },
+
+    data: () => ({
+        storeNodes: {},
+
+        showDialog: false,
+        parentNode: null,
+    }),
+
+    created() {
+        this.storeNodes = Object.assign({}, this.nodes)
     },
 
     computed: {
@@ -27,33 +47,26 @@ export default {
         },
 
         nodes() {
-            const categories = this.$store.getters['category/categories']
-            const subcategories = this.$store.getters['category/subcategories']
-
-            const nodes = {}
-
-            categories.forEach(category => {
-                const subcategoriesOfCategory = subcategories.find(subcategory => subcategory.category_id === category.id)
-                let categoryChildren = []
-                let categoryChildrenId = []
-
-                if (subcategoriesOfCategory) {
-                    categoryChildren = subcategoriesOfCategory['children']
-                }
-
-
-                if (categoryChildren.length !== 0) {
-                    categoryChildrenId = categoryChildren.map(child => String(child.id))
-                }
-
-                nodes[category.id] = {
-                    text: category.title,
-                    children: categoryChildrenId,
-                }
-            });
-
-            return nodes
+            return this.$store.getters['category/getNodes']
         },
+    },
+
+    methods: {
+        onAddClick(event) {
+            this.showDialog = true
+            this.parentNode = event
+        },
+
+        onRemoveClick(event) {
+            this.$store.dispatch('category/deleteCategory', event.id)
+        },
+
+        addCategory(event) {
+            this.$store.dispatch('category/storeCategory', {
+                parent_id: parseInt(this.parentNode.id),
+                title: event,
+            })
+        }
     },
 }
 </script>

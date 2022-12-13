@@ -83,4 +83,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 /* Category Routes */
     Route::get('/category', [CategoryController::class, 'fetchAll']);
+
+    Route::post('/category/add', [CategoryController::class, 'store']);
+    Route::get('/category/{id}/delete', [CategoryController::class, 'destroy']);
 /* Category Routes */
