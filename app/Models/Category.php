@@ -25,4 +25,8 @@ class Category extends Model
     public function conferences() {
         return $this->hasMany(Conference::class, 'category_id', 'id');
     }
+
+    public function lectures() {
+        return $this->hasMany(Lecture::class, 'category_id', 'id');
+    }
 }

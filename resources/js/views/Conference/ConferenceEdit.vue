@@ -99,6 +99,9 @@
         <!-- Category -->
 
         <category-selected
+            :roots="this.roots"
+            :nodes="this.nodes"
+
             :defaultSelect="{
                 text: this.category ? this.category.title : '',
                 id: this.category ? this.category.id : '',
@@ -151,6 +154,13 @@ export default {
             return this.$store.getters['category/categoryById'](this.conference.category_id)
         },
 
+        roots() {
+            return this.$store.getters['category/roots']
+        },
+        nodes() {
+            return this.$store.getters['category/nodes']
+        },
+
         countriesName() {
             return this.$store.getters['conference/countriesName']
         },
@@ -175,12 +185,10 @@ export default {
     },
 
     created() {
-        this.countries = this.$store.getters['conference/countriesName']
-    },
-
-    mounted() {
         this.id = this.$route.params.id;
         this.$store.dispatch('conference/fetchDetailConference', this.id)
+
+        this.countries = this.$store.getters['conference/countriesName']
     },
 
     methods: {

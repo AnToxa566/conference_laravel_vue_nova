@@ -7,6 +7,9 @@ export default {
     state: {
         categories: [],
         nodes: {},
+
+        lectureRoots: [],
+        lectureNodes: {},
     },
 
     getters: {
@@ -24,6 +27,14 @@ export default {
 
         nodes(state) {
             return state.nodes
+        },
+
+        lectureRoots(state) {
+            return state.lectureRoots
+        },
+
+        lectureNodes(state) {
+            return state.lectureNodes
         },
     },
 
@@ -51,11 +62,48 @@ export default {
             state.nodes = nodes
         },
 
+        SET_LECTURE_ROORS (state, parentId) {
+            state.lectureRoots = []
+            state.lectureRoots.push(parentId)
+        },
+
+        SET_LECTURE_NODES (state, parentId) {
+            const categories = []
+            const nodes = {}
+
+            let category = state.categories.find(cat => cat.id === parentId)
+            categories.push(category)
+
+            for (let i = 0; i < categories.length; i++) {
+                if (categories[i].children.length !== 0) {
+                    categories[i].children.forEach(child => {
+                        category = state.categories.find(cat => cat.id === child.id)
+                        categories.push(category)
+                    })
+                }
+            }
+
+            categories.forEach(category => {
+                nodes[category.id] = {
+                    text: category.title,
+                    parent: category.parent_id ? String(category.parent_id) : null,
+                    children: category.children.map(child => String(child.id)),
+                    state: {
+                        opened: false,
+                        disabled: false,
+                        checked: false,
+                    },
+                }
+            });
+
+            state.lectureNodes = nodes
+        },
+
         PUSH_CATEGORY (state, category) {
             state.categories.push(category)
 
             if (category.parent_id) {
-                const index = state.categories.map(cat => cat.id).indexOf(category.parent_id);
+                const index = state.categories.map(cat => cat.id).indexOf(category.parent_id)
 
                 if (index !== -1) {
                     state.categories[index].children.push(category)
@@ -98,6 +146,11 @@ export default {
                 .catch(err => {
                     console.log(err)
                 })
+        },
+
+        fetchBranche({ commit }, parentId) {
+            commit('SET_LECTURE_ROORS', parentId)
+            commit('SET_LECTURE_NODES', parentId)
         },
 
         storeCategory({ commit }, request) {

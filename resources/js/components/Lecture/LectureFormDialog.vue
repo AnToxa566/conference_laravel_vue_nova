@@ -1,8 +1,8 @@
 <template>
     <v-dialog
         v-model="dialog"
-        max-height="100vh"
-        persistent
+        fullscreen
+        :scrim="false"
     >
         <template
             v-slot:activator="{ props }"
@@ -23,27 +23,25 @@
             </div>
         </template>
 
-        <v-container>
-            <v-card class="pa-8">
-                <v-card-title class="mb-6">
-                    <span class="text-h4">Add Lecture</span>
-                </v-card-title>
+        <v-card class="pa-8">
+            <v-card-title class="mb-6">
+                <span class="text-h4 font-weight-bold">Add Lecture</span>
+            </v-card-title>
 
-                <lecture-form
-                    :conferenceId="this.conferenceId"
-                    @submit="createLecture"
-                >
-                    <template v-slot:extraButtons>
-                        <v-btn
-                            variant="tonal" color="white" class="mx-2"
-                            @click="dialog = false"
-                        >
-                            Close
-                        </v-btn>
-                    </template>
-                </lecture-form>
-            </v-card>
-        </v-container>
+            <lecture-form
+                :conference="this.conferenceById"
+                @submit="createLecture"
+            >
+                <template v-slot:extraButtons>
+                    <v-btn
+                        variant="tonal" color="white" class="mx-2"
+                        @click="dialog = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
+            </lecture-form>
+        </v-card>
     </v-dialog>
 </template>
 

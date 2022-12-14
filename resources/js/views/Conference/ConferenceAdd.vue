@@ -97,6 +97,9 @@
         <!-- Category -->
 
         <category-selected
+            :roots="this.roots"
+            :nodes="this.nodes"
+
             @select="categorySelected"
             @clear="categoryClear"
         >
@@ -153,6 +156,14 @@ export default {
     },
 
     computed: {
+        roots() {
+            return this.$store.getters['category/roots']
+        },
+
+        nodes() {
+            return this.$store.getters['category/nodes']
+        },
+
         markerVisible() {
             return this.conference.latitude !== '' && this.conference.longitude !== ''
         },

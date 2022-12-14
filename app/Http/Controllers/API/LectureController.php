@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
 
@@ -19,6 +18,7 @@ class LectureController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => ['required'],
             'conference_id' => ['required'],
+            'category_id' => ['nullable'],
 
             'title' => ['required', 'string', 'min:2', 'max:255'],
             'date_time_start' => ['required', 'date'],

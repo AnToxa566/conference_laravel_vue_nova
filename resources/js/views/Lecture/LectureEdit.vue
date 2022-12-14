@@ -9,7 +9,7 @@
 
 
     <lecture-form
-        :conferenceId="this.conference_id"
+        :conference="this.conferenceById"
         :lectureToEdit="this.lecture"
         @submit="updateLecture"
     >
@@ -44,6 +44,10 @@ export default {
     },
 
     computed: {
+        conferenceById() {
+            return this.$store.getters['conference/conferenceById'](this.conference_id)
+        },
+
         lecture() {
             return this.$store.getters['lecture/lecture']
         },

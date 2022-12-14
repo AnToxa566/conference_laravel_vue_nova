@@ -91,6 +91,22 @@
                     :rules="fileRules"
                 ></v-file-input>
             </v-col>
+
+            <!-- Category -->
+
+            <v-col
+                v-if="this.conference.category_id"
+                cols="12"
+            >
+                <category-selected
+                    :roots="this.roots"
+                    :nodes="this.nodes"
+
+                    @select="categorySelected"
+                    @clear="categoryClear"
+                >
+                </category-selected>
+            </v-col>
         </v-row>
 
         <small>*indicates required field</small>
@@ -148,18 +164,24 @@ export default {
 
             description: '',
             presentation_path: '',
+
+            category_id: null,
         },
     }),
 
     props: {
-        conferenceId: {
-            type: Number,
+        conference: {
+            type: Object,
             required: true,
         },
         lectureToEdit: {
             type: Object,
             required: false,
         },
+    },
+
+    created() {
+        this.$store.dispatch('category/fetchBranche', this.conference.category_id)
     },
 
     mounted() {
@@ -184,12 +206,16 @@ export default {
     },
 
     computed: {
-        conferenceById() {
-            return this.$store.getters['conference/conferenceById'](this.conferenceId)
+        roots() {
+            return this.$store.getters['category/lectureRoots']
+        },
+
+        nodes() {
+            return this.$store.getters['category/lectureNodes']
         },
 
         getFreeStartTime() {
-            return this.$store.getters['lecture/getFreeStartTime'](this.conferenceById, this.isEditMode)
+            return this.$store.getters['lecture/getFreeStartTime'](this.conference, this.isEditMode)
         },
 
         startTimeErrorMessage() {
@@ -242,7 +268,7 @@ export default {
         },
 
         minLectureTime() {
-            const date = new Date(this.conferenceById.date_time_event)
+            const date = new Date(this.conference.date_time_event)
 
             return {
                 hours: date.getHours(),
@@ -269,7 +295,7 @@ export default {
         },
 
         isTimeFree(startDateTime, endDateTime = null) {
-            return this.$store.getters['lecture/isTimeFree'](this.conferenceId, this.isEditMode, startDateTime, endDateTime)
+            return this.$store.getters['lecture/isTimeFree'](this.conference.id, this.isEditMode, startDateTime, endDateTime)
         },
 
         getTimeErrorMessage(lecture) {
@@ -285,7 +311,7 @@ export default {
 
         getFormatedDateTime(lectureTime) {
             const format = "YYYY-MM-DD HH:mm:ss"
-            let lectureDateTime = new Date(this.conferenceById.date_time_event)
+            let lectureDateTime = new Date(this.conference.date_time_event)
 
             lectureDateTime.setHours(lectureTime.hours)
             lectureDateTime.setMinutes(lectureTime.minutes)
@@ -297,7 +323,8 @@ export default {
             const data = new FormData();
 
             data.append('user_id', this.userId);
-            data.append('conference_id', this.conferenceId);
+            data.append('conference_id', this.conference.id);
+            data.append('category_id', lecture.category_id);
 
             data.append('date_time_start', this.getFormatedDateTime(lecture.date_time_start));
             data.append('date_time_end', this.getFormatedDateTime(lecture.date_time_end));
@@ -307,6 +334,16 @@ export default {
             data.append('presentation_path', lecture.presentation_path);
 
             return data
+        },
+
+        categorySelected(event) {
+            console.log(event)
+            this.lecture.category_id = parseInt(event.id, 10)
+            console.log(this.lecture)
+        },
+
+        categoryClear(event) {
+            this.lecture.category_id = null
         },
 
         async onSubmit(lecture) {

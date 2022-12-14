@@ -68,6 +68,16 @@ export default {
     },
 
     props: {
+        roots: {
+            type: Array,
+            required: true,
+        },
+
+        nodes: {
+            type: Object,
+            required: true,
+        },
+
         defaultSelect: {
             type: Object,
             required: false,
@@ -91,16 +101,6 @@ export default {
         if (this.defaultSelect) {
             this.select = this.defaultSelect
         }
-    },
-
-    computed: {
-        roots() {
-            return this.$store.getters['category/roots']
-        },
-
-        nodes() {
-            return this.$store.getters['category/nodes']
-        },
     },
 
     methods: {
