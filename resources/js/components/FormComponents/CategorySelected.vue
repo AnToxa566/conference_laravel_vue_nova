@@ -67,6 +67,13 @@ export default {
         CategoryTree,
     },
 
+    props: {
+        defaultSelect: {
+            type: Object,
+            required: false,
+        },
+    },
+
     emits: [
         'select',
         'clear',
@@ -79,6 +86,12 @@ export default {
             id: '',
         },
     }),
+
+    created() {
+        if (this.defaultSelect) {
+            this.select = this.defaultSelect
+        }
+    },
 
     computed: {
         roots() {

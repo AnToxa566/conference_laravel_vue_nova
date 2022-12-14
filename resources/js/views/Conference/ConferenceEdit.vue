@@ -9,6 +9,8 @@
         ref="form"
         v-model="valid"
     >
+        <!-- Title -->
+
         <v-text-field
             v-model="conference.title"
             label="Topic"
@@ -18,6 +20,8 @@
             placeholder="Enter a topic"
             required
         ></v-text-field>
+
+        <!-- Date & Time -->
 
         <Datepicker
             placeholder="When"
@@ -31,6 +35,8 @@
         <div id="message__wrapper" class="hidden__message">
             <p class="message">Date is required!</p>
         </div>
+
+        <!-- Address -->
 
         <v-row>
             <v-col cols="6">
@@ -56,6 +62,8 @@
             </v-col>
         </v-row>
 
+        <!-- Map -->
+
         <v-card class="mb-4">
             <GMapMap
                 :center="latLng"
@@ -80,14 +88,28 @@
             </GMapMap>
         </v-card>
 
-        <v-autocomplete
+        <!-- Country -->
+
+        <country-selected
             v-model="conference.country"
-            :items="countries"
             :rules="[v => !!v || 'Country is required!']"
-            variant="solo"
-            label="Country"
-            required
-        ></v-autocomplete>
+        >
+        </country-selected>
+
+        <!-- Category -->
+
+        <category-selected
+            :defaultSelect="{
+                text: this.category ? this.category.title : '',
+                id: this.category ? this.category.id : '',
+            }"
+
+            @select="categorySelected"
+            @clear="categoryClear"
+        >
+        </category-selected>
+
+        <!-- Buttons -->
 
         <div class="d-flex justify-content-start">
             <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
@@ -125,6 +147,10 @@ export default {
         conference() {
             return this.$store.getters['conference/conference']
         },
+        category() {
+            return this.$store.getters['category/categoryById'](this.conference.category_id)
+        },
+
         countriesName() {
             return this.$store.getters['conference/countriesName']
         },
@@ -167,6 +193,13 @@ export default {
             this.conference.longitude = event.latLng.lng().toFixed(4)
         },
 
+        categorySelected(event) {
+            this.conference.category_id = parseInt(event.id, 10)
+        },
+        categoryClear(event) {
+            this.conference.category_id = null
+        },
+
         async update() {
             const { valid } = await this.$refs.form.validate()
 
@@ -183,6 +216,7 @@ export default {
                         latitude: this.conference.latitude,
                         longitude: this.conference.longitude,
                         country: this.conference.country,
+                        category_id: this.conference.category_id,
                     })
                 }
             }
