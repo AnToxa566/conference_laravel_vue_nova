@@ -34,6 +34,14 @@
                 <div v-if="isJoined">
                     <my-share-buttons></my-share-buttons>
                 </div>
+
+                <v-chip
+                    v-if="this.category"
+                    prepend-icon="mdi-tag-outline"
+                    size="large"
+                >
+                    {{ this.category.title }}
+                </v-chip>
             </v-card-actions>
         </v-card>
     </v-hover>
@@ -59,6 +67,10 @@ export default {
     computed: {
         formatedDateTime() {
             return this.$store.getters['conference/formatedDateTime'](this.conference.id)
+        },
+
+        category() {
+            return this.$store.getters['category/categoryById'](this.conference.category_id)
         },
     },
 

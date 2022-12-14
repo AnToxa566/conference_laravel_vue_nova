@@ -14,6 +14,10 @@ export default {
             return state.categories
         },
 
+        categoryById: (state) => (id) => {
+            return state.categories.find(category => category.id === parseInt(id, 10));
+        },
+
         roots(state) {
             return state.categories.filter(category => !category.parent_id).map(category => category.id)
         },

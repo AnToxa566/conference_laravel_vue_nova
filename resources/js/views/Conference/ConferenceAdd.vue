@@ -88,17 +88,6 @@
             </GMapMap>
         </v-card>
 
-        <!-- <v-autocomplete
-            v-model="conference.country"
-            :items="countries"
-            :rules="[v => !!v || 'Country is required!']"
-            variant="solo"
-            label="Country"
-            required
-        ></v-autocomplete> -->
-
-        <!-- Country -->
-
         <country-selected
             v-model="conference.country"
             :rules="[v => !!v || 'Country is required!']"

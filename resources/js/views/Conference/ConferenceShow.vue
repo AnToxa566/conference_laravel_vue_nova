@@ -44,6 +44,13 @@
         <template v-slot:body> {{ this.conference.country }} </template>
     </my-info-card>
 
+    <my-info-card
+        v-if="this.category"
+    >
+        <template v-slot:header> Category </template>
+        <template v-slot:body> {{ this.category.title }} </template>
+    </my-info-card>
+
     <div class="d-flex justify-space-between">
         <div>
             <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
@@ -74,6 +81,10 @@ export default {
         conference() {
             return this.$store.getters['conference/conference']
         },
+        category() {
+            return this.$store.getters['category/categoryById'](this.conference.category_id)
+        },
+
         formatedDateTime() {
             return this.$store.getters['conference/formatedDateTime'](this.id)
         },
