@@ -1,11 +1,14 @@
 import axios from 'axios'
 import store from '../store'
+import router from '../router'
 
 export default {
     namespaced: true,
 
     state: {
         categories: [],
+
+        roots: [],
         nodes: {},
 
         lectureRoots: [],
@@ -22,7 +25,7 @@ export default {
         },
 
         roots(state) {
-            return state.categories.filter(category => !category.parent_id).map(category => category.id)
+            return state.roots
         },
 
         nodes(state) {
@@ -41,6 +44,10 @@ export default {
     mutations: {
         SET_CATEGORIES (state, categories) {
             state.categories = categories
+        },
+
+        SET_ROOTS (state, categories) {
+            state.roots = categories.filter(category => !category.parent_id).map(category => category.id)
         },
 
         SET_NODES (state, categories) {
@@ -111,6 +118,10 @@ export default {
             }
         },
 
+        PUSH_ROOT (state, category) {
+            state.roots.push(category.id)
+        },
+
         PUSH_NODE (state, category) {
             state.nodes[category.id] = {
                 text: category.title,
@@ -126,8 +137,13 @@ export default {
 
         REMOVE_CATEGORY (state, categories) {
             categories.forEach(category => {
-                const index = state.categories.map(cat => cat.id).indexOf(category.id)
-                state.categories.splice(index, 1)
+                const nodeIndex = state.categories.map(cat => cat.id).indexOf(category.id)
+                state.categories.splice(nodeIndex, 1)
+
+                if (!category.parent_id) {
+                    const rootIndex = state.roots.indexOf(category.id)
+                    state.roots.splice(rootIndex, 1)
+                }
 
                 delete state.nodes[category.id]
             })
@@ -140,7 +156,9 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CATEGORIES', res.data.categories)
+
                         commit('SET_NODES', res.data.categories)
+                        commit('SET_ROOTS', res.data.categories)
                     }
                 })
                 .catch(err => {
@@ -159,6 +177,12 @@ export default {
                     if (res.data.status === 'ok') {
                         commit('PUSH_CATEGORY', (res.data.category))
                         commit('PUSH_NODE', (res.data.category))
+
+                        if (!res.data.category.parent_id) {
+                            commit('PUSH_ROOT', (res.data.category))
+                        }
+
+                        router.go(0)
                     }
                 })
                 .catch(err => {
@@ -171,6 +195,11 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('REMOVE_CATEGORY', res.data.items)
+
+                        store.dispatch('conference/updateConferenceCategories', res.data.items)
+                        store.dispatch('lecture/updateLectureCategories', res.data.items)
+
+                        router.go(0)
                     }
                 })
                 .catch(err => {

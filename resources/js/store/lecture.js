@@ -218,6 +218,17 @@ export default {
                 })
         },
 
+        updateLectureCategories({ state, dispatch }, categories) {
+            categories.forEach(category => {
+                let lectures = state.lectures.filter(lect => lect.category_id === category.id)
+
+                lectures.forEach(lect => {
+                    lect.category_id = null
+                    dispatch('updateLecture', lect)
+                })
+            })
+        },
+
         deleteLecture({ commit }, conference_id) {
             axios.get(`/api/lectures/delete/${store.state.auth.user.id}/${conference_id}`)
                 .then(res => {

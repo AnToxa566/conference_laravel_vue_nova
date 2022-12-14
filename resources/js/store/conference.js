@@ -100,7 +100,7 @@ export default {
             state.conferencesPaginatedData.paginated_conferences.splice(index, 1);
         },
 
-        UPDATE_CONFERENCE_LECTURES (state, lectures) {
+        UPDATE_LECTURES_CATEGORIES (state, lectures) {
             lectures.forEach(lecture => {
                 lecture.category_id = null
                 store.dispatch('lecture/updateLecture', lecture)
@@ -175,7 +175,7 @@ export default {
                         commit('UPDATE_CONFERENCE', res.data.conference)
 
                         if (res.data.hasLectures) {
-                            commit('UPDATE_CONFERENCE_LECTURES', res.data.lectures)
+                            commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
                         }
 
                         router.go(-1)
@@ -184,6 +184,17 @@ export default {
                 .catch(err => {
                     console.log(err.response)
                 })
+        },
+
+        updateConferenceCategories({ state, dispatch }, categories) {
+            categories.forEach(category => {
+                let conferences = state.conferences.filter(conf => conf.category_id === category.id)
+
+                conferences.forEach(conference => {
+                    conference.category_id = null
+                    dispatch('updateConference', conference)
+                })
+            })
         },
 
         deleteConference({ commit }, id) {
