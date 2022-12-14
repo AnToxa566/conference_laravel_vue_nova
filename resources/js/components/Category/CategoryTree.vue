@@ -1,7 +1,12 @@
 <template>
-    <Tree :nodes="this.storeNodes" :config="this.config">
+    <Tree
+        :nodes="this.storeNodes"
+        :config="this.config"
+        @nodeFocus="nodeFocus"
+    >
         <template #after-input="props">
             <v-icon
+                v-if="this.addition"
                 class="mx-3"
                 size="small"
                 color="white"
@@ -11,6 +16,7 @@
             </v-icon>
 
             <v-icon
+                v-if="this.deletion"
                 size="small"
                 color="red-darken-2"
                 @click="this.onRemoveClick(props)"
@@ -29,6 +35,7 @@ export default {
     emits: [
         'addClick',
         'removeClick',
+        'categorySelected',
     ],
 
     props: {
@@ -42,6 +49,18 @@ export default {
             type: Object,
             required: true,
             default: {},
+        },
+
+        addition: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+
+        deletion: {
+            type: Boolean,
+            required: false,
+            default: false,
         },
     },
 
@@ -75,6 +94,10 @@ export default {
     },
 
     methods: {
+        nodeFocus(event) {
+            this.$emit('categorySelected', event)
+        },
+
         onAddClick(props) {
             this.$emit('addClick', props.node)
         },

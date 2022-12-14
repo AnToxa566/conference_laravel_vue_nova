@@ -72,6 +72,7 @@ import CustomInput from './components/FormComponents/CustomInput.vue'
 import CustomPhoneNumberInput from './components/FormComponents/CustomPhoneNumberInput.vue'
 import CustomDatepicker from './components/FormComponents/CustomDatepicker.vue'
 import CountrySelected from './components/FormComponents/CountrySelected.vue'
+import CategorySelected from './components/FormComponents/CategorySelected.vue'
 
 
 // Vue
@@ -93,6 +94,7 @@ app
     .component('CustomDatepicker', CustomDatepicker)
     .component('CustomPhoneNumberInput', CustomPhoneNumberInput)
     .component('CountrySelected', CountrySelected)
+    .component('CategorySelected', CategorySelected)
 
     .component('MyAppBar', MyAppBar)
     .component('MyHeader', MyHeader)

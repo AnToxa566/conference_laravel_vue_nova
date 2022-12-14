@@ -17,10 +17,8 @@
 
             <v-card-actions class="d-flex justify-space-between">
                 <div class="d-flex">
-                    <div v-if="!isAdmin">
-                        <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}`)"> Details </v-btn>
-                        <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/lectures`)"> Lectures </v-btn>
-                    </div>
+                    <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}`)"> Details </v-btn>
+                    <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/lectures`)"> Lectures </v-btn>
 
                     <my-join-cancel-buttons
                         v-if="!isAdmin"

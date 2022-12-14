@@ -19,15 +19,18 @@ class Conference extends Model
         'latitude',
         'longitude',
         'country',
+        'category_id',
     ];
 
-    public function users()
-    {
+    public function users() {
         return $this->belongsToMany(User::class);
     }
 
-    public function lectures()
-    {
+    public function lectures() {
       return $this->hasMany(Lecture::class);
+    }
+
+    public function category() {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 }

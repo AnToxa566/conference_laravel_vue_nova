@@ -21,6 +21,7 @@ class ConferenceController extends Controller
             'latitude' => ['nullable'],
             'longitude' => ['nullable'],
             'country' => ['required', 'string', 'max:255'],
+            'category_id' => ['nullable'],
         ]);
 
         if ($validator->fails()) {

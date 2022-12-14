@@ -7,6 +7,9 @@
         :storeRoots="this.roots"
         :storeNodes="this.nodes"
 
+        :addition="true"
+        :deletion="true"
+
         @addClick="onAddClick"
         @removeClick="onRemoveClick"
     >

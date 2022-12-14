@@ -9,6 +9,8 @@
         ref="form"
         v-model="valid"
     >
+        <!-- Title -->
+
         <v-text-field
             v-model="conference.title"
             label="Topic"
@@ -18,6 +20,8 @@
             placeholder="Enter a topic"
             required
         ></v-text-field>
+
+        <!-- Date & Time -->
 
         <Datepicker
             placeholder="When"
@@ -31,6 +35,8 @@
         <div id="message__wrapper" class="hidden__message">
             <p class="message">Date is required!</p>
         </div>
+
+        <!-- Address -->
 
         <v-row>
             <v-col cols="6">
@@ -56,6 +62,8 @@
             </v-col>
         </v-row>
 
+        <!-- Map -->
+
         <v-card class="mb-4">
             <GMapMap
                 :center="latLng"
@@ -80,14 +88,32 @@
             </GMapMap>
         </v-card>
 
-        <v-autocomplete
+        <!-- <v-autocomplete
             v-model="conference.country"
             :items="countries"
             :rules="[v => !!v || 'Country is required!']"
             variant="solo"
             label="Country"
             required
-        ></v-autocomplete>
+        ></v-autocomplete> -->
+
+        <!-- Country -->
+
+        <country-selected
+            v-model="conference.country"
+            :rules="[v => !!v || 'Country is required!']"
+        >
+        </country-selected>
+
+        <!-- Category -->
+
+        <category-selected
+            @select="categorySelected"
+            @clear="categoryClear"
+        >
+        </category-selected>
+
+        <!-- Buttons -->
 
         <v-row>
             <v-col cols="2">
@@ -113,6 +139,7 @@ export default {
             latitude: '',
             longitude: '',
             country: '',
+            category_id: null,
         },
 
         countries: [],
@@ -161,6 +188,14 @@ export default {
         hiddenMessage() {
             let message = document.getElementById("message__wrapper")
             message.classList.add("hidden__message")
+        },
+
+        categorySelected(event) {
+            this.conference.category_id = parseInt(event.id, 10)
+        },
+
+        categoryClear(event) {
+            this.conference.category_id = null
         },
 
         updateMakerPosition: function(event) {

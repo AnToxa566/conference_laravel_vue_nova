@@ -27,6 +27,7 @@ class ConferencesTableSeeder extends Seeder
                 'latitude' => $i,
                 'longitude' => $i,
                 'country' => 'Ukraine',
+                'category_id' => null,
             ]);
         }
 
