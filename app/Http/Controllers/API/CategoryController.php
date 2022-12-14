@@ -12,25 +12,41 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
+    protected function deleteChilds($category){
+        $cats = [];
+
+        foreach($category->childs as $child) {
+            array_push($cats, $child);
+        }
+
+        for ($i = 0; $i < count($cats); $i++) {
+            if ($cats[$i]->childs) {
+                foreach($cats[$i]->childs as $child) {
+                    array_push($cats, $child);
+                }
+            }
+        }
+
+        for ($i = 0; $i < count($cats); $i++) {
+            $category = Category::where('id', $cats[$i]->id)->first();
+            $category->delete();
+        }
+
+        return $cats;
+   }
+
+
     public function fetchAll()
     {
         $categories = Category::all();
-        $subcategories = array();
 
         foreach ($categories as $category) {
-            $children = $category->subcategory()->get();
-
-            if (count($children) !== 0) {
-                array_push($subcategories, (object) [
-                    'category_id' => $category->id,
-                    'children' => $children,
-                ]);
-            }
+            $children = $category->childs()->get();
+            $category->{"children"} = count($children) !== 0 ? $children : array();
         }
 
         $res = [
             'categories' => $categories,
-            'subcategories' => $subcategories,
             'status' => 'ok',
         ];
 
@@ -52,6 +68,8 @@ class CategoryController extends Controller
         $input = $request->all();
         $category = Category::create($input);
 
+        $category->{"children"} = array();
+
         $res = [
             'category' => $category,
             'status' => 'ok',
@@ -69,10 +87,13 @@ class CategoryController extends Controller
             return response()->json(['error' => 'CategoryController::destroy: Category with the given id were not found.'], 404);
         }
 
-        $category->subcategory()->delete();
+        $deleteCats = CategoryController::deleteChilds($category);
+        array_push($deleteCats, $category);
+
         $category->delete();
 
         $res = [
+            'items' => $deleteCats,
             'status' => 'ok',
         ];
 

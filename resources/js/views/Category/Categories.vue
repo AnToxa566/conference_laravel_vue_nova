@@ -5,7 +5,7 @@
 
     <category-tree
         :storeRoots="this.roots"
-        :storeNodes="this.storeNodes"
+        :storeNodes="this.nodes"
 
         @addClick="onAddClick"
         @removeClick="onRemoveClick"
@@ -31,23 +31,17 @@ export default {
     },
 
     data: () => ({
-        storeNodes: {},
-
         showDialog: false,
         parentNode: null,
     }),
 
-    created() {
-        this.storeNodes = Object.assign({}, this.nodes)
-    },
-
     computed: {
         roots() {
-            return this.$store.getters['category/getRoots']
+            return this.$store.getters['category/roots']
         },
 
         nodes() {
-            return this.$store.getters['category/getNodes']
+            return this.$store.getters['category/nodes']
         },
     },
 

@@ -6,41 +6,36 @@ export default {
 
     state: {
         categories: [],
-        subcategories: [],
+        nodes: {},
     },
 
     getters: {
         categories(state) {
             return state.categories
         },
-        subcategories(state) {
-            return state.subcategories
-        },
 
-        getRoots(state) {
+        roots(state) {
             return state.categories.filter(category => !category.parent_id).map(category => category.id)
         },
-        getNodes(state) {
+
+        nodes(state) {
+            return state.nodes
+        },
+    },
+
+    mutations: {
+        SET_CATEGORIES (state, categories) {
+            state.categories = categories
+        },
+
+        SET_NODES (state, categories) {
             const nodes = {}
 
-            state.categories.forEach(category => {
-                const subcategoriesOfCategory = state.subcategories.find(subcategory => subcategory.category_id === category.id)
-
-                let categoryChildren = []
-                let categoryChildrenId = []
-
-                if (subcategoriesOfCategory) {
-                    categoryChildren = subcategoriesOfCategory['children']
-                }
-
-                if (categoryChildren.length !== 0) {
-                    categoryChildrenId = categoryChildren.map(child => String(child.id))
-                }
-
+            categories.forEach(category => {
                 nodes[category.id] = {
                     text: category.title,
                     parent: category.parent_id ? String(category.parent_id) : null,
-                    children: categoryChildrenId,
+                    children: category.children.map(child => String(child.id)),
                     state: {
                         opened: false,
                         disabled: false,
@@ -49,94 +44,41 @@ export default {
                 }
             });
 
-            return nodes
-        },
-    },
-
-    mutations: {
-        SET_CATEGORIES (state, value) {
-            state.categories = value
-        },
-        SET_SUBCATEGORIES (state, value) {
-            state.subcategories = value
+            state.nodes = nodes
         },
 
-        PUSH_CATEGORY (state, value) {
-            state.categories.push(value)
+        PUSH_CATEGORY (state, category) {
+            state.categories.push(category)
 
-            if (value.parent_id) {
-                const index = state.subcategories.map(subcategory => subcategory.category_id).indexOf(value.parent_id);
+            if (category.parent_id) {
+                const index = state.categories.map(cat => cat.id).indexOf(category.parent_id);
 
                 if (index !== -1) {
-                    state.subcategories[index].children.push(value)
-                }
-                else {
-                    state.subcategories.push({
-                        category_id: value.parent_id,
-                        children: [ value ],
-                    })
+                    state.categories[index].children.push(category)
                 }
             }
         },
 
-        REMOVE_CATEGORY (state, categoryId) {
-            const mapCategoriesId = state.categories.map(c => c.id)
-            const mapSubcategoriesId = state.subcategories.map(c => c.category_id)
-
-            console.log('mapCategoriesId')
-            console.log(mapCategoriesId)
-            console.log('mapSubcategoriesId')
-            console.log(mapSubcategoriesId)
-            console.log('categoryId')
-            console.log(categoryId)
-
-            let categoryIndex = mapSubcategoriesId.indexOf(parseInt(categoryId, 10))
-
-            console.log('categoryIndex')
-            console.log(categoryIndex)
-
-            if (categoryIndex !== -1) {
-                let childrenId = state.subcategories[categoryIndex].children.map(c => c.id)
-
-                console.log('childrenId')
-                console.log(childrenId)
-
-                for (let i = 0; i < childrenId.length; i++) {
-                    let subcategory = state.subcategories.find(c => c.category_id === childrenId[i])
-
-                    if (subcategory) {
-                        subcategory.children.forEach(c => childrenId.push(c.id))
-                    }
-                }
-
-                console.log('childrenId')
-                console.log(childrenId)
-
-                for (let i = 0; i < childrenId.length; i++) {
-                    let childrenIndex = mapCategoriesId.indexOf(childrenId[i])
-
-                    console.log('childrenIndex')
-                    console.log(childrenIndex)
-
-                    state.categories.splice(childrenIndex, 1);
-
-                    childrenIndex = mapSubcategoriesId.indexOf(childrenId[i])
-
-                    console.log('childrenIndex')
-                    console.log(childrenIndex)
-
-                    state.subcategories.splice(childrenIndex, 1);
-                }
+        PUSH_NODE (state, category) {
+            state.nodes[category.id] = {
+                text: category.title,
+                parent: category.parent_id ? String(category.parent_id) : null,
+                children: category.children.map(child => String(child.id)),
+                state: {
+                    opened: false,
+                    disabled: false,
+                    checked: false,
+                },
             }
+        },
 
-            categoryIndex = mapCategoriesId.indexOf(parseInt(categoryId, 10))
-            state.categories.splice(categoryIndex, 1);
+        REMOVE_CATEGORY (state, categories) {
+            categories.forEach(category => {
+                const index = state.categories.map(cat => cat.id).indexOf(category.id)
+                state.categories.splice(index, 1)
 
-            console.log('After')
-            console.log('state.categories')
-            console.log(state.categories)
-            console.log('state.subcategories')
-            console.log(state.subcategories)
+                delete state.nodes[category.id]
+            })
         },
     },
 
@@ -146,7 +88,7 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('SET_CATEGORIES', res.data.categories)
-                        commit('SET_SUBCATEGORIES', res.data.subcategories)
+                        commit('SET_NODES', res.data.categories)
                     }
                 })
                 .catch(err => {
@@ -159,6 +101,7 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('PUSH_CATEGORY', (res.data.category))
+                        commit('PUSH_NODE', (res.data.category))
                     }
                 })
                 .catch(err => {
@@ -170,11 +113,11 @@ export default {
             axios.get(`/api/category/${categoryId}/delete`)
                 .then(res => {
                     if (res.data.status === 'ok') {
-                        commit('REMOVE_CATEGORY', categoryId)
+                        commit('REMOVE_CATEGORY', res.data.items)
                     }
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
     }
