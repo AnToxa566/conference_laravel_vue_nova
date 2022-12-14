@@ -25,7 +25,7 @@
 
         <Datepicker
             placeholder="When"
-            dark="true"
+            :dark="true"
             v-model="conference.date_time_event"
             @update:modelValue="hiddenMessage"
             modelType="yyyy-MM-dd HH:mm:ss"

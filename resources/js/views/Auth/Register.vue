@@ -1,7 +1,7 @@
 <template>
     <v-container class="h-100 fill-height">
         <v-layout class='align-center justify-center'>
-            <v-flex class='login-form text-center'>
+            <div class='login-form text-center'>
                 <v-card class="pa-5" variant="tonal">
 
                     <v-card-title class="text-h4 mb-4 font-weight-bold"> Register </v-card-title>
@@ -161,7 +161,7 @@
                         > Login </v-btn>
                     </router-link>
                 </div>
-            </v-flex>
+            </div>
         </v-layout>
     </v-container>
 </template>

@@ -48,7 +48,6 @@ export default {
 
         const callback = (entries, observer) => {
             if (entries[0].isIntersecting && this.comments.length < this.commentsCount) {
-                console.log('load')
                 this.loadMoreComments()
             }
         };

@@ -25,7 +25,7 @@
 
         <Datepicker
             placeholder="When"
-            dark="true"
+            :dark="true"
             v-model="conference.date_time_event"
             @update:modelValue="hiddenMessage"
             modelType="yyyy-MM-dd HH:mm:ss"
@@ -217,15 +217,8 @@ export default {
             }
             else {
                 if (valid) {
-                    this.$store.dispatch('conference/updateConference', {
-                        id: this.id,
-                        title: this.conference.title,
-                        date_time_event: this.conference.date_time_event,
-                        latitude: this.conference.latitude,
-                        longitude: this.conference.longitude,
-                        country: this.conference.country,
-                        category_id: this.conference.category_id,
-                    })
+                    this.conference.id = this.id
+                    this.$store.dispatch('conference/updateConference', this.conference)
                 }
             }
         },

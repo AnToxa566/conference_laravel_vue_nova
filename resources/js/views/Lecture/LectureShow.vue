@@ -31,6 +31,13 @@
         <template v-slot:body> TODO </template>
     </my-info-card>
 
+    <my-info-card
+        v-if="this.category"
+    >
+        <template v-slot:header> Category </template>
+        <template v-slot:body> {{ this.category.title }} </template>
+    </my-info-card>
+
     <div
         v-if="isUserOwnThisLecture"
         class="d-flex"
@@ -82,6 +89,10 @@ export default {
         lecture() {
             return this.$store.getters['lecture/lecture']
         },
+        category() {
+            return this.$store.getters['category/categoryById'](this.lecture.category_id)
+        },
+
         userId() {
             return this.$store.getters['auth/user'].id
         },

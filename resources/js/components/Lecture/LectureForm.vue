@@ -102,6 +102,11 @@
                     :roots="this.roots"
                     :nodes="this.nodes"
 
+                    :defaultSelect="{
+                        text: this.category ? this.category.title : '',
+                        id: this.category ? this.category.id : '',
+                    }"
+
                     @select="categorySelected"
                     @clear="categoryClear"
                 >
@@ -206,6 +211,10 @@ export default {
     },
 
     computed: {
+        category() {
+            return this.$store.getters['category/categoryById'](this.lectureToEdit.category_id)
+        },
+
         roots() {
             return this.$store.getters['category/lectureRoots']
         },
@@ -322,24 +331,22 @@ export default {
         getFormatedLecture(lecture) {
             const data = new FormData();
 
-            data.append('user_id', this.userId);
-            data.append('conference_id', this.conference.id);
-            data.append('category_id', lecture.category_id);
+            data.append('user_id', this.userId)
+            data.append('conference_id', this.conference.id)
+            data.append('category_id', lecture.category_id ? lecture.category_id : '')
 
-            data.append('date_time_start', this.getFormatedDateTime(lecture.date_time_start));
-            data.append('date_time_end', this.getFormatedDateTime(lecture.date_time_end));
+            data.append('date_time_start', this.getFormatedDateTime(lecture.date_time_start))
+            data.append('date_time_end', this.getFormatedDateTime(lecture.date_time_end))
 
-            data.append('title', lecture.title);
-            data.append('description', lecture.description);
-            data.append('presentation_path', lecture.presentation_path);
+            data.append('title', lecture.title)
+            data.append('description', lecture.description)
+            data.append('presentation_path', lecture.presentation_path)
 
             return data
         },
 
         categorySelected(event) {
-            console.log(event)
             this.lecture.category_id = parseInt(event.id, 10)
-            console.log(this.lecture)
         },
 
         categoryClear(event) {
@@ -351,7 +358,6 @@ export default {
 
             if (valid && !this.startTimeErrorMessage && !this.endTimeErrorMessage) {
                 const formatedLecture = this.getFormatedLecture(lecture)
-
                 this.$emit('submit', formatedLecture)
             }
         },

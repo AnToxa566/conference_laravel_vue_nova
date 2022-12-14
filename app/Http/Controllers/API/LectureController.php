@@ -105,6 +105,8 @@ class LectureController extends Controller
             $input['presentation_path'] = $path;
         }
 
+        $input['category_id'] = $input['category_id'] ? $input['category_id'] : null;
+
         $lecture->update($input);
 
         $res = [
