@@ -150,8 +150,11 @@ export default {
         conference() {
             return this.$store.getters['conference/conference']
         },
+        conferenceById() {
+            return this.$store.getters['conference/conferenceById'](this.id)
+        },
         category() {
-            return this.$store.getters['category/categoryById'](this.conference.category_id)
+            return this.$store.getters['category/categoryById'](this.conferenceById.category_id)
         },
 
         roots() {

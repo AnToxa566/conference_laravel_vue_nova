@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store'
 import router from '../router'
 import moment from 'moment'
 
@@ -98,6 +99,13 @@ export default {
             index = state.conferencesPaginatedData.paginated_conferences.map(conference => conference.id).indexOf(id);
             state.conferencesPaginatedData.paginated_conferences.splice(index, 1);
         },
+
+        UPDATE_CONFERENCE_LECTURES (state, lectures) {
+            lectures.forEach(lecture => {
+                lecture.category_id = null
+                store.dispatch('lecture/updateLecture', lecture)
+            })
+        },
     },
 
     actions: {
@@ -165,6 +173,11 @@ export default {
                 .then(res => {
                     if (res.data.status === 'ok') {
                         commit('UPDATE_CONFERENCE', res.data.conference)
+
+                        if (res.data.hasLectures) {
+                            commit('UPDATE_CONFERENCE_LECTURES', res.data.lectures)
+                        }
+
                         router.go(-1)
                     }
                 })

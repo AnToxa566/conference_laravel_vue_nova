@@ -109,10 +109,14 @@ class ConferenceController extends Controller
         $input['latitude'] = $input['longitude'] == null ? null : $input['latitude'];
         $input['longitude'] = $input['latitude'] == null ? null : $input['longitude'];
 
+        $lectures = $conference->lectures;
+
         $conference->update($input);
 
         $res = [
             'conference' => $conference,
+            'lectures' => $lectures,
+            'hasLectures' => count($lectures) !== 0 ? true : false,
             'status' => 'ok',
         ];
 
