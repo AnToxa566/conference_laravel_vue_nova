@@ -154,12 +154,10 @@ export default {
         fetchAllCategories({ commit }) {
             axios.get('/api/category')
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_CATEGORIES', res.data.categories)
+                    commit('SET_CATEGORIES', res.data)
 
-                        commit('SET_NODES', res.data.categories)
-                        commit('SET_ROOTS', res.data.categories)
-                    }
+                    commit('SET_NODES', res.data)
+                    commit('SET_ROOTS', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -174,16 +172,14 @@ export default {
         storeCategory({ commit }, request) {
             axios.post('/api/category/add', request)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('PUSH_CATEGORY', (res.data.category))
-                        commit('PUSH_NODE', (res.data.category))
+                    commit('PUSH_CATEGORY', (res.data))
+                    commit('PUSH_NODE', (res.data))
 
-                        if (!res.data.category.parent_id) {
-                            commit('PUSH_ROOT', (res.data.category))
-                        }
-
-                        router.go(0)
+                    if (!res.data.parent_id) {
+                        commit('PUSH_ROOT', (res.data))
                     }
+
+                    router.go(0)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -193,14 +189,12 @@ export default {
         deleteCategory({ commit }, categoryId) {
             axios.get(`/api/category/${categoryId}/delete`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('REMOVE_CATEGORY', res.data.items)
+                    commit('REMOVE_CATEGORY', res.data)
 
-                        store.dispatch('conference/updateConferenceCategories', res.data.items)
-                        store.dispatch('lecture/updateLectureCategories', res.data.items)
+                    store.dispatch('conference/updateConferenceCategories', res.data)
+                    store.dispatch('lecture/updateLectureCategories', res.data)
 
-                        router.go(0)
-                    }
+                    router.go(0)
                 })
                 .catch(err => {
                     console.log(err.response)

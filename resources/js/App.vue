@@ -25,6 +25,7 @@ export default {
 
         this.$store.dispatch('lecture/fetchAllLectures')
         this.$store.dispatch('conference/fetchAllConferences')
+        this.$store.dispatch('conference/fetchAllCountries')
         this.$store.dispatch('category/fetchAllCategories')
     },
 }

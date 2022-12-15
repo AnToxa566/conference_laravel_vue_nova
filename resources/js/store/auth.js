@@ -80,79 +80,71 @@ export default {
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_USER', res.data.user)
-                        commit('SET_AUTHENTICATED', true)
+                    console.log(res.data)
 
-                        // store.dispatch('favorite/fetchFavoritedLecturesId')
-                        // store.dispatch('user_conferences/fetchJoinedConferences')
+                    commit('SET_USER', res.data)
+                    commit('SET_AUTHENTICATED', true)
 
-                        dispatch('fetchUserData')
+                    dispatch('fetchUserData')
 
-                        router.push({ name: 'conferences' })
-                    }
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
 
-                    console.log(err.response.data.error)
+                    console.log(err.response)
                 })
         },
 
         register({ commit, dispatch }, user) {
             axios.post('/api/register', user)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_USER', res.data.user)
-                        commit('SET_AUTHENTICATED', true)
-                        commit('SET_AUTH_ERRORS', {})
+                    commit('SET_USER', res.data)
+                    commit('SET_AUTHENTICATED', true)
+                    commit('SET_AUTH_ERRORS', {})
 
-                        // store.dispatch('favorite/fetchFavoritedLecturesId')
-                        // store.dispatch('user_conferences/fetchJoinedConferences')
+                    dispatch('fetchUserData')
 
-                        dispatch('fetchUserData')
-
-                        router.push({ name: 'conferences' })
-                    }
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
+
+                    console.log(err.response)
                 })
         },
 
         update({ commit }, user) {
             axios.post('/api/profile/update', user)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_USER', res.data.user)
-                        commit('SET_AUTH_ERRORS', {})
+                    commit('SET_USER', res.data)
+                    commit('SET_AUTH_ERRORS', {})
 
-                        router.push({ name: 'conferences' })
-                    }
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
-                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
+
+                    console.log(err.response)
                 })
         },
 
         logout({ commit }) {
             axios.get('/api/logout')
                 .then(res => {
-                    if (res.data === 'ok') {
-                        commit('SET_USER', {})
-                        commit('SET_AUTHENTICATED', false)
+                    commit('SET_USER', {})
+                    commit('SET_AUTHENTICATED', false)
 
-                        router.push({ name: 'conferences' })
-                    }
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     console.log(err.response)

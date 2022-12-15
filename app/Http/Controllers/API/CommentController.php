@@ -4,89 +4,57 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Comment\CommentRequest;
 
 use App\Models\Comment;
+use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
-    protected function validation(Request $request)
+    public function fetchByLectureId(int $lectureId, int $limit, int $page): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required'],
-            'lecture_id' => ['required'],
-
-            'description' => ['string'],
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
-        }
-    }
-
-
-    protected function getUserComment($commentId)
-    {
-        return Comment::join('users', 'comments.user_id', '=', 'users.id')
-                                ->select('comments.*', 'users.first_name', 'users.last_name')
-                                ->where('comments.id', $commentId)
-                                ->first();
-    }
-
-
-    public function fetchByLectureId($lectureId, $limit, $page)
-    {
-        $comments = Comment::where('lecture_id', $lectureId)
+        $response = Comment::where('lecture_id', $lectureId)
                             ->join('users', 'comments.user_id', '=', 'users.id')
                             ->select('comments.*', 'users.first_name', 'users.last_name')
                             ->skip($limit * ($page -1))
                             ->take($limit)
                             ->get();
 
-        $res = [
-            'comments' => $comments,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
-    }
-
-
-    public function store(Request $request)
-    {
-        CommentController::validation($request);
-
-        $comment = Comment::create($request->all());
-        $userComment = CommentController::getUserComment($comment->id);
-
-        $res = [
-            'comment' => $userComment,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $comment = Comment::where('id', $id)->first();
-
-        if (!$comment) {
-            return response()->json(['error' => 'CommentController::update: Comment with the given id were not found.'], 404);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        CommentController::validation($request);
+        return response()->json($response);
+    }
 
-        $comment->update($request->all());
-        $userComment = CommentController::getUserComment($comment->id);
 
-        $res = [
-            'comment' => $userComment,
-            'status' => 'ok',
-        ];
+    public function store(CommentRequest $request): JsonResponse
+    {
+        $response = Comment::create($request->validated());
 
-        return response()->json($res, 201);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
+        }
+
+        $response->{'first_name'} = $response->user->first_name;
+        $response->{'last_name'} = $response->user->last_name;
+
+        return response()->json($response);
+    }
+
+
+    public function update(CommentRequest $request, int $id): JsonResponse
+    {
+        $response = tap(Comment::find($id))->update($request->validated());
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
+        }
+
+        $response->{'first_name'} = $response->user->first_name;
+        $response->{'last_name'} = $response->user->last_name;
+
+        return response()->json($response);
     }
 }

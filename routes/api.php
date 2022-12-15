@@ -10,6 +10,7 @@ use App\Http\Controllers\API\ConferenceController;
 use App\Http\Controllers\API\UserConferenceController;
 use App\Http\Controllers\API\UserLectureController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\CountryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,10 +41,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::get('/conferences/{id}', [ConferenceController::class, 'fetchDetail']);
 
     Route::post('/conferences/add', [ConferenceController::class, 'store']);
-
-    Route::get('/conferences/{id}/edit', [ConferenceController::class, 'edit']);
     Route::post('/conferences/{id}/update', [ConferenceController::class, 'update']);
-
     Route::get('/conferences/{id}/delete', [ConferenceController::class, 'destroy']);
 /* Conference Routes */
 
@@ -61,7 +59,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     Route::post('/lectures/add', [LectureController::class, 'store']);
     Route::post('/lectures/{id}/update', [LectureController::class, 'update']);
-    Route::get('/lectures/delete/{user_id}/{conference_id}', [LectureController::class, 'destroy']);
+    Route::get('/lectures/{id}/delete', [LectureController::class, 'destroy']);
 /* Lecture Routes */
 
 
@@ -86,4 +84,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     Route::post('/category/add', [CategoryController::class, 'store']);
     Route::get('/category/{id}/delete', [CategoryController::class, 'destroy']);
+/* Category Routes */
+
+
+/* Country Routes */
+    Route::get('/country', [CountryController::class, 'fetchAll']);
 /* Category Routes */

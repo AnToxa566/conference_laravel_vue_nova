@@ -5,118 +5,73 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\AuthLoginRequest;
+use App\Http\Requests\Auth\AuthRegisterRequest;
+use App\Http\Requests\Auth\AuthUpdateRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(AuthRegisterRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'birthdate' => ['required', 'date', 'before:tomorrow'],
-            'country' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string'],
-            'country_phone_code' => ['required', 'string'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+        $response = User::create($validated);
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        $user = User::create($input);
+        Auth::login($response, true);
 
-        $token = $user->createToken('apiToken')->plainTextToken;
-
-        $res = [
-            'user' => $user,
-            'token' => $token,
-            'status' => 'ok',
-        ];
-
-        return response($res, 201);
+        return response()->json($response);
     }
 
 
-    public function login(Request $request)
+    public function login(AuthLoginRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
+        $validated = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+        $response = User::where('email', $validated['email'])->first();
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'The provided credentials are incorrect.'], 400);
+        if (!Hash::check($validated['password'], $response->password)) {
+            return response()->json(['message' => 'Password doesn\'t match.'], 500);
         }
 
-        $token = $user->createToken('apiToken')->plainTextToken;
+        Auth::login($response, true);
 
-        $res = [
-            'user' => $user,
-            'token' => $token,
-
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function update(Request $request)
+    public function update(AuthUpdateRequest $request): JsonResponse
     {
-        $user = User::where('id', $request->input('id'))->first();
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
 
-        if (!$user) {
-            return response()->json(['error' => 'AurhController::update: User with the given id were not found.'], 404);
+        $response = User::find($validated['id'])->update($validated);
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $validator = Validator::make($request->all(), [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'birthdate' => ['required', 'date', 'before:tomorrow'],
-            'country' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string'],
-            'country_phone_code' => ['required', 'string'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$request->input('id')],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        Auth::login($response, true);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-
-        $user->update($input);
-
-        $res = [
-            'user' => $user,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function logout(Request $request)
+    public function logout(): void
     {
-        return response()->json('ok');
+        Auth::logout();
     }
 }

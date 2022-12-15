@@ -41,9 +41,7 @@ export default {
         fetchFavoritedLecturesId({ commit }) {
             axios.get(`/api/lectures/favorited/${store.state.auth.user.id}`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_FAVORITE_LECTURES_ID', res.data.lecturesId)
-                    }
+                    commit('SET_FAVORITE_LECTURES_ID', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)

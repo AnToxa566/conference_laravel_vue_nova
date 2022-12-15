@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Category\CategoryStoreRequest;
 
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
-    protected function deleteChilds($category){
+    protected function deleteChilds(Category $category): array {
         $cats = [];
 
         foreach($category->childs as $child) {
@@ -36,55 +36,38 @@ class CategoryController extends Controller
    }
 
 
-    public function fetchAll()
+    public function fetchAll(): JsonResponse
     {
         $categories = Category::all();
 
         foreach ($categories as $category) {
             $children = $category->childs()->get();
-            $category->{"children"} = count($children) !== 0 ? $children : array();
+            $category->{'children'} = count($children) !== 0 ? $children : array();
         }
 
-        $res = [
-            'categories' => $categories,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($categories);
     }
 
 
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'parent_id' => ['required', 'numeric'],
-            'title' => ['required', 'string'],
-        ]);
+        $response = Category::create($request->validated());
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $input = $request->all();
-        $category = Category::create($input);
-
-        $category->{"children"} = array();
-
-        $res = [
-            'category' => $category,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        $response->{"children"} = array();
+        return response()->json($response);
     }
 
 
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $category = Category::where('id', $id)->first();
 
         if (!$category) {
-            return response()->json(['error' => 'CategoryController::destroy: Category with the given id were not found.'], 404);
+            return response()->json('Error! Please, try again.', 500);
         }
 
         $deleteCats = CategoryController::deleteChilds($category);
@@ -92,11 +75,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        $res = [
-            'items' => $deleteCats,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($deleteCats);
     }
 }

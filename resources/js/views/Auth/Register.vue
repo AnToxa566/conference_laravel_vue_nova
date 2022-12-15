@@ -266,10 +266,6 @@ export default {
                     this.$store.dispatch('auth/register', user)
                 })
             }
-
-            if (this.authErrors.hasOwnProperty('email')) {
-                this.user.email = this.registerErrors['email'][0]
-            }
         },
     }
 }

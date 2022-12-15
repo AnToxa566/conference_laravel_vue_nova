@@ -50,23 +50,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function conferences()
-    {
+    public function conferences() {
         return $this->belongsToMany(Conference::class);
     }
 
-    public function favoriteLectures()
-    {
+    public function favoriteLectures() {
       return $this->belongsToMany(Lecture::class);
     }
 
-    public function lectures()
-    {
+    public function lectures() {
       return $this->hasMany(Lecture::class);
     }
 
-    public function comments()
-    {
+    public function comments() {
       return $this->hasMany(Comment::class);
     }
 }

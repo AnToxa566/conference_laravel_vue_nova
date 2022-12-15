@@ -32,33 +32,27 @@ export default {
         fetchJoinedConferences({ commit }) {
             axios.get(`/api/conferences/joined/${store.state.auth.user.id}`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_JOINED_CONFERENCES_ID', res.data.conferences_id)
-                    }
+                    commit('SET_JOINED_CONFERENCES_ID', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
                 })
         },
 
-        joinConference({ commit }, conference_id) {
-            axios.get(`/api/conferences/join/${store.state.auth.user.id}/${conference_id}`)
+        joinConference({ commit }, conferenceId) {
+            axios.get(`/api/conferences/join/${store.state.auth.user.id}/${conferenceId}`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('ADD_JOINED_CONFERENCE_ID', conference_id)
-                    }
+                    commit('ADD_JOINED_CONFERENCE_ID', conferenceId)
                 })
                 .catch(err => {
                     console.log(err.response)
                 })
         },
 
-        cancelParticipation({ commit }, conference_id) {
-            axios.get(`/api/conferences/cancel/${store.state.auth.user.id}/${conference_id}`)
+        cancelParticipation({ commit }, conferenceId) {
+            axios.get(`/api/conferences/cancel/${store.state.auth.user.id}/${conferenceId}`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('REMOVE_JOINED_CONFERENCE_ID', conference_id)
-                    }
+                    commit('REMOVE_JOINED_CONFERENCE_ID', conferenceId)
                 })
                 .catch(err => {
                     console.log(err.response)

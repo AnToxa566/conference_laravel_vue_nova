@@ -22,6 +22,12 @@ export default {
             return state.lectures
         },
 
+        lectureIdByConferenceId: (state) => (conferenceId) => {
+            const lecture = state.lectures.find(lecture => lecture.conference_id === conferenceId && lecture.user_id === store.state.auth.user.id)
+
+            return lecture ? lecture.id : undefined
+        },
+
         commentsCounts(state) {
             return state.commentsCounts
         },
@@ -151,6 +157,13 @@ export default {
             state.lectures.push(value)
         },
 
+        PUSH_COMMENTS_COUNT (state, lectureId) {
+            state.commentsCounts.push({
+                'lecture_id': lectureId,
+                'comments_count': 0,
+            })
+        },
+
         UPDATE_LECTURE (state, value) {
             const index = state.lectures.map(lecture => lecture.id).indexOf(value.id);
             state.lectures.splice(index, 1, value);
@@ -171,10 +184,8 @@ export default {
         fetchAllLectures({ commit }) {
             axios.get('/api/lectures')
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_LECTURES', res.data.lectures)
-                        commit('SET_COMMENTS_COUNTS', res.data.lectures)
-                    }
+                    commit('SET_LECTURES', res.data)
+                    commit('SET_COMMENTS_COUNTS', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -184,9 +195,7 @@ export default {
         fetchLectureById({ commit }, id) {
             axios.get(`/api/lectures/${id}`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_LECTURE', res.data.lecture)
-                    }
+                    commit('SET_LECTURE', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -196,9 +205,8 @@ export default {
         storeLecture({ commit }, lecture) {
             axios.post('/api/lectures/add', lecture)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('PUSH_LECTURE', res.data.lecture)
-                    }
+                    commit('PUSH_LECTURE', res.data)
+                    commit('PUSH_COMMENTS_COUNT', res.data.id)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -208,10 +216,8 @@ export default {
         updateLecture({ commit }, lecture) {
             axios.post(`/api/lectures/${lecture.id}/update`, lecture)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('UPDATE_LECTURE', res.data.lecture)
-                        router.go(-1)
-                    }
+                    commit('UPDATE_LECTURE', res.data)
+                    router.go(-1)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -229,11 +235,11 @@ export default {
             })
         },
 
-        deleteLecture({ commit }, conference_id) {
-            axios.get(`/api/lectures/delete/${store.state.auth.user.id}/${conference_id}`)
+        deleteLecture({ commit }, lectureId) {
+            axios.get(`/api/lectures/${lectureId}/delete`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('REMOVE_LECTURE', res.data.lecture_id)
+                    if (res.data !== 0) {
+                        commit('REMOVE_LECTURE', lectureId)
                     }
                 })
                 .catch(err => {
@@ -241,13 +247,15 @@ export default {
                 })
         },
 
-        incrementCommentsCount({ commit }, lecture_id) {
-            commit('COMMENT_INCREMENT', lecture_id)
+        incrementCommentsCount({ commit }, lectureId) {
+            commit('COMMENT_INCREMENT', lectureId)
         },
 
-        cancelParticipation({ commit }, conference_id) {
-            store.dispatch('user_conferences/cancelParticipation', conference_id)
-            store.dispatch('lecture/deleteLecture', conference_id)
+        cancelParticipation({ commit, dispatch, getters }, conferenceId) {
+            store.dispatch('user_conferences/cancelParticipation', conferenceId)
+
+            const lecture = getters['lecture'](conferenceId)
+            dispatch('deleteLecture', lecture.id)
 
             router.push({ name: 'conferences' })
         },

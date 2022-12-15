@@ -5,52 +5,29 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Lecture;
+use Illuminate\Http\JsonResponse;
 
 class UserLectureController extends Controller
 {
-    public function fetchFavoriteLectures($userId)
+    public function fetchFavoriteLectures(int $userId): JsonResponse
     {
-        $favoriteLectures = User::find($userId)->favoriteLectures()->get()->toArray();
-        $lecturesId = array_column($favoriteLectures, 'id');
+        $response = array_column(User::find($userId)->favoriteLectures()->get()->toArray(), 'id');
 
-        $res = [
-            'lecturesId' => $lecturesId,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
-    }
-
-    public function addFavoriteLecture($userId, $lectureId)
-    {
-        $user = User::find($userId);
-        $lecture = Lecture::find($lectureId);
-
-        $user->favoriteLectures()->attach($lecture);
-
-        $res = [
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function removeFavoriteLecture($userId, $lectureId)
+    public function addFavoriteLecture(int $userId, int $lectureId): void
     {
-        $user = User::find($userId);
-        $lecture = Lecture::find($lectureId);
+        User::find($userId)->favoriteLectures()->attach(Lecture::find($lectureId));
+    }
 
-        $user->favoriteLectures()->detach($lecture);
 
-        $res = [
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+    public function removeFavoriteLecture(int $userId, int $lectureId): void
+    {
+        User::find($userId)->favoriteLectures()->detach(Lecture::find($lectureId));
     }
 }

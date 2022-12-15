@@ -5,52 +5,29 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Conference;
+use Illuminate\Http\JsonResponse;
 
 class UserConferenceController extends Controller
 {
-    public function fetchJoinedConferences($userId)
+    public function fetchJoinedConferences(int $userId): JsonResponse
     {
-        $conferences = User::find($userId)->conferences()->get()->toArray();
-        $conferencesId = array_column($conferences, 'id');
+        $response = array_column(User::find($userId)->conferences()->get()->toArray(), 'id');
 
-        $res = [
-            'conferences_id' => $conferencesId,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
-    }
-
-    public function joinConference($userId, $conferenceId)
-    {
-        $user = User::find($userId);
-        $conference = Conference::find($conferenceId);
-
-        $user->conferences()->attach($conference);
-
-        $res = [
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function cancelParticipation($userId, $conferenceId)
+    public function joinConference(int $userId, int $conferenceId): void
     {
-        $user = User::find($userId);
-        $conference = Conference::find($conferenceId);
+        User::find($userId)->conferences()->attach(Conference::find($conferenceId));
+    }
 
-        $user->conferences()->detach($conference);
 
-        $res = [
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+    public function cancelParticipation($userId, $conferenceId): void
+    {
+        User::find($userId)->conferences()->detach(Conference::find($conferenceId));
     }
 }

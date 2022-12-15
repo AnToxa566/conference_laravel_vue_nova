@@ -186,7 +186,9 @@ export default {
     },
 
     created() {
-        this.$store.dispatch('category/fetchBranche', this.conference.category_id)
+        if (this.conference.category_id) {
+            this.$store.dispatch('category/fetchBranche', this.conference.category_id)
+        }
     },
 
     mounted() {
@@ -212,7 +214,7 @@ export default {
 
     computed: {
         category() {
-            return this.$store.getters['category/categoryById'](this.lectureToEdit.category_id)
+            return this.$store.getters['category/categoryById'](this.lecture.category_id)
         },
 
         roots() {
@@ -294,13 +296,20 @@ export default {
 
     methods: {
         onFileChange(event) {
-            var files = event.target.files || event.dataTransfer.files
+            const files = event.target.files || event.dataTransfer.files
 
             if (!files.length) {
                 return
             }
 
-            this.lecture.presentation_path = files[0]
+            let reader = new FileReader()
+            reader.readAsDataURL(event.target.files[0])
+
+            let baseFile = ''
+            reader.onload = () => {
+                baseFile = reader.result
+                this.lecture.presentation_path = baseFile
+            };
         },
 
         isTimeFree(startDateTime, endDateTime = null) {
@@ -358,6 +367,7 @@ export default {
 
             if (valid && !this.startTimeErrorMessage && !this.endTimeErrorMessage) {
                 const formatedLecture = this.getFormatedLecture(lecture)
+
                 this.$emit('submit', formatedLecture)
             }
         },

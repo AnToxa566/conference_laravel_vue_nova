@@ -46,13 +46,11 @@ export default {
         fetchMoreCommentsOfLecture({ commit }, query) {
             axios.get(`/api/comments/${query.lecture_id}/limit/${query.limit}/page/${query.page}`)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        if (query.page === 1) {
-                            commit('SET_COMMENTS_OF_LECTURE', res.data.comments)
-                        }
-                        else {
-                            commit('PUSH_COMMENTS', res.data.comments)
-                        }
+                    if (query.page === 1) {
+                        commit('SET_COMMENTS_OF_LECTURE', res.data)
+                    }
+                    else {
+                        commit('PUSH_COMMENTS', res.data)
                     }
                 })
                 .catch(err => {
@@ -63,9 +61,7 @@ export default {
         storeComment({ commit }, comment) {
             axios.post('/api/comments/add', comment)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('PUSH_COMMENT', res.data.comment)
-                    }
+                    commit('PUSH_COMMENT', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -75,9 +71,7 @@ export default {
         updateComment({ commit }, comment) {
             axios.post(`/api/comments/${comment.id}/update`, comment)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('UPDATE_COMMENT', res.data.comment)
-                    }
+                    commit('UPDATE_COMMENT', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)

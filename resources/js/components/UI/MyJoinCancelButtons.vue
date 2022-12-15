@@ -55,6 +55,9 @@ export default {
         user() {
             return this.$store.getters['auth/user']
         },
+        lectureId() {
+            return this.$store.getters['lecture/lectureIdByConferenceId'](this.conferenceId)
+        },
         authenticated() {
             return this.$store.getters['auth/authenticated']
         },
@@ -81,7 +84,7 @@ export default {
                 this.$store.dispatch('user_conferences/cancelParticipation', this.conferenceId)
 
                 if (this.isAnnouncer) {
-                    this.$store.dispatch('lecture/deleteLecture', this.conferenceId)
+                    this.$store.dispatch('lecture/deleteLecture', this.lectureId)
                 }
             }
         },
