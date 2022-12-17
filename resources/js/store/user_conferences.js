@@ -30,7 +30,7 @@ export default {
 
     actions: {
         fetchJoinedConferences({ commit }) {
-            axios.get(`/api/conferences/joined/${store.state.auth.user.id}`)
+            axios.get(`/api/conferences/joined/${store.state.auth.user.id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_JOINED_CONFERENCES_ID', res.data)
                 })
@@ -40,7 +40,7 @@ export default {
         },
 
         joinConference({ commit }, conferenceId) {
-            axios.get(`/api/conferences/join/${store.state.auth.user.id}/${conferenceId}`)
+            axios.get(`/api/conferences/join/${store.state.auth.user.id}/${conferenceId}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('ADD_JOINED_CONFERENCE_ID', conferenceId)
                 })
@@ -50,7 +50,7 @@ export default {
         },
 
         cancelParticipation({ commit }, conferenceId) {
-            axios.get(`/api/conferences/cancel/${store.state.auth.user.id}/${conferenceId}`)
+            axios.get(`/api/conferences/cancel/${store.state.auth.user.id}/${conferenceId}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_JOINED_CONFERENCE_ID', conferenceId)
                 })

@@ -31,17 +31,22 @@
                     </div>
                 </div>
 
-                <div v-if="isJoined">
-                    <my-share-buttons></my-share-buttons>
-                </div>
-
-                <v-chip
-                    v-if="this.category"
-                    prepend-icon="mdi-tag-outline"
-                    size="large"
+                <div
+                    class="d-flex justify-content-end align-center"
                 >
-                    {{ this.category.title }}
-                </v-chip>
+                    <v-chip
+                        v-if="this.category"
+                        prepend-icon="mdi-tag-outline"
+                        size="large"
+                        class="mx-2"
+                    >
+                        {{ this.category.title }}
+                    </v-chip>
+
+                    <div v-if="isJoined">
+                        <my-share-buttons></my-share-buttons>
+                    </div>
+                </div>
             </v-card-actions>
         </v-card>
     </v-hover>

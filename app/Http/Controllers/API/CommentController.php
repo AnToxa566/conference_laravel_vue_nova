@@ -8,21 +8,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Comment\CommentRequest;
 
 use App\Models\Comment;
+use App\Models\Lecture;
 use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
     public function fetchByLectureId(int $lectureId, int $limit, int $page): JsonResponse
     {
-        $response = Comment::where('lecture_id', $lectureId)
-                            ->join('users', 'comments.user_id', '=', 'users.id')
-                            ->select('comments.*', 'users.first_name', 'users.last_name')
-                            ->skip($limit * ($page -1))
-                            ->take($limit)
-                            ->get();
+        $lecture = Lecture::find($lectureId);
 
-        if (!$response) {
+        if (!$lecture) {
             return response()->json('Error! Please, try again.', 500);
+        }
+
+        $offset = $limit * ($page - 1);
+        $response = $lecture->comments()->latest()->skip($offset)->take($limit)->get();
+
+        foreach ($response as $comment) {
+            $comment->{'first_name'} = $comment->user->first_name;
+            $comment->{'last_name'} = $comment->user->last_name;
         }
 
         return response()->json($response);

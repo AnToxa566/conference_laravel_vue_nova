@@ -193,7 +193,7 @@ export default {
         },
 
         fetchLectureById({ commit }, id) {
-            axios.get(`/api/lectures/${id}`)
+            axios.get(`/api/lectures/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_LECTURE', res.data)
                 })
@@ -203,10 +203,12 @@ export default {
         },
 
         storeLecture({ commit }, lecture) {
-            axios.post('/api/lectures/add', lecture)
+            axios.post('/api/lectures/add', lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('PUSH_LECTURE', res.data)
                     commit('PUSH_COMMENTS_COUNT', res.data.id)
+
+                    store.dispatch('user_conferences/joinConference', res.data.conference_id)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -214,7 +216,7 @@ export default {
         },
 
         updateLecture({ commit }, lecture) {
-            axios.post(`/api/lectures/${lecture.id}/update`, lecture)
+            axios.post(`/api/lectures/${lecture.id}/update`, lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('UPDATE_LECTURE', res.data)
                     router.go(-1)
@@ -236,7 +238,7 @@ export default {
         },
 
         deleteLecture({ commit }, lectureId) {
-            axios.get(`/api/lectures/${lectureId}/delete`)
+            axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     if (res.data !== 0) {
                         commit('REMOVE_LECTURE', lectureId)

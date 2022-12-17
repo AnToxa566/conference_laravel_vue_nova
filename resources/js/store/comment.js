@@ -33,8 +33,6 @@ export default {
             comments.forEach(comment => {
                 state.commentsOfLecture.push(comment)
             })
-
-            state.commentsOfLecture.push(value)
         },
         UPDATE_COMMENT (state, value) {
             const index = state.commentsOfLecture.map(comment => comment.id).indexOf(value.id);
@@ -44,7 +42,7 @@ export default {
 
     actions: {
         fetchMoreCommentsOfLecture({ commit }, query) {
-            axios.get(`/api/comments/${query.lecture_id}/limit/${query.limit}/page/${query.page}`)
+            axios.get(`/api/comments/${query.lecture_id}/limit/${query.limit}/page/${query.page}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     if (query.page === 1) {
                         commit('SET_COMMENTS_OF_LECTURE', res.data)
@@ -59,7 +57,7 @@ export default {
         },
 
         storeComment({ commit }, comment) {
-            axios.post('/api/comments/add', comment)
+            axios.post('/api/comments/add', comment, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('PUSH_COMMENT', res.data)
                 })
@@ -69,7 +67,7 @@ export default {
         },
 
         updateComment({ commit }, comment) {
-            axios.post(`/api/comments/${comment.id}/update`, comment)
+            axios.post(`/api/comments/${comment.id}/update`, comment, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('UPDATE_COMMENT', res.data)
                 })

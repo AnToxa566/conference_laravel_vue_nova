@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,7 @@ class AuthController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
-        Auth::login($response, true);
+        $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
 
         return response()->json($response);
     }
@@ -47,7 +48,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Password doesn\'t match.'], 500);
         }
 
-        Auth::login($response, true);
+        $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
 
         return response()->json($response);
     }
@@ -58,20 +59,26 @@ class AuthController extends Controller
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
 
-        $response = User::find($validated['id'])->update($validated);
+        $response = tap(User::find($validated['id']))->update($validated);
 
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);
         }
 
-        Auth::login($response, true);
-
         return response()->json($response);
     }
 
 
-    public function logout(): void
+    public function logout(): JsonResponse
     {
-        Auth::logout();
+        $response = User::find(auth('sanctum')->id());
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
+        }
+
+        $response->tokens()->delete();
+
+        return response()->json($response);
     }
 }

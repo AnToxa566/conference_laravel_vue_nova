@@ -140,7 +140,6 @@ export default {
     methods: {
         logout() {
             axios.get("/sanctum/csrf-cookie").then(response => {
-                this.$store.dispatch('user_conferences/removeJoinedConferences')
                 this.$store.dispatch('auth/logout')
             });
         },

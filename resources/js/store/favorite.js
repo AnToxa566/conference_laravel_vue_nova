@@ -39,7 +39,7 @@ export default {
 
     actions: {
         fetchFavoritedLecturesId({ commit }) {
-            axios.get(`/api/lectures/favorited/${store.state.auth.user.id}`)
+            axios.get(`/api/lectures/favorited/${store.state.auth.user.id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_FAVORITE_LECTURES_ID', res.data)
                 })
@@ -49,11 +49,9 @@ export default {
         },
 
         addLectureToFavorite({ commit }, lectureId) {
-            axios.get(`/api/lectures/favorite/add/${store.state.auth.user.id}/${lectureId}`)
+            axios.get(`/api/lectures/favorite/add/${store.state.auth.user.id}/${lectureId}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('PUSH_FAVORITE_LECTURE_ID', lectureId)
-                    }
+                    commit('PUSH_FAVORITE_LECTURE_ID', lectureId)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -61,11 +59,9 @@ export default {
         },
 
         removeLectureFromFavorite({ commit }, lectureId) {
-            axios.get(`/api/lectures/favorite/remove/${store.state.auth.user.id}/${lectureId}`)
+            axios.get(`/api/lectures/favorite/remove/${store.state.auth.user.id}/${lectureId}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('REMOVE_FAVORITE_LECTURE_ID', lectureId)
-                    }
+                    commit('REMOVE_FAVORITE_LECTURE_ID', lectureId)
                 })
                 .catch(err => {
                     console.log(err.response)

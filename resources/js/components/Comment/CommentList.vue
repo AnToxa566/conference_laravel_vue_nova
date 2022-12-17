@@ -39,7 +39,7 @@ export default {
     },
 
     mounted() {
-        this.loadMoreComments()
+        this.$store.commit('comment/SET_COMMENTS_OF_LECTURE', [])
 
         const options = {
             rootMargin: '0px',
@@ -69,19 +69,24 @@ export default {
     methods: {
         async loadMoreComments() {
             try {
-                const result = await axios.get(`/api/comments/${this.lecture_id}/limit/${this.limit}/page/${this.page}`)
+                const result = await axios.get(
+                    `/api/comments/${this.lecture_id}/limit/${this.limit}/page/${this.page}`,
+                    JSON.parse(localStorage.getItem('config'))
+                )
 
-                this.$store.dispatch('comment/fetchMoreCommentsOfLecture', {
-                    'lecture_id': this.lecture_id,
-                    'limit': 10,
-                    'page': this.page,
-                })
+                if (result.data.length) {
+                    if (this.page === 1) {
+                        this.$store.commit('comment/SET_COMMENTS_OF_LECTURE', result.data)
+                    }
+                    else {
+                        this.$store.commit('comment/PUSH_COMMENTS', result.data)
+                    }
 
-                if (result.data.comments.length) {
                     this.page++
                 }
-            } catch(err) {
-                console.log(err)
+            }
+            catch(err) {
+                console.log(err.response)
             }
         }
     },

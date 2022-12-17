@@ -15,6 +15,8 @@ export default {
 
         authErrors: {},
         hasAuthErrors: false,
+
+        config: null,
     },
 
     getters: {
@@ -44,8 +46,19 @@ export default {
     },
 
     mutations: {
-        SET_USER (state, value) {
-            state.user = value
+        SET_USER (state, user) {
+            state.user = user
+        },
+        SET_CONFIG (state, user) {
+            state.config = {
+                headers: {
+                    Authorization: `Bearer ${user.auth_token}`,
+                    Accept :'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+
+            localStorage.setItem('config', JSON.stringify(state.config))
         },
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -80,9 +93,8 @@ export default {
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    console.log(res.data)
-
                     commit('SET_USER', res.data)
+                    commit('SET_CONFIG', res.data)
                     commit('SET_AUTHENTICATED', true)
 
                     dispatch('fetchUserData')
@@ -104,6 +116,8 @@ export default {
             axios.post('/api/register', user)
                 .then(res => {
                     commit('SET_USER', res.data)
+                    commit('SET_CONFIG', res.data)
+
                     commit('SET_AUTHENTICATED', true)
                     commit('SET_AUTH_ERRORS', {})
 
@@ -122,8 +136,8 @@ export default {
                 })
         },
 
-        update({ commit }, user) {
-            axios.post('/api/profile/update', user)
+        update({ commit, state }, user) {
+            axios.post('/api/profile/update', user, state.config)
                 .then(res => {
                     commit('SET_USER', res.data)
                     commit('SET_AUTH_ERRORS', {})
@@ -138,11 +152,15 @@ export default {
                 })
         },
 
-        logout({ commit }) {
-            axios.get('/api/logout')
+        logout({ commit, state }) {
+            axios.get('/api/logout', state.config)
                 .then(res => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
+
+                    store.dispatch('user_conferences/removeJoinedConferences')
+
+                    localStorage.removeItem('config')
 
                     router.push({ name: 'conferences' })
                 })

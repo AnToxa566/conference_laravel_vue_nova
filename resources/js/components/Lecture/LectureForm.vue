@@ -307,8 +307,9 @@ export default {
 
             let baseFile = ''
             reader.onload = () => {
-                baseFile = reader.result
-                this.lecture.presentation_path = baseFile
+                // baseFile = reader.result
+                // this.lecture.presentation_path = baseFile // TODO: Сохранение файла. При хранение в таком формате переполняется память vuex
+                this.lecture.presentation_path = 'TODO'
             };
         },
 

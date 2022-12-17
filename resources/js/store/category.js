@@ -170,7 +170,7 @@ export default {
         },
 
         storeCategory({ commit }, request) {
-            axios.post('/api/category/add', request)
+            axios.post('/api/category/add', request, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('PUSH_CATEGORY', (res.data))
                     commit('PUSH_NODE', (res.data))
@@ -187,7 +187,7 @@ export default {
         },
 
         deleteCategory({ commit }, categoryId) {
-            axios.get(`/api/category/${categoryId}/delete`)
+            axios.get(`/api/category/${categoryId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_CATEGORY', res.data)
 

@@ -144,7 +144,7 @@ export default {
         },
 
         fetchDetailConference({ commit, dispatch }, id) {
-            axios.get(`/api/conferences/${id}`)
+            axios.get(`/api/conferences/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_CONFERENCE', res.data)
 
@@ -161,7 +161,7 @@ export default {
         },
 
         storeConference({ commit }, conference) {
-            axios.post('/api/conferences/add', conference)
+            axios.post('/api/conferences/add', conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('ADD_CONFERENCE', res.data)
                     router.push({ name: 'conferenceShow', params: { id: res.data.id } })
@@ -172,7 +172,7 @@ export default {
         },
 
         updateConference({ commit }, conference) {
-            axios.post(`/api/conferences/${conference.id}/update`, conference)
+            axios.post(`/api/conferences/${conference.id}/update`, conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('UPDATE_CONFERENCE', res.data)
 
@@ -183,7 +183,7 @@ export default {
                     router.go(-1)
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                 })
         },
 
@@ -199,7 +199,7 @@ export default {
         },
 
         deleteConference({ commit }, id) {
-            axios.get(`/api/conferences/${id}/delete`)
+            axios.get(`/api/conferences/${id}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     if (res.data !== 0) {
                         commit('DELETE_CONFERENCE', id)

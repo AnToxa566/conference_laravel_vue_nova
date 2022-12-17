@@ -204,6 +204,14 @@ router.beforeEach((to, from, next) => {
             next({ name: "404" })
         }
     }
+    else if (to.meta.middleware === "guest") {
+        if (store.state.auth.authenticated && (to.name === 'login' || to.name === 'register')) {
+            next({ name: "conferences" })
+        }
+        else {
+            next()
+        }
+    }
     else {
         next()
     }
