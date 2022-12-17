@@ -183,7 +183,7 @@ export default {
                     router.go(-1)
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
 

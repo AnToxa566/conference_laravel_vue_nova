@@ -42,7 +42,7 @@
         v-if="isUserOwnThisLecture"
         class="d-flex"
     >
-        <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conference_id}/lectures/${this.lecture_id}/edit`)"> Edit </v-btn>
+        <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conferenceId}/lectures/${this.lectureId}/edit`)"> Edit </v-btn>
         <v-btn variant="text" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
     </div>
 
@@ -51,11 +51,11 @@
     </div>
 
     <comment-form
-        :lecture_id="this.lecture_id"
+        :lecture_id="this.lectureId"
         @submit="storeComment"
     ></comment-form>
     <comment-list
-        :lecture_id="this.lecture_id"
+        :lecture_id="this.lectureId"
     ></comment-list>
 </template>
 
@@ -73,16 +73,16 @@ export default {
 
     data() {
         return {
-            conference_id: null,
-            lecture_id: null,
+            conferenceId: null,
+            lectureId: null,
         };
     },
 
     created() {
-        this.conference_id = parseInt(this.$route.params.conference_id, 10);
-        this.lecture_id = parseInt(this.$route.params.lecture_id, 10);
+        this.conferenceId = parseInt(this.$route.params.conference_id, 10);
+        this.lectureId = parseInt(this.$route.params.lecture_id, 10);
 
-        this.$store.dispatch('lecture/fetchLectureById', this.lecture_id)
+        this.$store.dispatch('lecture/fetchLectureById', this.lectureId)
     },
 
     computed: {
@@ -123,12 +123,11 @@ export default {
 
     methods: {
         cancelParticipation() {
-            this.$store.dispatch('lecture/cancelParticipation', this.conference_id)
+            this.$store.dispatch('lecture/deleteLecture', this.lectureId)
         },
 
         async storeComment(comment) {
             this.$store.dispatch('comment/storeComment', comment)
-            this.$store.dispatch('lecture/incrementCommentsCount', this.lecture_id)
         }
     }
 }

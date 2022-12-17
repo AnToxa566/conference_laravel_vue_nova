@@ -81,10 +81,11 @@ export default {
 
         cancelParticipation() {
             if (this.isJoined) {
-                this.$store.dispatch('user_conferences/cancelParticipation', this.conferenceId)
-
                 if (this.isAnnouncer) {
                     this.$store.dispatch('lecture/deleteLecture', this.lectureId)
+                }
+                else {
+                    this.$store.dispatch('user_conferences/cancelParticipation', this.conferenceId)
                 }
             }
         },

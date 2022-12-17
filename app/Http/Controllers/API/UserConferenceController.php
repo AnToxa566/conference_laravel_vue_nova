@@ -22,12 +22,12 @@ class UserConferenceController extends Controller
 
     public function joinConference(int $userId, int $conferenceId): void
     {
-        User::find($userId)->conferences()->attach(Conference::find($conferenceId));
+        User::find($userId)->conferences()->attach($conferenceId);
     }
 
 
     public function cancelParticipation($userId, $conferenceId): void
     {
-        User::find($userId)->conferences()->detach(Conference::find($conferenceId));
+        User::find($userId)->conferences()->detach($conferenceId);
     }
 }

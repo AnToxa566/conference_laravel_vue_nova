@@ -1,14 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Middleware;
 
 use Closure;
-use App\UserConsts;
 use Illuminate\Http\Request;
 
-class Admin
+use App\Models\Lecture;
+
+class SureUserLecture
 {
     /**
      * Handle an incoming request.
@@ -19,7 +18,9 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth('sanctum')->user()->type !== UserConsts::ADMIN) {
+        $lecture = Lecture::find($request->route()->parameter('id'));
+
+        if (auth('sanctum')->id() !== $lecture->user_id) {
             abort(403);
         }
 

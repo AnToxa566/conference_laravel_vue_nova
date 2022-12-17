@@ -60,6 +60,7 @@ export default {
             axios.post('/api/comments/add', comment, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('PUSH_COMMENT', res.data)
+                    store.dispatch('lecture/incrementCommentsCount', res.data.lecture_id)
                 })
                 .catch(err => {
                     console.log(err.response)

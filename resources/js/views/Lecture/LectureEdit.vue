@@ -31,21 +31,21 @@ export default {
 
     data() {
         return {
-            conference_id: null,
-            lecture_id: null,
+            conferenceId: null,
+            lectureId: null,
         };
     },
 
     created() {
-        this.conference_id = parseInt(this.$route.params.conference_id, 10);
-        this.lecture_id = parseInt(this.$route.params.lecture_id, 10);
+        this.conferenceId = parseInt(this.$route.params.conference_id, 10);
+        this.lectureId = parseInt(this.$route.params.lecture_id, 10);
 
-        this.$store.dispatch('lecture/fetchLectureById', this.lecture_id)
+        this.$store.dispatch('lecture/fetchLectureById', this.lectureId)
     },
 
     computed: {
         conferenceById() {
-            return this.$store.getters['conference/conferenceById'](this.conference_id)
+            return this.$store.getters['conference/conferenceById'](this.conferenceId)
         },
 
         lecture() {
@@ -62,11 +62,11 @@ export default {
 
     methods: {
         cancelParticipation() {
-            this.$store.dispatch('lecture/cancelParticipation', this.conference_id)
+            this.$store.dispatch('lecture/deleteLecture', this.lectureId)
         },
 
         async updateLecture(lecture) {
-            lecture.id = this.lecture_id
+            lecture.id = this.lectureId
             this.$store.dispatch('lecture/updateLecture', lecture)
         },
     },

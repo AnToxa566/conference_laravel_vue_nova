@@ -72,9 +72,9 @@ Route::controller(LectureController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/lectures/{id}', 'fetchById')->name('lectures.fetchById');
 
-        Route::post('/lectures/add', 'store')->name('lectures.store'); // TODO: является ли пользователь оратором
-        Route::post('/lectures/{id}/update', 'update')->name('lectures.update'); // TODO: пользователя ли лекция
-        Route::get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy'); // TODO: пользователя ли лекция
+        Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
+        Route::middleware(['user.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
+        Route::middleware(['user.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
     });
 });
 
@@ -94,7 +94,7 @@ Route::controller(CommentController::class)->group(function () {
         Route::get('/comments/{lecture_id}/limit/{limit}/page/{page}', 'fetchByLectureId')->name('comments.fetchByLectureId');
 
         Route::post('/comments/add', 'store')->name('comments.store');
-        Route::post('/comments/{id}/update', 'update')->name('comments.update'); // TODO: Пользователя ли комментарий
+        Route::middleware(['user.comment'])->post('/comments/{id}/update', 'update')->name('comments.update');
     });
 });
 

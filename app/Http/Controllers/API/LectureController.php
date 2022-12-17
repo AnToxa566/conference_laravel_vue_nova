@@ -72,7 +72,7 @@ class LectureController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        $response = Lecture::find($id)->delete();
+        $response = tap(Lecture::find($id))->delete();
 
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);

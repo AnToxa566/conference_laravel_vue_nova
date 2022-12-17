@@ -23,8 +23,7 @@ export default {
         },
 
         lectureIdByConferenceId: (state) => (conferenceId) => {
-            const lecture = state.lectures.find(lecture => lecture.conference_id === conferenceId && lecture.user_id === store.state.auth.user.id)
-
+            const lecture = state.lectures.find(lecture => lecture.conference_id == conferenceId && lecture.user_id == store.state.auth.user.id)
             return lecture ? lecture.id : undefined
         },
 
@@ -240,9 +239,10 @@ export default {
         deleteLecture({ commit }, lectureId) {
             axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data !== 0) {
-                        commit('REMOVE_LECTURE', lectureId)
-                    }
+                    commit('REMOVE_LECTURE', res.data.id)
+                    store.dispatch('user_conferences/cancelParticipation', res.data.conference_id)
+
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -251,15 +251,6 @@ export default {
 
         incrementCommentsCount({ commit }, lectureId) {
             commit('COMMENT_INCREMENT', lectureId)
-        },
-
-        cancelParticipation({ commit, dispatch, getters }, conferenceId) {
-            store.dispatch('user_conferences/cancelParticipation', conferenceId)
-
-            const lecture = getters['lecture'](conferenceId)
-            dispatch('deleteLecture', lecture.id)
-
-            router.push({ name: 'conferences' })
         },
     }
 }
