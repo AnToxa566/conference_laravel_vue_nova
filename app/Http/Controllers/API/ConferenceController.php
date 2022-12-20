@@ -1,136 +1,78 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Conference\ConferenceStoreRequest;
+use App\Http\Requests\Conference\ConferenceUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Conference;
-use App\Models\Country;
+use Illuminate\Http\JsonResponse;
 
 class ConferenceController extends Controller
 {
-    protected function validation(Request $request)
+    public function fetchAll(): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'min:2', 'max:255'],
-            'date_time_event' => ['required', 'date', 'after_or_equal:today'],
-            'latitude' => ['nullable'],
-            'longitude' => ['nullable'],
-            'country' => ['required', 'string', 'max:255'],
-        ]);
+        $response = Conference::all();
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-    }
-
-    public function fetchAll()
-    {
-        $conferences = Conference::all();
-        $countries = Country::all();
-
-        $res = [
-            'conferences' => $conferences,
-            'countries' => $countries,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
-    }
-
-    public function fetchDetail($id)
-    {
-        $conference = Conference::where('id', $id)->first();
-
-        if (!$conference) {
-            return response()->json(['error' => 'ConferenceController::fetchDetail: Conference with the given id were not found.'], 404);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $res = [
-            'conference' => $conference,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
-    }
-
-    public function store(Request $request)
-    {
-        ConferenceController::validation($request);
-
-        $input = $request->all();
-        $input['latitude'] = $input['longitude'] == null ? null : $input['latitude'];
-        $input['longitude'] = $input['latitude'] == null ? null : $input['longitude'];
-
-        $conference = Conference::create($input);
-
-        $res = [
-            'conference' => $conference,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function edit($id)
+    public function fetchDetail(int $id): JsonResponse
     {
-        $conference = Conference::where('id', $id)->first();
+        $response = Conference::find($id);
 
-        if (!$conference) {
-            return response()->json(['error' => 'ConferenceController::edit: Conference with the id were not found.'], 404);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $res = [
-            'conference' => $conference,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function update(Request $request, $id)
+    public function store(ConferenceStoreRequest $request): JsonResponse
     {
-        $conference = Conference::where('id', $id)->first();
+        $response = Conference::create($request->validated());
 
-        if (!$conference) {
-            return response()->json(['error' => 'ConferenceController::update: Conference with the given id were not found.'], 404);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        ConferenceController::validation($request);
-
-        $input = $request->all();
-        $input['latitude'] = $input['longitude'] == null ? null : $input['latitude'];
-        $input['longitude'] = $input['latitude'] == null ? null : $input['longitude'];
-
-        $conference->update($input);
-
-        $res = [
-            'conference' => $conference,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function destroy($id)
+    public function update(ConferenceUpdateRequest $request, int $id): JsonResponse
     {
-        $conference = Conference::where('id', $id)->first();
+        $response = tap(Conference::find($id))->update($request->validated());
 
-        if (!$conference) {
-            return response()->json(['error' => 'ConferenceController::destroy: Conference with the given id were not found.'], 404);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $conference->delete();
+        $response->{'lectures'} = $response->lectures;
 
-        $res = [
-            'status' => 'ok',
-        ];
+        return response()->json($response);
+    }
 
-        return response()->json($res, 201);
+
+    public function destroy(int $id): JsonResponse
+    {
+        $response = Conference::find($id)->delete();
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
+        }
+
+        return response()->json($response);
     }
 }

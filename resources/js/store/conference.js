@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store'
 import router from '../router'
 import moment from 'moment'
 
@@ -98,17 +99,31 @@ export default {
             index = state.conferencesPaginatedData.paginated_conferences.map(conference => conference.id).indexOf(id);
             state.conferencesPaginatedData.paginated_conferences.splice(index, 1);
         },
+
+        UPDATE_LECTURES_CATEGORIES (state, lectures) {
+            lectures.forEach(lecture => {
+                lecture.category_id = null
+                store.dispatch('lecture/updateLecture', lecture)
+            })
+        },
     },
 
     actions: {
         fetchAllConferences({ commit }) {
             axios.get('/api/conferences')
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_CONFERENCES', res.data.conferences)
-                        commit('SET_COUNTRIES', res.data.countries)
-                        commit('SET_COUNTRIES_NAME', res.data.countries.map(country => country.name))
-                    }
+                    commit('SET_CONFERENCES', res.data)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+        fetchAllCountries({ commit }) {
+            axios.get('/api/country')
+                .then(res => {
+                    commit('SET_COUNTRIES', res.data)
+                    commit('SET_COUNTRIES_NAME', res.data.map(country => country.name))
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -129,18 +144,16 @@ export default {
         },
 
         fetchDetailConference({ commit, dispatch }, id) {
-            axios.get(`/api/conferences/${id}`)
+            axios.get(`/api/conferences/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_CONFERENCE', res.data.conference)
+                    commit('SET_CONFERENCE', res.data)
 
-                        commit('SET_ADDRESS_POSITION', {
-                            'lat': res.data.conference.latitude,
-                            'lng': res.data.conference.longitude
-                        })
+                    commit('SET_ADDRESS_POSITION', {
+                        'lat': res.data.latitude,
+                        'lng': res.data.longitude
+                    })
 
-                        dispatch('getFormatedAddress', res.data.conference)
-                    }
+                    dispatch('getFormatedAddress', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -148,12 +161,10 @@ export default {
         },
 
         storeConference({ commit }, conference) {
-            axios.post('/api/conferences/add', conference)
+            axios.post('/api/conferences/add', conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('ADD_CONFERENCE', res.data.conference)
-                        router.push({ name: 'conferenceShow', params: { id: res.data.conference.id } })
-                    }
+                    commit('ADD_CONFERENCE', res.data)
+                    router.push({ name: 'conferenceShow', params: { id: res.data.id } })
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -161,22 +172,36 @@ export default {
         },
 
         updateConference({ commit }, conference) {
-            axios.post(`/api/conferences/${conference.id}/update`, conference)
+            axios.post(`/api/conferences/${conference.id}/update`, conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('UPDATE_CONFERENCE', res.data.conference)
-                        router.go(-1)
+                    commit('UPDATE_CONFERENCE', res.data)
+
+                    if (res.data.lectures.length !== 0) {
+                        commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
                     }
+
+                    router.go(-1)
                 })
                 .catch(err => {
                     console.log(err.response)
                 })
         },
 
+        updateConferenceCategories({ state, dispatch }, categories) {
+            categories.forEach(category => {
+                let conferences = state.conferences.filter(conf => conf.category_id === category.id)
+
+                conferences.forEach(conference => {
+                    conference.category_id = null
+                    dispatch('updateConference', conference)
+                })
+            })
+        },
+
         deleteConference({ commit }, id) {
-            axios.get(`/api/conferences/${id}/delete`)
+            axios.get(`/api/conferences/${id}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
+                    if (res.data !== 0) {
                         commit('DELETE_CONFERENCE', id)
                         router.push({ name: 'conferences' })
                     }

@@ -2,26 +2,36 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '../store'
 
 
-/* Guest Components */
-const NotFound = () => import('../views/NotFound.vue')
-/* Guest Components */
+/* Error Components */
+const NotFound = () => import('../views/ErrorPages/NotFound.vue')
+/* Error Components */
+
+
+/* Admin Components */
+const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
+const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
+
+const Categories = () => import('../views/Category/Categories.vue')
+/* Admin Components */
 
 
 /* Guest Components */
-const Login = () => import('../views/Login.vue')
-const Register = () => import('../views/Register.vue')
-const Conferences = () => import('../views/Conferences.vue')
+const Login = () => import('../views/Auth/Login.vue')
+const Register = () => import('../views/Auth/Register.vue')
+const Conferences = () => import('../views/Conference/Conferences.vue')
 /* Guest Components */
 
 
 /* Authenticated Components */
-const ConferenceShow = () => import('../views/ConferenceShow.vue')
-const ConferenceEdit = () => import('../views/ConferenceEdit.vue')
-const ConferenceAdd = () => import('../views/ConferenceAdd.vue')
+const UserProfile = () => import('../views/User/UserProfile.vue')
 
-const Lectures = () => import('../views/Lectures.vue')
-const LectureShow = () => import('../views/LectureShow.vue')
-const LectureEdit = () => import('../views/LectureEdit.vue')
+const ConferenceShow = () => import('../views/Conference/ConferenceShow.vue')
+
+const Lectures = () => import('../views/Lecture/Lectures.vue')
+const LectureShow = () => import('../views/Lecture/LectureShow.vue')
+const LectureEdit = () => import('../views/Lecture/LectureEdit.vue')
+
+const FavoriteLectures = () => import('../views/Lecture/FavoriteLectures.vue')
 /* Authenticated Components */
 
 
@@ -67,6 +77,19 @@ const router = createRouter({
         /* Auth Components */
 
 
+        /* User Components */
+        {
+            name: "profile",
+            path: "/profile",
+            component: UserProfile,
+            meta: {
+                middleware: "auth",
+                title: `Profile`
+            }
+        },
+        /* User Components */
+
+
         /* Conference Components */
         {
             name: 'conferences',
@@ -74,7 +97,8 @@ const router = createRouter({
             component: Conferences,
             meta: {
                 middleware: "guest",
-                title: `Conferences`
+                title: `Conferences`,
+                breadCrumb: 'conferences',
             },
         },
         {
@@ -83,7 +107,8 @@ const router = createRouter({
             component: ConferenceShow,
             meta: {
                 middleware: "auth",
-                title: `Conference`
+                title: `Conference`,
+                breadCrumb: 'conference',
             }
         },
         {
@@ -91,7 +116,7 @@ const router = createRouter({
             name: 'conferenceAdd',
             component: ConferenceAdd,
             meta: {
-                middleware: "auth",
+                middleware: "admin",
                 title: `Add conference`
             }
         },
@@ -100,7 +125,7 @@ const router = createRouter({
             name: 'conferenceEdit',
             component: ConferenceEdit,
             meta: {
-                middleware: "auth",
+                middleware: "admin",
                 title: `Edit conference`
             }
         },
@@ -109,12 +134,13 @@ const router = createRouter({
 
         /* Lecture Components */
         {
-            path: '/conferences/:conference_id/lectures',
+            path: '/conferences/:id/lectures',
             name: 'lectures',
             component: Lectures,
             meta: {
                 middleware: "auth",
-                title: `Lectures`
+                title: `Lectures`,
+                breadCrumb: 'conference',
             }
         },
         {
@@ -123,7 +149,8 @@ const router = createRouter({
             component: LectureShow,
             meta: {
                 middleware: "auth",
-                title: `Lecture`
+                title: `Lecture`,
+                breadCrumb: 'lecture',
             }
         },
         {
@@ -135,7 +162,29 @@ const router = createRouter({
                 title: `Edit lecture`
             }
         },
+        {
+            path: '/favorite',
+            name: 'favorite',
+            component: FavoriteLectures,
+            meta: {
+                middleware: "auth",
+                title: `Favorite Lectures`
+            }
+        },
         /* Lecture Components */
+
+
+        /* Category Components */
+        {
+            path: '/categories',
+            name: 'categories',
+            component: Categories,
+            meta: {
+                middleware: "admin",
+                title: `Categories`
+            }
+        },
+        /* Category Components */
     ]
 })
 
@@ -149,6 +198,22 @@ router.beforeEach((to, from, next) => {
         }
         else {
             next({ name: "login" })
+        }
+    }
+    else if (to.meta.middleware === "admin") {
+        if (store.getters['auth/isAdmin']) {
+            next()
+        }
+        else {
+            next({ name: "404" })
+        }
+    }
+    else if (to.meta.middleware === "guest") {
+        if (store.state.auth.authenticated && (to.name === 'login' || to.name === 'register')) {
+            next({ name: "conferences" })
+        }
+        else {
+            next()
         }
     }
     else {

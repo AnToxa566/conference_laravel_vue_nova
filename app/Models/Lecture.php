@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +16,7 @@ class Lecture extends Model
     protected $fillable = [
         'user_id',
         'conference_id',
+        'category_id',
 
         'title',
         'date_time_start',
@@ -22,18 +25,23 @@ class Lecture extends Model
         'presentation_path',
     ];
 
-    public function user()
-    {
+    public function followingUsers() {
+      return $this->belongsToMany(User::class);
+    }
+
+    public function user() {
       return $this->belongsTo(User::class);
     }
 
-    public function conference()
-    {
+    public function conference() {
       return $this->belongsTo(Conference::class);
     }
 
-    public function comments()
-    {
+    public function comments() {
       return $this->hasMany(Comment::class);
     }
+
+    public function category() {
+      return $this->belongsTo(Category::class, 'category_id', 'id');
+  }
 }

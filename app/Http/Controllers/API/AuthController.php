@@ -1,80 +1,84 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\AuthLoginRequest;
+use App\Http\Requests\Auth\AuthRegisterRequest;
+use App\Http\Requests\Auth\AuthUpdateRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(AuthRegisterRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'birthdate' => ['required', 'date', 'before:tomorrow'],
-            'country' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+        $response = User::create($validated);
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        $user = User::create($input);
+        $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
 
-        $token = $user->createToken('apiToken')->plainTextToken;
-
-        $res = [
-            'user' => $user,
-            'token' => $token,
-            'status' => 'ok',
-        ];
-
-        return response($res, 201);
+        return response()->json($response);
     }
 
 
-    public function login(Request $request)
+    public function login(AuthLoginRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
+        $validated = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+        $response = User::where('email', $validated['email'])->first();
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'The provided credentials are incorrect.'], 400);
+        if (!Hash::check($validated['password'], $response->password)) {
+            return response()->json(['message' => 'Password doesn\'t match.'], 500);
         }
 
-        $token = $user->createToken('apiToken')->plainTextToken;
+        $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
 
-        $res = [
-            'user' => $user,
-            'token' => $token,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
-    public function logout(Request $request)
+
+    public function update(AuthUpdateRequest $request): JsonResponse
     {
-        return response()->json('ok');
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
+
+        $response = tap(User::find($validated['id']))->update($validated);
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
+        }
+
+        return response()->json($response);
+    }
+
+
+    public function logout(): JsonResponse
+    {
+        $response = User::find(auth('sanctum')->id());
+
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
+        }
+
+        $response->tokens()->delete();
+
+        return response()->json($response);
     }
 }

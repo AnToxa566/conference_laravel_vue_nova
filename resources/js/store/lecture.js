@@ -18,9 +18,19 @@ export default {
         lecture(state) {
             return state.lecture
         },
+        lectureById: (state) => (id) => {
+            return state.lectures.find(lecture => lecture.id === parseInt(id, 10));
+        },
+
         lectures(state) {
             return state.lectures
         },
+
+        lectureIdByConferenceId: (state) => (conferenceId) => {
+            const lecture = state.lectures.find(lecture => lecture.conference_id == conferenceId && lecture.user_id == store.state.auth.user.id)
+            return lecture ? lecture.id : undefined
+        },
+
         commentsCounts(state) {
             return state.commentsCounts
         },
@@ -130,9 +140,11 @@ export default {
         SET_LECTURE (state, value) {
             state.lecture = value
         },
+
         SET_LECTURES (state, value) {
             state.lectures = value
         },
+
         SET_COMMENTS_COUNTS (state, lectures) {
             state.commentsCounts = []
 
@@ -147,10 +159,19 @@ export default {
         PUSH_LECTURE (state, value) {
             state.lectures.push(value)
         },
+
+        PUSH_COMMENTS_COUNT (state, lectureId) {
+            state.commentsCounts.push({
+                'lecture_id': lectureId,
+                'comments_count': 0,
+            })
+        },
+
         UPDATE_LECTURE (state, value) {
             const index = state.lectures.map(lecture => lecture.id).indexOf(value.id);
             state.lectures.splice(index, 1, value);
         },
+
         REMOVE_LECTURE (state, id) {
             let index = state.lectures.map(lecture => lecture.id).indexOf(id);
             state.lectures.splice(index, 1);
@@ -166,74 +187,74 @@ export default {
         fetchAllLectures({ commit }) {
             axios.get('/api/lectures')
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_LECTURES', res.data.lectures)
-                        commit('SET_COMMENTS_COUNTS', res.data.lectures)
-                    }
+                    commit('SET_LECTURES', res.data)
+                    commit('SET_COMMENTS_COUNTS', res.data)
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
 
         fetchLectureById({ commit }, id) {
-            axios.get(`/api/lectures/${id}`)
+            axios.get(`/api/lectures/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_LECTURE', res.data.lecture)
-                    }
+                    commit('SET_LECTURE', res.data)
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
 
         storeLecture({ commit }, lecture) {
-            axios.post('/api/lectures/add', lecture)
+            axios.post('/api/lectures/add', lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('PUSH_LECTURE', res.data.lecture)
-                    }
+                    commit('PUSH_LECTURE', res.data)
+                    commit('PUSH_COMMENTS_COUNT', res.data.id)
+
+                    store.dispatch('user_conferences/joinConference', res.data.conference_id)
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
 
         updateLecture({ commit }, lecture) {
-            axios.post(`/api/lectures/${lecture.id}/update`, lecture)
+            axios.post(`/api/lectures/${lecture.id}/update`, lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('UPDATE_LECTURE', res.data.lecture)
-                        router.go(-1)
-                    }
+                    commit('UPDATE_LECTURE', res.data)
+                    router.go(-1)
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
 
-        deleteLecture({ commit }, conference_id) {
-            axios.get(`/api/lectures/delete/${store.state.auth.user.id}/${conference_id}`)
+        updateLectureCategories({ state, dispatch }, categories) {
+            categories.forEach(category => {
+                let lectures = state.lectures.filter(lect => lect.category_id === category.id)
+
+                lectures.forEach(lect => {
+                    lect.category_id = null
+                    dispatch('updateLecture', lect)
+                })
+            })
+        },
+
+        deleteLecture({ commit }, lectureId) {
+            axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('REMOVE_LECTURE', res.data.lecture_id)
-                    }
+                    commit('REMOVE_LECTURE', res.data.id)
+                    store.dispatch('user_conferences/cancelParticipation', res.data.conference_id)
+
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
 
-        incrementCommentsCount({ commit }, lecture_id) {
-            commit('COMMENT_INCREMENT', lecture_id)
-        },
-
-        cancelParticipation({ commit }, conference_id) {
-            store.dispatch('user_conferences/cancelParticipation', conference_id)
-            store.dispatch('lecture/deleteLecture', conference_id)
-
-            router.push({ name: 'conferences' })
+        incrementCommentsCount({ commit }, lectureId) {
+            commit('COMMENT_INCREMENT', lectureId)
         },
     }
 }

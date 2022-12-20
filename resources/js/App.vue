@@ -4,6 +4,8 @@
 
         <v-main>
             <v-container class="w-75 mx-auto">
+                <bread-crumb></bread-crumb>
+
                 <router-view></router-view>
             </v-container>
         </v-main>
@@ -22,9 +24,12 @@ export default {
 
     mounted() {
         this.$store.dispatch('auth/initData')
+        this.$store.dispatch('auth/fetchUserData')
+
         this.$store.dispatch('lecture/fetchAllLectures')
         this.$store.dispatch('conference/fetchAllConferences')
-        this.$store.dispatch('user_conferences/fetchJoinedConferences')
+        this.$store.dispatch('conference/fetchAllCountries')
+        this.$store.dispatch('category/fetchAllCategories')
     },
 }
 </script>

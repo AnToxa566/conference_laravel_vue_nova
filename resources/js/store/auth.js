@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store'
 import router from '../router'
 import userTypes from '../config/user_types'
 
@@ -14,6 +15,8 @@ export default {
 
         authErrors: {},
         hasAuthErrors: false,
+
+        config: null,
     },
 
     getters: {
@@ -43,8 +46,19 @@ export default {
     },
 
     mutations: {
-        SET_USER (state, value) {
-            state.user = value
+        SET_USER (state, user) {
+            state.user = user
+        },
+        SET_CONFIG (state, user) {
+            state.config = {
+                headers: {
+                    Authorization: `Bearer ${user.auth_token}`,
+                    Accept :'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+
+            localStorage.setItem('config', JSON.stringify(state.config))
         },
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -71,53 +85,84 @@ export default {
             commit('SET_ADMIN_TYPE', userTypes.ADMIN)
         },
 
-        login({ commit }, user) {
+        fetchUserData() {
+            store.dispatch('favorite/fetchFavoritedLecturesId')
+            store.dispatch('user_conferences/fetchJoinedConferences')
+        },
+
+        login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_USER', res.data.user)
-                        commit('SET_AUTHENTICATED', true)
-                        router.push({ name: 'conferences' })
-                    }
+                    commit('SET_USER', res.data)
+                    commit('SET_CONFIG', res.data)
+                    commit('SET_AUTHENTICATED', true)
+
+                    dispatch('fetchUserData')
+
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    console.log(err.response.data.error)
-
-                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
+
+                    console.log(err.response)
                 })
         },
 
-        register({ commit }, user) {
+        register({ commit, dispatch }, user) {
             axios.post('/api/register', user)
                 .then(res => {
-                    if (res.data.status === 'ok') {
-                        commit('SET_USER', res.data.user)
-                        commit('SET_AUTHENTICATED', true)
-                        commit('SET_REGISTER_ERRORS', {})
-                        router.push({ name: 'conferences' })
-                    }
+                    commit('SET_USER', res.data)
+                    commit('SET_CONFIG', res.data)
+
+                    commit('SET_AUTHENTICATED', true)
+                    commit('SET_AUTH_ERRORS', {})
+
+                    dispatch('fetchUserData')
+
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    commit('SET_AUTH_ERRORS', err.response.data.error)
+                    commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
+
+                    console.log(err.response)
                 })
         },
 
-        logout({ commit }) {
-            axios.get('/api/logout')
+        update({ commit, state }, user) {
+            axios.post('/api/profile/update', user, state.config)
                 .then(res => {
-                    if (res.data === 'ok') {
-                        commit('SET_USER', {})
-                        commit('SET_AUTHENTICATED', false)
-                        router.push({ name: 'conferences' })
-                    }
+                    commit('SET_USER', res.data)
+                    commit('SET_AUTH_ERRORS', {})
+
+                    router.push({ name: 'conferences' })
+                })
+                .catch(err => {
+                    commit('SET_AUTH_ERRORS', err.response.data.message)
+                    commit('SET_HAS_AUTH_ERRORS', true)
+
+                    console.log(err.response)
+                })
+        },
+
+        logout({ commit, state }) {
+            axios.get('/api/logout', state.config)
+                .then(res => {
+                    commit('SET_USER', {})
+                    commit('SET_AUTHENTICATED', false)
+
+                    store.dispatch('user_conferences/removeJoinedConferences')
+
+                    localStorage.removeItem('config')
+
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     console.log(err.response)

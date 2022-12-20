@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -26,7 +28,8 @@ class UsersTableSeeder extends Seeder
                 'type' => UserConsts::LISTENER,
                 'country' => 'Ukraine',
                 'email' => 'anton@groupbwt.com',
-                'phone_number' => '+38 (099) 112-4364',
+                'phone_number' => '+380991124364',
+                'country_phone_code' => 'UA',
                 'password' => Hash::make('12345678'),
             ],
             [
@@ -36,7 +39,8 @@ class UsersTableSeeder extends Seeder
                 'type' => UserConsts::ANNOUNCER,
                 'country' => 'Ukraine',
                 'email' => 'bohdan@groupbwt.com',
-                'phone_number' => '+38 (066) 203-7939',
+                'phone_number' => '+380662037939',
+                'country_phone_code' => 'UA',
                 'password' => Hash::make('12345678'),
             ],
             [
@@ -46,7 +50,8 @@ class UsersTableSeeder extends Seeder
                 'type' => UserConsts::ANNOUNCER,
                 'country' => 'Ukraine',
                 'email' => 'liza@groupbwt.com',
-                'phone_number' => '+38 (099) 888-8888',
+                'phone_number' => '+380998888888',
+                'country_phone_code' => 'UA',
                 'password' => Hash::make('12345678'),
             ],
         ];

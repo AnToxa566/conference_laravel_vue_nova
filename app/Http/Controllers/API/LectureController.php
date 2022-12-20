@@ -1,134 +1,83 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Lecture\LectureStoreRequest;
+use App\Http\Requests\Lecture\LectureUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
+use Illuminate\Http\JsonResponse;
 
 class LectureController extends Controller
 {
-    protected function validation(Request $request)
+    public function fetchAll(): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required'],
-            'conference_id' => ['required'],
+        $response = Lecture::all();
 
-            'title' => ['required', 'string', 'min:2', 'max:255'],
-            'date_time_start' => ['required', 'date'],
-            'date_time_end' => ['required', 'date'],
-            'description' => ['string'],
-            'presentation_path' => ['file', 'size:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
+
+        foreach ($response as $value) {
+            $value->{'comments_count'} = count($value->comments);
+        }
+
+        return response()->json($response);
     }
 
 
-    public function fetchAll()
+    public function fetchById(int $id): JsonResponse
     {
-        $lectures = Lecture::leftJoin('comments', 'lectures.id', '=', 'comments.lecture_id')
-                        ->select('lectures.*', DB::raw('count(comments.lecture_id) as comments_count'))
-                        ->groupBy('lectures.id')
-                        ->get();
+        $response = Lecture::find($id);
 
-        $res = [
-            'lectures' => $lectures,
-            'status' => 'ok',
-        ];
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
+        }
 
-        return response()->json($res, 201);
+        $response->{'comments_count'} = count($response->comments);
+
+        return response()->json($response);
     }
 
 
-    public function fetchById($id)
+    public function store(LectureStoreRequest $request): JsonResponse
     {
-        $lecture = Lecture::where('id', $id)->first();
+        $response = Lecture::create($request->validated());
 
-        if (!$lecture) {
-            return response()->json(['error' => 'LectureController::fetchById: Lecture with the given id were not found.'], 404);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $res = [
-            'lecture' => $lecture,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function store(Request $request)
+    public function update(LectureUpdateRequest $request, int $id): JsonResponse
     {
-        LectureController::validation($request);
+        $response = tap(Lecture::find($id))->update($request->validated());
 
-        $input = $request->all();
-
-        if ($request->hasFile('presentation_path')) {
-            $path = $request->file('presentation_path')->store('presentations');
-            $input['presentation_path'] = $path;
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        $lecture = Lecture::create($input);
-
-        $res = [
-            'lecture' => $lecture,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 
 
-    public function update(Request $request, $id)
+    public function destroy(int $id): JsonResponse
     {
-        $lecture = Lecture::where('id', $id)->first();
+        $response = tap(Lecture::find($id))->delete();
 
-        if (!$lecture) {
-            return response()->json(['error' => 'LectureController::update: Lecture with the given id were not found.'], 404);
+        if (!$response) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        LectureController::validation($request);
-
-        $input = $request->all();
-
-        if ($request->hasFile('presentation_path')) {
-            $path = $request->file('presentation_path')->store('presentations');
-            $input['presentation_path'] = $path;
-        }
-
-        $lecture->update($input);
-
-        $res = [
-            'lecture' => $lecture,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
-    }
-
-
-    public function destroy($user_id, $conference_id)
-    {
-        $lecture = Lecture::where('conference_id', $conference_id)->where('user_id', $user_id)->first();
-
-        if (!$lecture) {
-            return response()->json(['error' => 'LectureController::destroy: Lecture with the given id were not found.'], 401);
-        }
-
-        $lecture->delete();
-
-        $res = [
-            'lecture_id' => $lecture->id,
-            'status' => 'ok',
-        ];
-
-        return response()->json($res, 201);
+        return response()->json($response);
     }
 }

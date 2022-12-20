@@ -23,7 +23,7 @@
 
 
 <script>
-import LectureFormDialog from '../LectureFormDialog.vue'
+import LectureFormDialog from '../Lecture/LectureFormDialog.vue'
 import userTypes from '../../config/user_types'
 
 export default {
@@ -55,6 +55,9 @@ export default {
         user() {
             return this.$store.getters['auth/user']
         },
+        lectureId() {
+            return this.$store.getters['lecture/lectureIdByConferenceId'](this.conferenceId)
+        },
         authenticated() {
             return this.$store.getters['auth/authenticated']
         },
@@ -78,10 +81,11 @@ export default {
 
         cancelParticipation() {
             if (this.isJoined) {
-                this.$store.dispatch('user_conferences/cancelParticipation', this.conferenceId)
-
                 if (this.isAnnouncer) {
-                    this.$store.dispatch('lecture/deleteLecture', this.conferenceId)
+                    this.$store.dispatch('lecture/deleteLecture', this.lectureId)
+                }
+                else {
+                    this.$store.dispatch('user_conferences/cancelParticipation', this.conferenceId)
                 }
             }
         },
