@@ -22,7 +22,7 @@ export default {
     }),
 
     created() {
-        this.conferenceId = parseInt(this.$route.params.conference_id, 10);
+        this.conferenceId = parseInt(this.$route.params.id, 10);
     },
 
     computed: {

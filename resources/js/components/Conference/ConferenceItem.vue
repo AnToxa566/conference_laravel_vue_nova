@@ -34,6 +34,13 @@
                 <div
                     class="d-flex justify-content-end align-center"
                 >
+                    <div
+                        v-if="isJoined"
+                        class="mx-2"
+                    >
+                        <my-share-buttons></my-share-buttons>
+                    </div>
+
                     <v-chip
                         v-if="this.category"
                         prepend-icon="mdi-tag-outline"
@@ -42,10 +49,6 @@
                     >
                         {{ this.category.title }}
                     </v-chip>
-
-                    <div v-if="isJoined">
-                        <my-share-buttons></my-share-buttons>
-                    </div>
                 </div>
             </v-card-actions>
         </v-card>

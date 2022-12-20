@@ -18,6 +18,10 @@ export default {
         lecture(state) {
             return state.lecture
         },
+        lectureById: (state) => (id) => {
+            return state.lectures.find(lecture => lecture.id === parseInt(id, 10));
+        },
+
         lectures(state) {
             return state.lectures
         },

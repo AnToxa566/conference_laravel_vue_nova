@@ -97,7 +97,8 @@ const router = createRouter({
             component: Conferences,
             meta: {
                 middleware: "guest",
-                title: `Conferences`
+                title: `Conferences`,
+                breadCrumb: 'conferences',
             },
         },
         {
@@ -106,7 +107,8 @@ const router = createRouter({
             component: ConferenceShow,
             meta: {
                 middleware: "auth",
-                title: `Conference`
+                title: `Conference`,
+                breadCrumb: 'conference',
             }
         },
         {
@@ -132,12 +134,13 @@ const router = createRouter({
 
         /* Lecture Components */
         {
-            path: '/conferences/:conference_id/lectures',
+            path: '/conferences/:id/lectures',
             name: 'lectures',
             component: Lectures,
             meta: {
                 middleware: "auth",
-                title: `Lectures`
+                title: `Lectures`,
+                breadCrumb: 'conference',
             }
         },
         {
@@ -146,7 +149,8 @@ const router = createRouter({
             component: LectureShow,
             meta: {
                 middleware: "auth",
-                title: `Lecture`
+                title: `Lecture`,
+                breadCrumb: 'lecture',
             }
         },
         {

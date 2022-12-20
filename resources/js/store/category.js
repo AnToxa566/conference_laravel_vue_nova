@@ -39,6 +39,22 @@ export default {
         lectureNodes(state) {
             return state.lectureNodes
         },
+
+        getPathByLeafId: (state) => (leafId) => {
+            let leaf = state.categories.find(category => category.id === parseInt(leafId, 10))
+            let path = []
+
+            if (leaf) {
+                path.unshift(leaf)
+
+                while (leaf.parent_id) {
+                    leaf = state.categories.find(category => category.id === parseInt(leaf.parent_id, 10))
+                    if (leaf) path.unshift(leaf)
+                }
+            }
+
+            return path
+        }
     },
 
     mutations: {
@@ -69,7 +85,7 @@ export default {
             state.nodes = nodes
         },
 
-        SET_LECTURE_ROORS (state, parentId) {
+        SET_LECTURE_ROOTS (state, parentId) {
             state.lectureRoots = []
             state.lectureRoots.push(parentId)
         },
@@ -165,7 +181,7 @@ export default {
         },
 
         fetchBranche({ commit }, parentId) {
-            commit('SET_LECTURE_ROORS', parentId)
+            commit('SET_LECTURE_ROOTS', parentId)
             commit('SET_LECTURE_NODES', parentId)
         },
 

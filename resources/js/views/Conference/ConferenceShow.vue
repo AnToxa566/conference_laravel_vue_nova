@@ -91,9 +91,6 @@ export default {
         formatedAddress() {
             return this.$store.getters['conference/formatedAddress']
         },
-        tryGetAddressPosition() {
-            return this.$store.getters['conference/tryGetAddressPosition']
-        },
 
         joinedConferencesId() {
             return this.$store.getters['user_conferences/joinedConferencesId']

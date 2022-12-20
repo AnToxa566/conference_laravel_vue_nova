@@ -59,6 +59,7 @@ import "vue3-treeview/dist/style.css";
 
 // My UI Components
 import MyAppBar from './components/UI/MyAppBar.vue'
+import BreadCrumb from './components/UI/BreadCrumb.vue'
 import MyHeader from './components/UI/MyHeader.vue'
 import MyInfoCard from './components/UI/MyInfoCard.vue'
 import MyJoinCancelButtons from './components/UI/MyJoinCancelButtons.vue'
@@ -97,6 +98,7 @@ app
     .component('CategorySelected', CategorySelected)
 
     .component('MyAppBar', MyAppBar)
+    .component('BreadCrumb', BreadCrumb)
     .component('MyHeader', MyHeader)
     .component('MyInfoCard', MyInfoCard)
     .component('MyJoinCancelButtons', MyJoinCancelButtons)
