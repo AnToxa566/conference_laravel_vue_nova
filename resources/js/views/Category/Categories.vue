@@ -15,6 +15,17 @@
     >
     </category-tree>
 
+    <v-btn
+        size="small"
+        variant="tonal"
+        color="white"
+        class="my-2"
+
+        @click="onAddRootClick"
+    >
+        Add root category
+    </v-btn>
+
     <category-add-dialog
         v-model:showDialog="showDialog"
         @saveData="addCategory"
@@ -54,13 +65,18 @@ export default {
             this.parentNode = event
         },
 
+        onAddRootClick() {
+            this.showDialog = true
+            this.parentNode = null
+        },
+
         onRemoveClick(event) {
             this.$store.dispatch('category/deleteCategory', event.id)
         },
 
         addCategory(event) {
             this.$store.dispatch('category/storeCategory', {
-                parent_id: parseInt(this.parentNode.id),
+                parent_id: this.parentNode ? parseInt(this.parentNode.id) : null,
                 title: event,
             })
         }
