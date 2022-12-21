@@ -229,6 +229,22 @@ export default {
                 })
         },
 
+        downloadPresentation({ commit }, id) {
+            axios.get(`/api/lectures/${id}/presentation/download`, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    const fileLink = document.createElement('a')
+
+                    fileLink.href = URL.createObjectURL(new Blob([res.data]))
+                    fileLink.setAttribute('download', 'file.pptx')
+                    fileLink.click()
+
+                    URL.revokeObjectURL(fileLink.href)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+
         updateLectureCategories({ state, dispatch }, categories) {
             categories.forEach(category => {
                 let lectures = state.lectures.filter(lect => lect.category_id === category.id)

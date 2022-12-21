@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
 use Illuminate\Http\JsonResponse;
+use \Symfony\Component\HttpFoundation\StreamedResponse;
+
 
 class LectureController extends Controller
 {
@@ -41,6 +43,18 @@ class LectureController extends Controller
         $response->{'comments_count'} = count($response->comments);
 
         return response()->json($response);
+    }
+
+
+    public function downloadPresentation(int $id): JsonResponse|StreamedResponse
+    {
+        $response = Lecture::find($id);
+
+        if (Storage::disk('local')->exists($response->presentation_path)) {
+            return Storage::disk('local')->download($response->presentation_path);
+        }
+
+        return response()->json('Error! Please, try again.', 500);
     }
 
 

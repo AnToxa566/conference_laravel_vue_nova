@@ -1,17 +1,29 @@
 <template>
+
+    <!-- Header -->
+
     <my-header>
         <template v-slot:header>Lecture details</template>
     </my-header>
+
+
+    <!-- Title -->
 
     <my-info-card>
         <template v-slot:header> Topic </template>
         <template v-slot:body> {{ this.lecture.title }} </template>
     </my-info-card>
 
+
+    <!-- Date -->
+
     <my-info-card>
         <template v-slot:header> Date </template>
         <template v-slot:body> {{ this.formattedDate }} </template>
     </my-info-card>
+
+
+    <!-- Time -->
 
     <my-info-card>
         <template v-slot:header> Time </template>
@@ -21,15 +33,32 @@
         </template>
     </my-info-card>
 
+
+    <!-- Description -->
+
     <my-info-card>
         <template v-slot:header> Description </template>
         <template v-slot:body> {{ this.lecture.description }} </template>
     </my-info-card>
 
+
+    <!-- Presentation -->
+
     <my-info-card>
         <template v-slot:header> Presentation </template>
-        <template v-slot:body> TODO </template>
+        <template v-slot:body>
+            <span
+                class="text-decoration-underline"
+                style="cursor: pointer;"
+                @click="downloadPresentation"
+            >
+                {{ this.lecture.presentation_name }}
+            </span>
+        </template>
     </my-info-card>
+
+
+    <!-- Category -->
 
     <my-info-card
         v-if="this.category"
@@ -37,6 +66,9 @@
         <template v-slot:header> Category </template>
         <template v-slot:body> {{ this.category.title }} </template>
     </my-info-card>
+
+
+    <!-- Buttons -->
 
     <div
         v-if="isUserOwnThisLecture"
@@ -46,6 +78,9 @@
         <v-btn variant="text" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
     </div>
 
+
+    <!-- Comments Form and List-->
+
     <div class="py-3 mt-6 text-h6 font-weight-bold">
         Comments
     </div>
@@ -54,6 +89,7 @@
         :lecture_id="this.lectureId"
         @submit="storeComment"
     ></comment-form>
+
     <comment-list
         :lecture_id="this.lectureId"
     ></comment-list>
@@ -122,6 +158,10 @@ export default {
     },
 
     methods: {
+        downloadPresentation() {
+            this.$store.dispatch('lecture/downloadPresentation', this.lectureId)
+        },
+
         cancelParticipation() {
             this.$store.dispatch('lecture/deleteLecture', this.lectureId)
         },
