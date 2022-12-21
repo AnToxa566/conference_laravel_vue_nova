@@ -78,7 +78,6 @@ export default {
     methods: {
         async createLecture(lecture) {
             this.$store.dispatch('lecture/storeLecture', lecture)
-
             this.dialog = false
         },
     },

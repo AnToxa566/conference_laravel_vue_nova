@@ -23,6 +23,7 @@ class Lecture extends Model
         'date_time_end',
         'description',
         'presentation_path',
+        'presentation_name',
     ];
 
     public function followingUsers() {

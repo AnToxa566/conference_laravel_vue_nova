@@ -7,9 +7,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
 use Illuminate\Http\JsonResponse;
@@ -48,7 +46,17 @@ class LectureController extends Controller
 
     public function store(LectureStoreRequest $request): JsonResponse
     {
-        $response = Lecture::create($request->validated());
+        $response = $request->validated();
+
+        if ($request->hasFile('presentation')) {
+            $presentation_name = $request->file('presentation')->getClientOriginalName();
+            $presentation_path = Storage::disk('local')->put('presentations', $request->file('presentation'));
+
+            $response['presentation_name'] = $presentation_name;
+            $response['presentation_path'] = $presentation_path;
+        }
+
+        $response = Lecture::create($response);
 
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);

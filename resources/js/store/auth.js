@@ -54,7 +54,6 @@ export default {
                 headers: {
                     Authorization: `Bearer ${user.auth_token}`,
                     Accept :'application/json',
-                    'Content-Type': 'application/json'
                 }
             }
 

@@ -168,7 +168,7 @@ export default {
             date_time_end: '',
 
             description: '',
-            presentation_path: '',
+            presentation: null,
 
             category_id: null,
         },
@@ -302,15 +302,7 @@ export default {
                 return
             }
 
-            let reader = new FileReader()
-            reader.readAsDataURL(event.target.files[0])
-
-            let baseFile = ''
-            reader.onload = () => {
-                // baseFile = reader.result
-                // this.lecture.presentation_path = baseFile // TODO: Сохранение файла. При хранение в таком формате переполняется память vuex
-                this.lecture.presentation_path = 'TODO'
-            };
+            this.lecture.presentation = files[0]
         },
 
         isTimeFree(startDateTime, endDateTime = null) {
@@ -350,7 +342,7 @@ export default {
 
             data.append('title', lecture.title)
             data.append('description', lecture.description)
-            data.append('presentation_path', lecture.presentation_path)
+            data.append('presentation', lecture.presentation)
 
             return data
         },
