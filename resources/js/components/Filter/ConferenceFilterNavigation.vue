@@ -30,7 +30,10 @@
             <template v-slot:title> Date, before </template>
         </filter-date>
 
-        <filter-multiple-selects>
+        <filter-multiple-selects
+            v-model="selectedCategoriesId"
+            :selectItems="categories"
+        >
             <template v-slot:title> Category </template>
         </filter-multiple-selects>
     </v-expansion-panels>
@@ -43,6 +46,7 @@ export default {
         lecturesCountRange: [0, 0],
         dateAfter: null,
         dateBefore: null,
+        selectedCategoriesId: [],
     }),
 
     computed: {
@@ -59,6 +63,10 @@ export default {
         maxDateEvent() {
             return this.$store.getters['conference/getMaxDateEvent']
         },
+
+        categories() {
+            return this.$store.getters['category/categories']
+        }
     },
 
     mounted() {

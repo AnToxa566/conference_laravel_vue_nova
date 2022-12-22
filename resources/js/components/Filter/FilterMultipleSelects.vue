@@ -10,14 +10,21 @@
             class="py-2"
         >
             <v-select
-                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+                :model-value="modelValue"
+                :items="selectItems"
+
+                item-title="title"
+                item-value="id"
 
                 label="Select"
                 variant="solo"
 
+                chips
                 multiple
                 clearable
                 hide-details
+
+                @update:modelValue="updateSelect"
             ></v-select>
         </v-expansion-panel-text>
     </v-expansion-panel>
@@ -26,6 +33,20 @@
 
 <script>
 export default {
+    props: {
+        modelValue: [Array],
 
+        selectItems: {
+            type: Array,
+            required: false,
+            default: [],
+        },
+    },
+
+    methods: {
+        updateSelect(event) {
+            this.$emit('update:modelValue', event)
+        }
+    },
 }
 </script>
