@@ -4,8 +4,8 @@
         modelType="yyyy-MM-dd"
 
         :placeholder=this.placeholder
-        :minDate=this.minDate
-        :maxDate=this.maxDate
+        :minDate=this.min
+        :maxDate=this.max
 
         :modelValue="modelValue"
         :enableTimePicker="false"
@@ -35,16 +35,16 @@ export default {
             default: 'Enter a date'
         },
 
-        maxDate: {
-            type: Date,
-            required: false,
-            default: new Date(2100, 1, 1),
-        },
-
-        minDate: {
+        min: {
             type: Date,
             required: false,
             default: new Date(1800, 1, 1),
+        },
+
+        max: {
+            type: Date,
+            required: false,
+            default: new Date(2100, 1, 1),
         },
 
         hideDetails: {
@@ -56,10 +56,12 @@ export default {
 
     methods: {
         updateInput(event) {
-            const messageWrapper = document.getElementById("message__wrapper")
-
             this.$emit('update:modelValue', event)
-            this.modelValue ? messageWrapper.classList.remove("hidden__message") : messageWrapper.classList.add("hidden__message")
+
+            if (!this.hideDetails) {
+                const messageWrapper = document.getElementById("message__wrapper")
+                this.modelValue ? messageWrapper.classList.remove("hidden__message") : messageWrapper.classList.add("hidden__message")
+            }
         },
     },
 }

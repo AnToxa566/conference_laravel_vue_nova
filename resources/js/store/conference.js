@@ -67,6 +67,15 @@ export default {
             const counts = state.conferences.map(conference => conference.lectures_count)
             return Math.max(...counts)
         },
+
+        getMinDateEvent(state) {
+            const dates = state.conferences.map(conference => new Date(conference.date_time_event))
+            return Math.min(...dates)
+        },
+        getMaxDateEvent(state) {
+            const dates = state.conferences.map(conference => new Date(conference.date_time_event))
+            return Math.max(...dates)
+        },
     },
 
     mutations: {

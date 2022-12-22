@@ -4,8 +4,6 @@
             <slot name="title"></slot>
         </v-expansion-panel-title>
 
-        <!-- TODO: v-model -->
-
         <v-expansion-panel-text
             class="py-2"
         >

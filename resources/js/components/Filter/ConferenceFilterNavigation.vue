@@ -4,7 +4,7 @@
         multiple
     >
         <filter-range-slider
-            v-model="sliderRange"
+            v-model="lecturesCountRange"
 
             :min="minLecturesCount"
             :max="maxLecturesCount"
@@ -12,11 +12,21 @@
             <template v-slot:title> Number of lectures </template>
         </filter-range-slider>
 
-        <filter-date>
+        <filter-date
+            v-model="dateAfter"
+
+            :minDate="new Date(minDateEvent)"
+            :maxDate="new Date(maxDateEvent)"
+        >
             <template v-slot:title> Date, after </template>
         </filter-date>
 
-        <filter-date>
+        <filter-date
+            v-model="dateBefore"
+
+            :minDate="new Date(minDateEvent)"
+            :maxDate="new Date(maxDateEvent)"
+        >
             <template v-slot:title> Date, before </template>
         </filter-date>
 
@@ -30,21 +40,29 @@
 <script>
 export default {
     data: () => ({
-        sliderRange: [0, 0]
+        lecturesCountRange: [0, 0],
+        dateAfter: null,
+        dateBefore: null,
     }),
 
     computed: {
         minLecturesCount() {
             return this.$store.getters['conference/getMinCountLectures']
         },
-
         maxLecturesCount() {
             return this.$store.getters['conference/getMaxCountLectures']
+        },
+
+        minDateEvent() {
+            return this.$store.getters['conference/getMinDateEvent']
+        },
+        maxDateEvent() {
+            return this.$store.getters['conference/getMaxDateEvent']
         },
     },
 
     mounted() {
-        this.sliderRange = [this.minLecturesCount, this.maxLecturesCount]
+        this.lecturesCountRange = [this.minLecturesCount, this.maxLecturesCount]
     },
 }
 </script>

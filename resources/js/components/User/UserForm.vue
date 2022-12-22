@@ -34,7 +34,7 @@
             v-model="user.birthdate"
             placeholder="Date of birthday"
 
-            :maxDate="new Date()"
+            :max="new Date()"
         >
         </custom-datepicker>
 
