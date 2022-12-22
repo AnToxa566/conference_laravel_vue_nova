@@ -58,6 +58,15 @@ export default {
         formatedAddress(state) {
             return state.formatedAddress
         },
+
+        getMinCountLectures(state) {
+            const counts = state.conferences.map(conference => conference.lectures_count)
+            return Math.min(...counts)
+        },
+        getMaxCountLectures(state) {
+            const counts = state.conferences.map(conference => conference.lectures_count)
+            return Math.max(...counts)
+        },
     },
 
     mutations: {
@@ -144,6 +153,8 @@ export default {
         },
 
         fetchDetailConference({ commit, dispatch }, id) {
+            console.log('hello fetch ' + id)
+
             axios.get(`/api/conferences/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_CONFERENCE', res.data)

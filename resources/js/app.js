@@ -77,6 +77,12 @@ import CountrySelected from './components/FormComponents/CountrySelected.vue'
 import CategorySelected from './components/FormComponents/CategorySelected.vue'
 
 
+// My Filter Components
+import FilterMultipleSelects from './components/Filter/FilterMultipleSelects.vue'
+import FilterRangeSlider from './components/Filter/FilterRangeSlider.vue'
+import FilterDate from './components/Filter/FilterDate.vue'
+
+
 // Vue
 import { createApp } from 'vue';
 import App from './App.vue'
@@ -104,6 +110,10 @@ app
     .component('MyInfoCard', MyInfoCard)
     .component('MyJoinCancelButtons', MyJoinCancelButtons)
     .component('MyShareButtons', MyShareButtons)
+
+    .component('FilterMultipleSelects', FilterMultipleSelects)
+    .component('FilterRangeSlider', FilterRangeSlider)
+    .component('FilterDate', FilterDate)
 
     .use(vuetify)
     .use(store)

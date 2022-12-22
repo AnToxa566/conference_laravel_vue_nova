@@ -12,7 +12,11 @@
         @update:modelValue="updateInput"
     />
 
-    <div id="message__wrapper" class="hidden__message">
+    <div
+        v-if="!hideDetails"
+        id="message__wrapper"
+        class="hidden__message"
+    >
         <p class="message">Field is required!</p>
     </div>
 </template>
@@ -41,6 +45,12 @@ export default {
             type: Date,
             required: false,
             default: new Date(1800, 1, 1),
+        },
+
+        hideDetails: {
+            type: Boolean,
+            required: false,
+            default: false,
         },
     },
 

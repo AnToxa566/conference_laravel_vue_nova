@@ -17,7 +17,7 @@ class ConferenceController extends Controller
 {
     public function fetchAll(): JsonResponse
     {
-        $response = Conference::all();
+        $response = Conference::withCount('lectures')->get();
 
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);
