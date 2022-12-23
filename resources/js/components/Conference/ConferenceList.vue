@@ -1,69 +1,68 @@
 <template>
     <conference-item
-        v-for="conference in conferencesPaginatedData.paginated_conferences"
+        v-for="conference in conferencesPaginatedData.paginatedConferences"
         :key="conference.id"
         :conference="conference"
-        :isJoined="joinedConferencesId.includes(parseInt(conference.id, 10))"
-        :isAdmin="user.type === this.adminType"
     >
     </conference-item>
 
     <div class="text-center">
         <v-pagination
             v-model="page"
-            :length="conferencesPaginatedData.total_pages"
+            :length="conferencesPaginatedData.totalPages"
             @update:modelValue="getResults"
         ></v-pagination>
     </div>
 </template>
 
 <script>
-import ConferenceItem from './ConferenceItem.vue'
+import { defineAsyncComponent } from 'vue'
 
 export default {
-    data() {
-        return {
-            page: 1,
-        }
-    },
+    data: () => ({
+        page: 1,
+        perPage: 15,
+    }),
 
     components: {
-        ConferenceItem,
+        ConferenceItem: defineAsyncComponent(() => import('./ConferenceItem.vue'))
     },
 
     computed: {
-        authenticated() {
+        isAuthenticated() {
             return this.$store.getters['auth/authenticated']
         },
-        user() {
-            return this.$store.getters['auth/user']
+
+        conferences() {
+            return this.$store.getters['conference/conferences']
         },
-        adminType() {
-            return this.$store.getters['auth/adminType']
+        filteredConferences() {
+            return this.$store.getters['conference/filteredConferences']
         },
 
         conferencesPaginatedData() {
             return this.$store.getters['conference/conferencesPaginatedData']
         },
-
-        joinedConferencesId() {
-            return this.$store.getters['user_conferences/joinedConferencesId']
-        },
     },
 
     created() {
-        this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
+        this.$store.dispatch('conference/fetchPaginatedConferences', {
+            page: this.page,
+            perPage: this.perPage,
+            conferences: this.isAuthenticated ? this.filteredConferences : this.conferences,
+        })
     },
 
     methods: {
         getResults(event) {
             this.page = event
-            this.$store.dispatch('conference/fetchPaginatedConferences', this.page)
+
+            this.$store.dispatch('conference/fetchPaginatedConferences', {
+                page: this.page,
+                perPage: this.perPage,
+                conferences: this.isAuthenticated ? this.filteredConferences : this.conferences,
+            })
         },
     },
 }
 </script>
-
-<style scoped>
-
-</style>

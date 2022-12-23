@@ -9,6 +9,7 @@ export default {
     state: {
         conference: {},
         conferences: [],
+        filteredConferences: [],
         conferencesPaginatedData: {},
 
         countries: [],
@@ -28,6 +29,9 @@ export default {
 
         conferences(state) {
             return state.conferences
+        },
+        filteredConferences(state) {
+            return state.filteredConferences
         },
         conferencesPaginatedData(state) {
             return state.conferencesPaginatedData
@@ -79,11 +83,14 @@ export default {
     },
 
     mutations: {
+        SET_CONFERENCE (state, value) {
+            state.conference = value
+        },
         SET_CONFERENCES (state, value) {
             state.conferences = value
         },
-        SET_CONFERENCE (state, value) {
-            state.conference = value
+        SET_FILTERED_CONFERENCES (state, value) {
+            state.filteredConferences = value
         },
         SET_CONFERENCES_PAGINATED_DATA (state, value) {
             state.conferencesPaginatedData = value
@@ -114,8 +121,8 @@ export default {
             let index = state.conferences.map(conference => conference.id).indexOf(id);
             state.conferences.splice(index, 1);
 
-            index = state.conferencesPaginatedData.paginated_conferences.map(conference => conference.id).indexOf(id);
-            state.conferencesPaginatedData.paginated_conferences.splice(index, 1);
+            index = state.conferencesPaginatedData.paginatedConferences.map(conference => conference.id).indexOf(id);
+            state.conferencesPaginatedData.paginatedConferences.splice(index, 1);
         },
 
         UPDATE_LECTURES_CATEGORIES (state, lectures) {
@@ -137,29 +144,51 @@ export default {
                 })
         },
 
-        fetchAllCountries({ commit }) {
-            axios.get('/api/country')
-                .then(res => {
-                    commit('SET_COUNTRIES', res.data)
-                    commit('SET_COUNTRIES_NAME', res.data.map(country => country.name))
-                })
-                .catch(err => {
-                    console.log(err.response)
-                })
-        },
 
-        fetchPaginatedConferences({ commit, state }, page) {
+        fetchPaginatedConferences({ commit, state }, query) {
             const pagination = {
-                current_page: page,
-                per_page: 15,
-                total_conferences: state.conferences.length,
-                total_pages: Math.ceil(state.conferences.length / 15),
+                currentPage: query.page,
+                perPage: query.perPage,
+                totalConferences: query.conferences.length,
+                totalPages: Math.ceil(query.conferences.length / query.perPage),
 
-                paginated_conferences: state.conferences.slice((page - 1) * 15, page * 15)
+                paginatedConferences: query.conferences.slice((query.page - 1) * query.perPage, query.page * query.perPage)
             }
 
             commit('SET_CONFERENCES_PAGINATED_DATA', pagination)
         },
+
+
+        fetchFilteredConferences({ commit, state, dispatch }, query) {
+            let filteredConferences = []
+
+            if (query) {
+                if (query.lecturesCountRange.length !== 0) {
+                    filteredConferences = state.conferences.filter(c => c.lectures_count >= query.lecturesCountRange[0] && c.lectures_count <= query.lecturesCountRange[1])
+                }
+
+                if (query.dateAfter) {
+                    filteredConferences = filteredConferences.filter(c => new Date(c.date_time_event) >= new Date(query.dateAfter))
+                }
+
+                if (query.dateBefore) {
+                    filteredConferences = filteredConferences.filter(c => new Date(c.date_time_event) <= new Date(query.dateBefore))
+                }
+
+                if (query.selectedCategoriesId.length !== 0) {
+                    filteredConferences = filteredConferences.filter(c => query.selectedCategoriesId.includes(c.category_id))
+                }
+            }
+
+            commit('SET_FILTERED_CONFERENCES', filteredConferences)
+
+            dispatch('fetchPaginatedConferences', {
+                page: state.conferencesPaginatedData.currentPage,
+                perPage: state.conferencesPaginatedData.perPage,
+                conferences: filteredConferences,
+            })
+        },
+
 
         fetchDetailConference({ commit, dispatch }, id) {
             console.log('hello fetch ' + id)
@@ -180,6 +209,19 @@ export default {
                 })
         },
 
+
+        fetchAllCountries({ commit }) {
+            axios.get('/api/country')
+                .then(res => {
+                    commit('SET_COUNTRIES', res.data)
+                    commit('SET_COUNTRIES_NAME', res.data.map(country => country.name))
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+
         storeConference({ commit }, conference) {
             axios.post('/api/conferences/add', conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
@@ -190,6 +232,7 @@ export default {
                     console.log(err.response)
                 })
         },
+
 
         updateConference({ commit }, conference) {
             axios.post(`/api/conferences/${conference.id}/update`, conference, JSON.parse(localStorage.getItem('config')))
@@ -207,6 +250,7 @@ export default {
                 })
         },
 
+
         updateConferenceCategories({ state, dispatch }, categories) {
             categories.forEach(category => {
                 let conferences = state.conferences.filter(conf => conf.category_id === category.id)
@@ -217,6 +261,7 @@ export default {
                 })
             })
         },
+
 
         deleteConference({ commit }, id) {
             axios.get(`/api/conferences/${id}/delete`, JSON.parse(localStorage.getItem('config')))
@@ -230,6 +275,7 @@ export default {
                     console.log(err.response)
                 })
         },
+
 
         async getFormatedAddress({commit}, conference) {
             if (conference.latitude !== null && conference.longitude !== null) {

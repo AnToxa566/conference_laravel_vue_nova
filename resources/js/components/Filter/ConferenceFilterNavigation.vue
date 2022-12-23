@@ -4,35 +4,43 @@
         multiple
     >
         <filter-range-slider
-            v-model="lecturesCountRange"
+            v-model="filter.lecturesCountRange"
 
             :min="minLecturesCount"
             :max="maxLecturesCount"
+
+            @update:modelValue="updateFilters"
         >
             <template v-slot:title> Number of lectures </template>
         </filter-range-slider>
 
         <filter-date
-            v-model="dateAfter"
+            v-model="filter.dateAfter"
 
             :minDate="new Date(minDateEvent)"
             :maxDate="new Date(maxDateEvent)"
+
+            @update:modelValue="updateFilters"
         >
             <template v-slot:title> Date, after </template>
         </filter-date>
 
         <filter-date
-            v-model="dateBefore"
+            v-model="filter.dateBefore"
 
             :minDate="new Date(minDateEvent)"
             :maxDate="new Date(maxDateEvent)"
+
+            @update:modelValue="updateFilters"
         >
             <template v-slot:title> Date, before </template>
         </filter-date>
 
         <filter-multiple-selects
-            v-model="selectedCategoriesId"
+            v-model="filter.selectedCategoriesId"
             :selectItems="categories"
+
+            @update:modelValue="updateFilters"
         >
             <template v-slot:title> Category </template>
         </filter-multiple-selects>
@@ -43,11 +51,20 @@
 <script>
 export default {
     data: () => ({
-        lecturesCountRange: [0, 0],
-        dateAfter: null,
-        dateBefore: null,
-        selectedCategoriesId: [],
+        filter: {
+            lecturesCountRange: [0, 0],
+            dateAfter: null,
+            dateBefore: null,
+            selectedCategoriesId: [],
+        },
+
     }),
+
+    created() {
+        this.filter.lecturesCountRange = [this.minLecturesCount, this.maxLecturesCount]
+
+        this.$store.dispatch('conference/fetchFilteredConferences', this.filter)
+    },
 
     computed: {
         minLecturesCount() {
@@ -69,8 +86,10 @@ export default {
         }
     },
 
-    mounted() {
-        this.lecturesCountRange = [this.minLecturesCount, this.maxLecturesCount]
+    methods: {
+        updateFilters() {
+            this.$store.dispatch('conference/fetchFilteredConferences', this.filter)
+        },
     },
 }
 </script>

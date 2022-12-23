@@ -83,6 +83,10 @@ import FilterRangeSlider from './components/Filter/FilterRangeSlider.vue'
 import FilterDate from './components/Filter/FilterDate.vue'
 
 
+// My Skeleton Components
+import ConferenceItemSkeleton from './components/Skeleton/ConferenceItemSkeleton.vue'
+
+
 // Vue
 import { createApp } from 'vue';
 import App from './App.vue'
@@ -114,6 +118,8 @@ app
     .component('FilterMultipleSelects', FilterMultipleSelects)
     .component('FilterRangeSlider', FilterRangeSlider)
     .component('FilterDate', FilterDate)
+
+    .component('ConferenceItemSkeleton', ConferenceItemSkeleton)
 
     .use(vuetify)
     .use(store)

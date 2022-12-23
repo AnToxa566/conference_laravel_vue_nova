@@ -3,16 +3,28 @@
         <template v-slot:header>Conferences</template>
     </my-header>
 
-    <v-row>
-        <v-col cols="3">
+    <div class="d-flex">
+        <div
+            v-if="isAuthenticated"
+            class="w-25 me-4"
+        >
             <conference-filter-navigation></conference-filter-navigation>
-        </v-col>
+        </div>
 
-        <v-col cols="9">
-           <conference-list></conference-list>
-        </v-col>
-    </v-row>
+        <div class="w-100">
+            <suspense>
+                <template #default>
+                    <conference-list></conference-list>
+                </template>
+
+                <template #fallback>
+                    <conference-item-skeleton></conference-item-skeleton>
+                </template>
+            </suspense>
+        </div>
+    </div>
 </template>
+
 
 <script>
 import ConferenceList from '../../components/Conference/ConferenceList.vue'
@@ -23,9 +35,11 @@ export default {
         ConferenceList,
         ConferenceFilterNavigation,
     },
+
+    computed: {
+        isAuthenticated() {
+            return this.$store.getters['auth/authenticated']
+        }
+    },
 }
 </script>
-
-<style scoped>
-
-</style>

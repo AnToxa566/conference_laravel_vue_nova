@@ -55,6 +55,7 @@
     </v-hover>
 </template>
 
+
 <script>
 export default {
     props: {
@@ -62,17 +63,16 @@ export default {
             type: Object,
             required: true,
         },
-        isJoined: {
-            type: Boolean,
-            required: true,
-        },
-        isAdmin: {
-            type: Boolean,
-            required: true,
-        }
     },
 
     computed: {
+        isJoined() {
+            return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conference.id, 10))
+        },
+        isAdmin() {
+            return this.$store.getters['auth/user'].type === this.$store.getters['auth/adminType']
+        },
+
         formatedDateTime() {
             return this.$store.getters['conference/formatedDateTime'](this.conference.id)
         },
@@ -89,6 +89,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
     .v-card:not(.on-hover) {
