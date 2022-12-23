@@ -10,8 +10,7 @@ export default {
     state: {
         lecture: {},
         lectures: [],
-
-        commentsCounts: [],
+        filteredLectures: [],
     },
 
     getters: {
@@ -25,14 +24,13 @@ export default {
         lectures(state) {
             return state.lectures
         },
+        filteredLectures(state) {
+            return state.filteredLectures
+        },
 
         lectureIdByConferenceId: (state) => (conferenceId) => {
             const lecture = state.lectures.find(lecture => lecture.conference_id == conferenceId && lecture.user_id == store.state.auth.user.id)
             return lecture ? lecture.id : undefined
-        },
-
-        commentsCounts(state) {
-            return state.commentsCounts
         },
 
         titleRules() {
@@ -145,26 +143,12 @@ export default {
             state.lectures = value
         },
 
-        SET_COMMENTS_COUNTS (state, lectures) {
-            state.commentsCounts = []
-
-            lectures.forEach(lecture => {
-                state.commentsCounts.push({
-                    'lecture_id': lecture.id,
-                    'comments_count': lecture.comments_count ? lecture.comments_count : 0,
-                })
-            })
+        SET_FILTERED_LECTURES (state, value) {
+            state.filteredLectures = value
         },
 
         PUSH_LECTURE (state, value) {
             state.lectures.push(value)
-        },
-
-        PUSH_COMMENTS_COUNT (state, lectureId) {
-            state.commentsCounts.push({
-                'lecture_id': lectureId,
-                'comments_count': 0,
-            })
         },
 
         UPDATE_LECTURE (state, value) {
@@ -177,9 +161,9 @@ export default {
             state.lectures.splice(index, 1);
         },
 
-        COMMENT_INCREMENT (state, lectureId) {
-            const counterIndex = state.commentsCounts.findIndex(counter => counter.lecture_id === lectureId);
-            state.commentsCounts[counterIndex].comments_count++
+        COMMENT_INCREMENT (state, id) {
+            const index = state.lectures.findIndex(lec => lec.id === id);
+            state.lectures[index].comments_count++
         }
     },
 
@@ -188,7 +172,16 @@ export default {
             axios.get('/api/lectures')
                 .then(res => {
                     commit('SET_LECTURES', res.data)
-                    commit('SET_COMMENTS_COUNTS', res.data)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+        fetchFilteredLectures({ commit }, filter) {
+            axios.post('/api/lectures/filtered', filter, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('SET_FILTERED_LECTURES', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -209,8 +202,6 @@ export default {
             axios.post('/api/lectures/add', lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('PUSH_LECTURE', res.data)
-                    commit('PUSH_COMMENTS_COUNT', res.data.id)
-
                     store.dispatch('user_conferences/joinConference', res.data.conference_id)
                 })
                 .catch(err => {

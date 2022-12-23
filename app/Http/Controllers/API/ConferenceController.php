@@ -47,6 +47,8 @@ class ConferenceController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
+        $response->{'lectures_count'} = 0;
+
         return response()->json($response);
     }
 
@@ -60,6 +62,7 @@ class ConferenceController extends Controller
         }
 
         $response->{'lectures'} = $response->lectures;
+        $response->{'lectures_count'} = count($response->lectures);
 
         return response()->json($response);
     }

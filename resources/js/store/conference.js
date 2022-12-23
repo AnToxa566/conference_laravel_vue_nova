@@ -191,8 +191,6 @@ export default {
 
 
         fetchDetailConference({ commit, dispatch }, id) {
-            console.log('hello fetch ' + id)
-
             axios.get(`/api/conferences/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_CONFERENCE', res.data)

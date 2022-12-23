@@ -7,9 +7,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
+use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
+use App\Models\Conference;
 use Illuminate\Http\JsonResponse;
 use \Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -18,17 +20,33 @@ class LectureController extends Controller
 {
     public function fetchAll(): JsonResponse
     {
-        $response = Lecture::all();
+        return response()->json(Lecture::withCount('comments')->get());
+    }
 
-        if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+
+    public function fetchFiltered(LectureFetchFilteredRequest $request): JsonResponse
+    {
+        $request->validated();
+
+        $conference = Conference::find($request->get('conferenceId'));
+        $query = $conference->lectures()->withCount('comments');
+
+        $query->whereRaw('TIMESTAMPDIFF(MINUTE, CAST(date_time_start AS DATETIME), CAST(date_time_end AS DATETIME)) >= ?', [$request->get('minDuration')]);
+        $query->whereRaw('TIMESTAMPDIFF(MINUTE, CAST(date_time_start AS DATETIME), CAST(date_time_end AS DATETIME)) <= ?', [$request->get('maxDuration')]);
+
+        if ($request->filled('startTimeAfter')) {
+            $query->whereTime('date_time_start', '>=', $request->get('startTimeAfter'));
         }
 
-        foreach ($response as $value) {
-            $value->{'comments_count'} = count($value->comments);
+        if ($request->filled('startTimeBefore')) {
+            $query->whereTime('date_time_start', '<=', $request->get('startTimeBefore'));
         }
 
-        return response()->json($response);
+        if ($request->filled('categoriesId') && count($request->categoriesId)) {
+            $query->whereIn('category_id', $request->get('categoriesId'));
+        }
+
+        return response()->json($query->get());
     }
 
 
@@ -51,7 +69,7 @@ class LectureController extends Controller
         $response = Lecture::find($id);
 
         if (Storage::disk('local')->exists($response->presentation_path)) {
-            return Storage::disk('local')->download($response->presentation_path);
+            return response()->download('app/' . $response->presentation_path); //Storage::disk('local')->download($response->presentation_path);
         }
 
         return response()->json('Error! Please, try again.', 500);
@@ -76,6 +94,8 @@ class LectureController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
+        $response->{'comments_count'} = 0;
+
         return response()->json($response);
     }
 
@@ -87,6 +107,8 @@ class LectureController extends Controller
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);
         }
+
+        $response->{'comments_count'} = 0;
 
         return response()->json($response);
     }

@@ -71,6 +71,7 @@ Route::controller(LectureController::class)->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/lectures/{id}', 'fetchById')->name('lectures.fetchById');
+        Route::post('/lectures/filtered', 'fetchFiltered')->name('lectures.fetchFiltered');
         Route::get('/lectures/{id}/presentation/download', 'downloadPresentation')->name('lectures.downloadPresentation');
 
         Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');

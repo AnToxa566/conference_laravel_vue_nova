@@ -3,9 +3,22 @@
         <template v-slot:header>Lectures</template>
     </my-header>
 
-    <lecture-list
-        :lectures="this.lecturesOfConference"
-    ></lecture-list>
+    <div class="d-flex">
+        <div
+            v-if="isAuthenticated"
+            class="w-25 me-4"
+        >
+            <lecture-filter-navigation
+                :conferenceId="this.conferenceId"
+            ></lecture-filter-navigation>
+        </div>
+
+        <div class="w-100">
+            <lecture-list
+                :lectures="this.filteredLectures"
+            ></lecture-list>
+        </div>
+    </div>
 </template>
 
 
@@ -26,14 +39,13 @@ export default {
     },
 
     computed: {
-        lecturesOfConference() {
-            return this.$store.getters['lecture/lectures'].filter(lecture => parseInt(lecture.conference_id, 10) === this.conferenceId)
+        isAuthenticated() {
+            return this.$store.getters['auth/authenticated']
+        },
+
+        filteredLectures() {
+            return this.$store.getters['lecture/filteredLectures']
         },
     },
 }
 </script>
-
-
-<style scoped>
-
-</style>

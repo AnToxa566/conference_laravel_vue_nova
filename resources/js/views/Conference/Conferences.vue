@@ -28,12 +28,10 @@
 
 <script>
 import ConferenceList from '../../components/Conference/ConferenceList.vue'
-import ConferenceFilterNavigation from '../../components/Filter/ConferenceFilterNavigation.vue';
 
 export default {
     components: {
         ConferenceList,
-        ConferenceFilterNavigation,
     },
 
     computed: {

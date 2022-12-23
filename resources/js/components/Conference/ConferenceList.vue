@@ -6,7 +6,14 @@
     >
     </conference-item>
 
-    <div class="text-center">
+    <div
+        v-if="!this.conferencesPaginatedData.paginatedConferences.length"
+        class="text-subtitle-1 font-weight-medium text-center"
+    >
+        Conferences not found
+    </div>
+
+    <div v-else class="text-center">
         <v-pagination
             v-model="page"
             :length="conferencesPaginatedData.totalPages"

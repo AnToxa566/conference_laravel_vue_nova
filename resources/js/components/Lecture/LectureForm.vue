@@ -131,6 +131,7 @@
 
 
 <script>
+import lecture from '../../config/lecture'
 import moment from 'moment'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
@@ -260,11 +261,11 @@ export default {
             if (endTotalMinutes - startTotalMinutes < 0) {
                 return 'The end time cannot be earlier than the start time!'
             }
-            else if (endTotalMinutes - startTotalMinutes < 10) {
-                return 'The lecture cannot last less than 10 minutes!'
+            else if (endTotalMinutes - startTotalMinutes < lecture.MIN_LECTURE_DURATION) {
+                return `The lecture cannot last less than ${lecture.MIN_LECTURE_DURATION} minutes!`
             }
-            else if (endTotalMinutes - startTotalMinutes > 60) {
-                return 'The lecture should last no more than 60 minutes!'
+            else if (endTotalMinutes - startTotalMinutes > lecture.MAX_LECTURE_DURATION) {
+                return `The lecture should last no more than ${lecture.MAX_LECTURE_DURATION} minutes!`
             }
 
             const customerDateTimeStart = new Date(this.getFormatedDateTime(this.lecture.date_time_start))

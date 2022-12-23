@@ -3,6 +3,9 @@
         variant="accordion"
         multiple
     >
+
+        <!-- Find conferences whose number of lectures is contained in this range -->
+
         <filter-range-slider
             v-model="filter.lecturesCountRange"
 
@@ -13,6 +16,9 @@
         >
             <template v-slot:title> Number of lectures </template>
         </filter-range-slider>
+
+
+        <!-- Find conferences which starts in this date or after -->
 
         <filter-date
             v-model="filter.dateAfter"
@@ -25,6 +31,9 @@
             <template v-slot:title> Date, after </template>
         </filter-date>
 
+
+        <!-- Find conferences which starts in this date or before -->
+
         <filter-date
             v-model="filter.dateBefore"
 
@@ -36,6 +45,9 @@
             <template v-slot:title> Date, before </template>
         </filter-date>
 
+
+        <!-- Find conferences which contains any of these selected categories -->
+
         <filter-multiple-selects
             v-model="filter.selectedCategoriesId"
             :selectItems="categories"
@@ -45,6 +57,9 @@
             <template v-slot:title> Category </template>
         </filter-multiple-selects>
     </v-expansion-panels>
+
+
+    <!-- Reset all filters button -->
 
     <div
         class="text-red-darken-1 my-4"
@@ -70,8 +85,7 @@ export default {
 
     created() {
         this.filter.lecturesCountRange = [this.minLecturesCount, this.maxLecturesCount]
-
-        this.$store.dispatch('conference/fetchFilteredConferences', this.filter)
+        this.updateFilters()
     },
 
     computed: {

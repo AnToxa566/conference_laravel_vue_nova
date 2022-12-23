@@ -8,9 +8,9 @@
 
     <div
         v-if="!this.lectures.length"
-        class="text-h6 font-weight-medium text-center"
+        class="text-subtitle-1 font-weight-medium text-center"
     >
-        Lectures not added yet :(
+        Lectures not found
     </div>
 </template>
 
