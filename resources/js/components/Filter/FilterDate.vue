@@ -6,7 +6,7 @@
 
         <v-expansion-panel-text>
             <custom-datepicker
-                v-model="selectedDate"
+                :modelValue="modelValue"
 
                 :min="minDate"
                 :max="maxDate"
@@ -22,10 +22,6 @@
 
 <script>
 export default {
-    data: () => ({
-        selectedDate: null,
-    }),
-
     props: {
         modelValue: [String],
 
@@ -40,10 +36,6 @@ export default {
             required: false,
             default: new Date(2100, 1, 1),
         },
-    },
-
-    mounted() {
-        this.selectedDate = this.modelValue
     },
 
     methods: {

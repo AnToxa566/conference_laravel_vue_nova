@@ -45,6 +45,14 @@
             <template v-slot:title> Category </template>
         </filter-multiple-selects>
     </v-expansion-panels>
+
+    <div
+        class="text-red-darken-1 my-4"
+        style="cursor: pointer;"
+        @click="reserFilters"
+    >
+        Reset filters
+    </div>
 </template>
 
 
@@ -89,6 +97,15 @@ export default {
     methods: {
         updateFilters() {
             this.$store.dispatch('conference/fetchFilteredConferences', this.filter)
+        },
+
+        reserFilters() {
+            this.filter.lecturesCountRange = [this.minLecturesCount, this.maxLecturesCount]
+            this.filter.dateAfter = null
+            this.filter.dateBefore = null
+            this.filter.selectedCategoriesId = []
+
+            this.updateFilters()
         },
     },
 }
