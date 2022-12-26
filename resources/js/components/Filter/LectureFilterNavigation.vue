@@ -118,6 +118,7 @@ export default {
             beforeTimeHours = beforeTimeHours && beforeTimeHours < 10 ? '0' + beforeTimeHours : beforeTimeHours
             beforeTimeMinutes = beforeTimeMinutes && beforeTimeMinutes < 10 ? '0' + beforeTimeMinutes : beforeTimeMinutes
 
+            this.$store.commit('lecture/SET_FILTERED_LECTURES', [])
 
             this.$store.dispatch('lecture/fetchFilteredLectures', {
                 conferenceId: this.conferenceId,

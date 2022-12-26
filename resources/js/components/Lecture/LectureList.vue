@@ -5,13 +5,6 @@
         :lecture="lecture"
     >
     </lecture-item>
-
-    <div
-        v-if="!this.lectures.length"
-        class="text-subtitle-1 font-weight-medium text-center"
-    >
-        Lectures not found
-    </div>
 </template>
 
 

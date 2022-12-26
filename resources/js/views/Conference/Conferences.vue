@@ -12,15 +12,7 @@
         </div>
 
         <div class="w-100">
-            <suspense>
-                <template #default>
-                    <conference-list></conference-list>
-                </template>
-
-                <template #fallback>
-                    <conference-item-skeleton></conference-item-skeleton>
-                </template>
-            </suspense>
+            <conference-list></conference-list>
         </div>
     </div>
 </template>

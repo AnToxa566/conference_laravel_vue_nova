@@ -110,6 +110,7 @@ export default {
 
     methods: {
         updateFilters() {
+            this.$store.commit('conference/SET_FILTERED_CONFERENCES', [])
             this.$store.dispatch('conference/fetchFilteredConferences', this.filter)
         },
 

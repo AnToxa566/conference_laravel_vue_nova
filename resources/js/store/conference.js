@@ -145,7 +145,7 @@ export default {
         },
 
 
-        fetchPaginatedConferences({ commit, state }, query) {
+        fetchPaginatedConferences({ commit }, query) {
             const pagination = {
                 currentPage: query.page,
                 perPage: query.perPage,

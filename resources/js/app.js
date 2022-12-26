@@ -89,6 +89,7 @@ import FilterTime from './components/Filter/FilterTime.vue'
 
 // My Skeleton Components
 import ConferenceItemSkeleton from './components/Skeleton/ConferenceItemSkeleton.vue'
+import LectureItemSkeleton from './components/Skeleton/LectureItemSkeleton.vue'
 
 
 // Vue
@@ -128,6 +129,7 @@ app
     .component('FilterTime', FilterTime)
 
     .component('ConferenceItemSkeleton', ConferenceItemSkeleton)
+    .component('LectureItemSkeleton', LectureItemSkeleton)
 
     .use(vuetify)
     .use(store)

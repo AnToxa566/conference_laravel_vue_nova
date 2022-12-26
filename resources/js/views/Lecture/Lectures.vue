@@ -15,8 +15,13 @@
 
         <div class="w-100">
             <lecture-list
+                v-if="this.filteredLectures.length !== 0"
                 :lectures="this.filteredLectures"
             ></lecture-list>
+
+            <lecture-item-skeleton
+                v-else
+            ></lecture-item-skeleton>
         </div>
     </div>
 </template>

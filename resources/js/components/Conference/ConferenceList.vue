@@ -1,29 +1,28 @@
 <template>
-    <conference-item
-        v-for="conference in conferencesPaginatedData.paginatedConferences"
-        :key="conference.id"
-        :conference="conference"
-    >
-    </conference-item>
-
     <div
-        v-if="!this.conferencesPaginatedData.paginatedConferences.length"
-        class="text-subtitle-1 font-weight-medium text-center"
+        v-if="this.filteredConferences.length !== 0"
     >
-        Conferences not found
-    </div>
+        <conference-item
+            v-for="conference in conferencesPaginatedData.paginatedConferences"
+            :key="conference.id"
+            :conference="conference"
+        >
+        </conference-item>
 
-    <div v-else class="text-center">
         <v-pagination
             v-model="page"
             :length="conferencesPaginatedData.totalPages"
             @update:modelValue="getResults"
         ></v-pagination>
     </div>
+
+    <conference-item-skeleton
+        v-else
+    ></conference-item-skeleton>
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
+import ConferenceItem from './ConferenceItem.vue'
 
 export default {
     data: () => ({
@@ -32,7 +31,7 @@ export default {
     }),
 
     components: {
-        ConferenceItem: defineAsyncComponent(() => import('./ConferenceItem.vue'))
+        ConferenceItem,
     },
 
     computed: {
