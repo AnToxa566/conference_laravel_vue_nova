@@ -39,6 +39,14 @@ class ConferenceController extends Controller
     }
 
 
+    public function fetchSearchedConferences(string $search, int $limit): JsonResponse
+    {
+        $response = Conference::where('title', 'LIKE', '%'.$search.'%')->limit($limit)->get();
+
+        return response()->json($response);
+    }
+
+
     public function store(ConferenceStoreRequest $request): JsonResponse
     {
         $response = Conference::create($request->validated());

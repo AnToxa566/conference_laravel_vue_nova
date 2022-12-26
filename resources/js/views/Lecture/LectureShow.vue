@@ -107,12 +107,10 @@ export default {
         CommentList,
     },
 
-    data() {
-        return {
-            conferenceId: null,
-            lectureId: null,
-        };
-    },
+    data: () => ({
+        conferenceId: null,
+        lectureId: null,
+    }),
 
     created() {
         this.conferenceId = parseInt(this.$route.params.conference_id, 10);
@@ -172,8 +170,3 @@ export default {
     }
 }
 </script>
-
-
-<style scoped>
-
-</style>

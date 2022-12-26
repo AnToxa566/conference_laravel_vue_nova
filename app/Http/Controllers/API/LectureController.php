@@ -24,6 +24,14 @@ class LectureController extends Controller
     }
 
 
+    public function fetchSearchedLectures(string $search, int $limit): JsonResponse
+    {
+        $response = Lecture::where('title', 'LIKE', '%'.$search.'%')->limit($limit)->get();
+
+        return response()->json($response);
+    }
+
+
     public function fetchFiltered(LectureFetchFilteredRequest $request): JsonResponse
     {
         $request->validated();

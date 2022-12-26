@@ -60,6 +60,9 @@ import "vue3-treeview/dist/style.css";
 
 // My UI Components
 import MyAppBar from './components/UI/MyAppBar.vue'
+import DropdownMenu from './components/UI/DropdownMenu.vue'
+import AppBarFavorite from './components/UI/AppBarFavorite.vue'
+import AppBarSearchInput from './components/UI/AppBarSearchInput.vue'
 import BreadCrumb from './components/UI/BreadCrumb.vue'
 import MyHeader from './components/UI/MyHeader.vue'
 import MyInfoCard from './components/UI/MyInfoCard.vue'
@@ -115,6 +118,9 @@ app
     .component('CategorySelected', CategorySelected)
 
     .component('MyAppBar', MyAppBar)
+    .component('DropdownMenu', DropdownMenu)
+    .component('AppBarFavorite', AppBarFavorite)
+    .component('AppBarSearchInput', AppBarSearchInput)
     .component('BreadCrumb', BreadCrumb)
     .component('MyHeader', MyHeader)
     .component('MyInfoCard', MyInfoCard)

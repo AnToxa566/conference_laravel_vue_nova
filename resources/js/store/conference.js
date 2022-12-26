@@ -10,6 +10,7 @@ export default {
         conference: {},
         conferences: [],
         filteredConferences: [],
+        searchedConferences: [],
         conferencesPaginatedData: {},
 
         countries: [],
@@ -32,6 +33,9 @@ export default {
         },
         filteredConferences(state) {
             return state.filteredConferences
+        },
+        searchedConferences(state) {
+            return state.searchedConferences
         },
         conferencesPaginatedData(state) {
             return state.conferencesPaginatedData
@@ -91,6 +95,9 @@ export default {
         },
         SET_FILTERED_CONFERENCES (state, value) {
             state.filteredConferences = value
+        },
+        SET_SEARCHED_CONFERENCES (state, value) {
+            state.searchedConferences = value
         },
         SET_CONFERENCES_PAGINATED_DATA (state, value) {
             state.conferencesPaginatedData = value
@@ -201,6 +208,17 @@ export default {
                     })
 
                     dispatch('getFormatedAddress', res.data)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+
+        searchConferences({ commit }, query) {
+            axios.get(`/api/conferences/search/${query.search}/limit/${query.limit}`, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('SET_SEARCHED_CONFERENCES', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)

@@ -35,18 +35,3 @@ export default {
     },
 }
 </script>
-
-
-<!-- <style>
-    .shimmer {
-        color: lightgray;
-
-        -webkit-mask:linear-gradient(-60deg,rgb(30, 30, 30) 30%,rgba(45, 45, 45, 0.333),rgb(30, 30, 30) 70%) right/300% 100%;
-        background-repeat: no-repeat;
-        animation: shimmer 2.5s infinite;
-    }
-
-    @keyframes shimmer {
-        100% {-webkit-mask-position:left}
-    }
-</style> -->

@@ -47,6 +47,7 @@ Route::controller(ConferenceController::class)->group(function () {
     Route::get('/conferences', 'fetchAll')->name('conferences.fetchAll');
 
     Route::middleware(['auth:sanctum'])->get('/conferences/{id}', 'fetchDetail')->name('conferences.fetchDetail');
+    Route::middleware(['auth:sanctum'])->get('/conferences/search/{search}/limit/{limit}', 'fetchSearchedConferences')->name('conferences.fetchSearchedConferences');
 
     Route::middleware(['admin', 'auth:sanctum'])->group(function () {
         Route::post('/conferences/add', 'store')->name('conferences.store');
@@ -72,6 +73,7 @@ Route::controller(LectureController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/lectures/{id}', 'fetchById')->name('lectures.fetchById');
         Route::post('/lectures/filtered', 'fetchFiltered')->name('lectures.fetchFiltered');
+        Route::get('/lectures/search/{search}/limit/{limit}', 'fetchSearchedLectures')->name('lectures.fetchSearchedLectures');
         Route::get('/lectures/{id}/presentation/download', 'downloadPresentation')->name('lectures.downloadPresentation');
 
         Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');

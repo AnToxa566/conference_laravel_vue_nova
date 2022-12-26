@@ -9,7 +9,9 @@ export default {
 
     state: {
         lecture: {},
+
         lectures: [],
+        searchedLectures: [],
         filteredLectures: [],
     },
 
@@ -23,6 +25,9 @@ export default {
 
         lectures(state) {
             return state.lectures
+        },
+        searchedLectures(state) {
+            return state.searchedLectures
         },
         filteredLectures(state) {
             return state.filteredLectures
@@ -143,6 +148,10 @@ export default {
             state.lectures = value
         },
 
+        SET_SEARCHED_LECTURES (state, value) {
+            state.searchedLectures = value
+        },
+
         SET_FILTERED_LECTURES (state, value) {
             state.filteredLectures = value
         },
@@ -192,6 +201,16 @@ export default {
             axios.get(`/api/lectures/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_LECTURE', res.data)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+        searchLectures({ commit }, query) {
+            axios.get(`/api/lectures/search/${query.search}/limit/${query.limit}`, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('SET_SEARCHED_LECTURES', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
