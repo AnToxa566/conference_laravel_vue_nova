@@ -34,8 +34,6 @@ class LectureUpdateRequest extends FormRequest
             'date_time_start' => ['required', 'date'],
             'date_time_end' => ['required', 'date'],
             'description' => ['required', 'string'],
-
-            'presentation' => ['required', 'file', 'size:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
         ];
     }
 }

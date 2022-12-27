@@ -157,7 +157,10 @@ export default {
 
     methods: {
         downloadPresentation() {
-            this.$store.dispatch('lecture/downloadPresentation', this.lectureId)
+            this.$store.dispatch('lecture/downloadPresentation', {
+                id: this.lecture.id,
+                presentationName: this.lecture.presentation_name,
+            })
         },
 
         cancelParticipation() {

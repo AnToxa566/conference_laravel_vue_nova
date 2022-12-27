@@ -13,8 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Lecture;
 use App\Models\Conference;
 use Illuminate\Http\JsonResponse;
-use \Symfony\Component\HttpFoundation\StreamedResponse;
-
+use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LectureController extends Controller
 {
@@ -72,15 +71,18 @@ class LectureController extends Controller
     }
 
 
-    public function downloadPresentation(int $id): JsonResponse|StreamedResponse
+    public function downloadPresentation(int $id): JsonResponse|BinaryFileResponse
     {
-        $response = Lecture::find($id);
+        $query = Lecture::find($id);
 
-        if (Storage::disk('local')->exists($response->presentation_path)) {
-            return response()->download('app/' . $response->presentation_path); //Storage::disk('local')->download($response->presentation_path);
+        if (!Storage::disk('local')->exists($query->presentation_path)) {
+            return response()->json('Error! Please, try again.', 500);
         }
 
-        return response()->json('Error! Please, try again.', 500);
+        $path = storage_path('app/' . $query->presentation_path);
+        $response = response()->download($path, $query->presentation_name);
+
+        return $response;
     }
 
 
@@ -116,7 +118,7 @@ class LectureController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
-        $response->{'comments_count'} = 0;
+        $response->{'comments_count'} = count($response->comments);
 
         return response()->json($response);
     }

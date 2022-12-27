@@ -26,13 +26,13 @@ class LectureFetchFilteredRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'conferenceId' => ['required', 'numeric'],
+            'conferenceId' => ['required', 'numeric', 'exists:App\Models\Conference,id'],
 
-            'minDuration' => ['required', 'numeric', 'min:0'],
-            'maxDuration' => ['required', 'numeric'],
+            'minDuration' => ['required', 'numeric', 'min:0', 'lte:maxDuration'],
+            'maxDuration' => ['required', 'numeric', 'gte:minDuration'],
 
-            'startTimeAfter' => ['nullable', 'date_format:H:i:s'],
-            'startTimeBefore' => ['nullable', 'date_format:H:i:s'],
+            'startTimeAfter' => ['nullable', 'date_format:H:i:s', 'before_or_equal:startTimeBefore'],
+            'startTimeBefore' => ['nullable', 'date_format:H:i:s', 'after_or_equal:startTimeAfter'],
 
             'categoriesId' => ['nullable', 'array'],
         ];

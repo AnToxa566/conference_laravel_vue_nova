@@ -239,19 +239,18 @@ export default {
                 })
         },
 
-        downloadPresentation({ commit }, id) {
-            axios.get(`/api/lectures/${id}/presentation/download`, JSON.parse(localStorage.getItem('config')))
+        downloadPresentation({ }, query) {
+            axios.get(`/api/lectures/${query.id}/presentation/download`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
                 .then(res => {
+                    const blob = new Blob([res.data])
                     const fileLink = document.createElement('a')
 
-                    fileLink.href = URL.createObjectURL(new Blob([res.data]))
-                    fileLink.setAttribute('download', 'file.pptx')
+                    fileLink.href = URL.createObjectURL(blob)
+                    fileLink.download = query.presentationName
                     fileLink.click()
-
-                    URL.revokeObjectURL(fileLink.href)
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err.response)
                 })
         },
 
