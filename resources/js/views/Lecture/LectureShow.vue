@@ -75,7 +75,11 @@
         class="d-flex"
     >
         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conferenceId}/lectures/${this.lectureId}/edit`)"> Edit </v-btn>
-        <v-btn variant="text" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
+
+        <my-join-cancel-buttons
+            :isJoined="true"
+            :conferenceId="this.conferenceId"
+        ></my-join-cancel-buttons>
     </div>
 
 
@@ -161,10 +165,6 @@ export default {
                 id: this.lecture.id,
                 presentationName: this.lecture.presentation_name,
             })
-        },
-
-        cancelParticipation() {
-            this.$store.dispatch('lecture/deleteLecture', this.lectureId)
         },
 
         async storeComment(comment) {

@@ -59,16 +59,17 @@ import "vue3-treeview/dist/style.css";
 
 
 // My UI Components
-import MyAppBar from './components/UI/MyAppBar.vue'
-import DropdownMenu from './components/UI/DropdownMenu.vue'
 import AppBarFavorite from './components/UI/AppBarFavorite.vue'
+import ActionConfirmation from './components/UI/ActionConfirmation.vue'
 import AppBarSearchInput from './components/UI/AppBarSearchInput.vue'
 import BreadCrumb from './components/UI/BreadCrumb.vue'
+import DropdownMenu from './components/UI/DropdownMenu.vue'
+import FavoriteBtn from './components/UI/FavoriteBtn.vue'
+import MyAppBar from './components/UI/MyAppBar.vue'
 import MyHeader from './components/UI/MyHeader.vue'
 import MyInfoCard from './components/UI/MyInfoCard.vue'
 import MyJoinCancelButtons from './components/UI/MyJoinCancelButtons.vue'
 import MyShareButtons from './components/UI/MyShareButtons.vue'
-import FavoriteBtn from './components/UI/FavoriteBtn.vue'
 
 
 // My Form Components
@@ -118,6 +119,7 @@ app
     .component('CategorySelected', CategorySelected)
 
     .component('MyAppBar', MyAppBar)
+    .component('ActionConfirmation', ActionConfirmation)
     .component('DropdownMenu', DropdownMenu)
     .component('AppBarFavorite', AppBarFavorite)
     .component('AppBarSearchInput', AppBarSearchInput)

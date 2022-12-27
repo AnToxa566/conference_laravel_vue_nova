@@ -12,17 +12,27 @@
                 color="white"
                 @click="this.onAddClick(props)"
             >
-                {{ this.addTagIcon }}
+                mdi-tag-plus-outline
             </v-icon>
 
             <v-icon
                 v-if="this.deletion"
                 size="small"
                 color="red-darken-2"
-                @click="this.onRemoveClick(props)"
+                @click="this.openConfirmationDialog(props)"
             >
-                {{ this.removeTagIcon }}
+                mdi-tag-minus-outline
             </v-icon>
+
+            <action-confirmation
+                v-model="confirmationDialog"
+
+                title="Delete category?"
+                text="Are you sure you want to delete this category?"
+
+                @confirm="this.onRemoveClick"
+            >
+            </action-confirmation>
         </template>
     </Tree>
 </template>
@@ -85,8 +95,8 @@ export default {
             },
         },
 
-        addTagIcon: 'mdi-tag-plus-outline',
-        removeTagIcon: 'mdi-tag-minus-outline',
+        confirmationDialog: false,
+        nodeToDelete: null,
     }),
 
     created() {
@@ -98,12 +108,23 @@ export default {
             this.$emit('categorySelected', event)
         },
 
+        openConfirmationDialog(props) {
+            this.nodeToDelete = props.node
+            this.confirmationDialog = true
+        },
+
         onAddClick(props) {
             this.$emit('addClick', props.node)
         },
 
-        onRemoveClick(props) {
-            this.$emit('removeClick', props.node)
+        onRemoveClick(event) {
+            if (event) {
+               this.$emit('removeClick', this.nodeToDelete)
+            }
+            else {
+                this.nodeToDelete = null
+            }
+
         },
     },
 }

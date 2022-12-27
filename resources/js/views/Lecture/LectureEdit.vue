@@ -19,7 +19,11 @@
         @submit="updateLecture"
     >
         <template v-slot:extraButtons>
-            <v-btn variant="text" color="white" class="mx-1" @click="this.cancelParticipation()"> Сancel participation </v-btn>
+            <my-join-cancel-buttons
+                :isJoined="true"
+                :conferenceId="this.conferenceId"
+            ></my-join-cancel-buttons>
+
             <v-btn variant="tonal" color="white" class="mx-1" @click="$router.go(-1)"> Back </v-btn>
         </template>
     </lecture-form>
@@ -34,12 +38,10 @@ export default {
         LectureForm,
     },
 
-    data() {
-        return {
-            conferenceId: null,
-            lectureId: null,
-        };
-    },
+    data: () => ({
+        conferenceId: null,
+        lectureId: null,
+    }),
 
     created() {
         this.conferenceId = parseInt(this.$route.params.conference_id, 10);
@@ -71,10 +73,6 @@ export default {
     },
 
     methods: {
-        cancelParticipation() {
-            this.$store.dispatch('lecture/deleteLecture', this.lectureId)
-        },
-
         async updateLecture(lecture) {
             lecture.id = this.lectureId
             this.$store.dispatch('lecture/updateLecture', lecture)
