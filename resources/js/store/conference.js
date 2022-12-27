@@ -16,6 +16,8 @@ export default {
         countries: [],
         countriesName: [],
 
+        error: '',
+
         addressPosition: '',
         formatedAddress: '',
     },
@@ -39,6 +41,10 @@ export default {
         },
         conferencesPaginatedData(state) {
             return state.conferencesPaginatedData
+        },
+
+        error(state) {
+            return state.error
         },
 
         countries(state) {
@@ -103,6 +109,10 @@ export default {
             state.conferencesPaginatedData = value
         },
 
+        SET_ERROR (state, value) {
+            state.error = value
+        },
+
         SET_COUNTRIES (state, value) {
             state.countries = value
         },
@@ -144,6 +154,7 @@ export default {
         fetchAllConferences({ commit }) {
             axios.get('/api/conferences')
                 .then(res => {
+                    commit('SET_ERROR', '')
                     commit('SET_CONFERENCES', res.data)
                 })
                 .catch(err => {
@@ -176,9 +187,12 @@ export default {
                         perPage: state.conferencesPaginatedData.perPage,
                         conferences: res.data,
                     })
+
+                    commit('SET_ERROR', '')
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 
@@ -228,10 +242,12 @@ export default {
             axios.post('/api/conferences/add', conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('ADD_CONFERENCE', res.data)
+                    commit('SET_ERROR', '')
                     router.push({ name: 'conferenceShow', params: { id: res.data.id } })
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 
@@ -245,10 +261,12 @@ export default {
                         commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
                     }
 
+                    commit('SET_ERROR', '')
                     router.go(-1)
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 

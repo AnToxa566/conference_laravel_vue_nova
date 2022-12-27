@@ -13,6 +13,8 @@ export default {
         lectures: [],
         searchedLectures: [],
         filteredLectures: [],
+
+        error: '',
     },
 
     getters: {
@@ -31,6 +33,10 @@ export default {
         },
         filteredLectures(state) {
             return state.filteredLectures
+        },
+
+        error(state) {
+            return state.error
         },
 
         lectureIdByConferenceId: (state) => (conferenceId) => {
@@ -156,6 +162,10 @@ export default {
             state.filteredLectures = value
         },
 
+        SET_ERROR (state, value) {
+            state.error = value
+        },
+
         PUSH_LECTURE (state, value) {
             state.lectures.push(value)
         },
@@ -191,9 +201,11 @@ export default {
             axios.post('/api/lectures/filtered', filter, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_FILTERED_LECTURES', res.data)
+                    commit('SET_ERROR', '')
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 
@@ -221,10 +233,12 @@ export default {
             axios.post('/api/lectures/add', lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('PUSH_LECTURE', res.data)
+                    commit('SET_ERROR', '')
                     store.dispatch('user_conferences/joinConference', res.data.conference_id)
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 
@@ -232,10 +246,12 @@ export default {
             axios.post(`/api/lectures/${lecture.id}/update`, lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('UPDATE_LECTURE', res.data)
+                    commit('SET_ERROR', '')
                     router.go(-1)
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 

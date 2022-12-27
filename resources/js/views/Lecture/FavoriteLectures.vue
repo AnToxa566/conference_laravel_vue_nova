@@ -4,8 +4,16 @@
     </my-header>
 
     <lecture-list
+        v-if="this.favoriteLectures.length !== 0"
         :lectures="this.favoriteLectures"
     ></lecture-list>
+
+    <div
+        v-else
+        class="text-center text-h6"
+    >
+        No favorites lectures yet
+    </div>
 </template>
 
 

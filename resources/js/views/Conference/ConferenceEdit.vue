@@ -3,6 +3,12 @@
         <template v-slot:header>Update conference</template>
     </my-header>
 
+    <custom-error-alert
+        :errorMessage='this.error'
+        class="mb-6"
+    >
+    </custom-error-alert>
+
     <v-form
         action=""
         @submit="update"
@@ -164,6 +170,10 @@ export default {
             return this.$store.getters['category/nodes']
         },
 
+        error() {
+            return this.$store.getters['conference/error']
+        },
+
         countriesName() {
             return this.$store.getters['conference/countriesName']
         },
@@ -190,6 +200,7 @@ export default {
     created() {
         this.id = this.$route.params.id;
         this.$store.dispatch('conference/fetchDetailConference', this.id)
+        this.$store.commit('conference/SET_ERROR', '')
 
         this.countries = this.$store.getters['conference/countriesName']
     },

@@ -37,4 +37,17 @@ class LectureFetchFilteredRequest extends FormRequest
             'categoriesId' => ['nullable', 'array'],
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, mixed>
+     */
+    public function messages(): array
+    {
+        return [
+            'startTimeAfter.before_or_equal' => "'Time after' must be before or equal to 'Time before'",
+            'startTimeBefore.after_or_equal' => "'Time before' must be after or equal to 'Time after'",
+        ];
+    }
 }

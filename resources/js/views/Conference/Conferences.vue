@@ -3,6 +3,12 @@
         <template v-slot:header>Conferences</template>
     </my-header>
 
+    <custom-error-alert
+        :errorMessage='this.error'
+        class="mb-6"
+    >
+    </custom-error-alert>
+
     <div class="d-flex">
         <div
             v-if="isAuthenticated"
@@ -29,7 +35,11 @@ export default {
     computed: {
         isAuthenticated() {
             return this.$store.getters['auth/authenticated']
-        }
+        },
+
+        error() {
+            return this.$store.getters['conference/error']
+        },
     },
 }
 </script>

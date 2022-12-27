@@ -7,6 +7,11 @@
         </template>
     </my-header>
 
+    <custom-error-alert
+        :errorMessage='this.error'
+        class="mb-6"
+    >
+    </custom-error-alert>
 
     <lecture-form
         :conference="this.conferenceById"
@@ -41,6 +46,7 @@ export default {
         this.lectureId = parseInt(this.$route.params.lecture_id, 10);
 
         this.$store.dispatch('lecture/fetchLectureById', this.lectureId)
+        this.$store.commit('lecture/SET_ERROR', '')
     },
 
     computed: {
@@ -57,6 +63,10 @@ export default {
 
         isUserOwnThisLecture() {
             return this.$store.getters['lecture/isUserOwnThisLecture']
+        },
+
+        error() {
+            return this.$store.getters['lecture/error']
         },
     },
 

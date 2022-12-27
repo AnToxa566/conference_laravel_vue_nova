@@ -3,6 +3,12 @@
         <template v-slot:header>Lectures</template>
     </my-header>
 
+    <custom-error-alert
+        :errorMessage='this.error'
+        class="mb-6"
+    >
+    </custom-error-alert>
+
     <div class="d-flex">
         <div
             v-if="isAuthenticated"
@@ -50,6 +56,10 @@ export default {
 
         filteredLectures() {
             return this.$store.getters['lecture/filteredLectures']
+        },
+
+        error() {
+            return this.$store.getters['lecture/error']
         },
     },
 }

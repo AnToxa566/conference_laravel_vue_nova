@@ -28,6 +28,12 @@
                 <span class="text-h4 font-weight-bold">Add Lecture</span>
             </v-card-title>
 
+            <custom-error-alert
+                :errorMessage='this.error'
+                class="mb-6"
+            >
+            </custom-error-alert>
+
             <lecture-form
                 :conference="this.conferenceById"
                 @submit="createLecture"
@@ -65,6 +71,10 @@ export default {
         },
     },
 
+    created() {
+        this.$store.commit('lecture/SET_ERROR', '')
+    },
+
     computed: {
         conferenceById() {
             return this.$store.getters['conference/conferenceById'](this.conferenceId)
@@ -72,6 +82,10 @@ export default {
 
         getFreeStartTime() {
             return this.$store.getters['lecture/getFreeStartTime'](this.conferenceById)
+        },
+
+        error() {
+            return this.$store.getters['lecture/error']
         },
     },
 

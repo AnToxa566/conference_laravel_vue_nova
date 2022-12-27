@@ -35,4 +35,17 @@ class ConferenceFetchFilteredRequest extends FormRequest
             'categoriesId' => ['nullable', 'array'],
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, mixed>
+     */
+    public function messages(): array
+    {
+        return [
+            'dateAfter.before_or_equal' => "'Date after' must be before or equal to 'Date before'",
+            'dateBefore.after_or_equal' => "'Date before' must be after or equal to 'Date after'",
+        ];
+    }
 }
