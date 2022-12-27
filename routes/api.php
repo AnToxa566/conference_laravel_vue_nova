@@ -47,6 +47,7 @@ Route::controller(ConferenceController::class)->group(function () {
     Route::get('/conferences', 'fetchAll')->name('conferences.fetchAll');
 
     Route::middleware(['auth:sanctum'])->get('/conferences/{id}', 'fetchDetail')->name('conferences.fetchDetail');
+    Route::middleware(['auth:sanctum'])->post('/conferences/filtered', 'fetchFiltered')->name('conferences.fetchFiltered');
     Route::middleware(['auth:sanctum'])->get('/conferences/search/{search}/limit/{limit}', 'fetchSearchedConferences')->name('conferences.fetchSearchedConferences');
 
     Route::middleware(['admin', 'auth:sanctum'])->group(function () {

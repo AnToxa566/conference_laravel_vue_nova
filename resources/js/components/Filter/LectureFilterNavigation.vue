@@ -85,6 +85,8 @@ export default {
 
         minLectureDuration: lecture.MIN_LECTURE_DURATION,
         maxLectureDuration: lecture.MAX_LECTURE_DURATION,
+
+        timeout: null,
     }),
 
     props: {
@@ -106,6 +108,15 @@ export default {
 
     methods: {
         updateFilters() {
+            clearTimeout(this.timeout)
+
+            this.$store.commit('lecture/SET_FILTERED_LECTURES', [])
+
+            const self = this
+            this.timeout = setTimeout(() => self.fetchFilteredLectures(), 800);
+        },
+
+        fetchFilteredLectures() {
             let afterTimeHours = this.filter.startTimeAfter ? this.filter.startTimeAfter.hours : null
             let afterTimeMinutes = this.filter.startTimeAfter ? this.filter.startTimeAfter.minutes : null
 
@@ -117,8 +128,6 @@ export default {
 
             beforeTimeHours = beforeTimeHours && beforeTimeHours < 10 ? '0' + beforeTimeHours : beforeTimeHours
             beforeTimeMinutes = beforeTimeMinutes && beforeTimeMinutes < 10 ? '0' + beforeTimeMinutes : beforeTimeMinutes
-
-            this.$store.commit('lecture/SET_FILTERED_LECTURES', [])
 
             this.$store.dispatch('lecture/fetchFilteredLectures', {
                 conferenceId: this.conferenceId,

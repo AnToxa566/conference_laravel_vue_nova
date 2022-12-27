@@ -141,7 +141,7 @@ export default {
             this.searchValue = event
             this.menu = event ? true : false
 
-            this.timeout = setTimeout(() => self.getSearchedData(), 1000);
+            this.timeout = setTimeout(() => self.getSearchedData(), 800);
         },
 
         getSearchedData() {

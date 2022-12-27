@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Lecture;
+namespace App\Http\Requests\Conference;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LectureFetchFilteredRequest extends FormRequest
+class ConferenceFetchFilteredRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,13 +26,11 @@ class LectureFetchFilteredRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'conferenceId' => ['required', 'numeric'],
+            'minLectureCount' => ['required', 'numeric', 'min:0'],
+            'maxLectureCount' => ['required', 'numeric'],
 
-            'minDuration' => ['required', 'numeric', 'min:0'],
-            'maxDuration' => ['required', 'numeric'],
-
-            'startTimeAfter' => ['nullable', 'date_format:H:i:s'],
-            'startTimeBefore' => ['nullable', 'date_format:H:i:s'],
+            'dateAfter' => ['nullable', 'date_format:Y-m-d'],
+            'dateBefore' => ['nullable', 'date_format:Y-m-d'],
 
             'categoriesId' => ['nullable', 'array'],
         ];

@@ -81,6 +81,7 @@ export default {
             selectedCategoriesId: [],
         },
 
+        timeout: null,
     }),
 
     created() {
@@ -110,8 +111,24 @@ export default {
 
     methods: {
         updateFilters() {
+            clearTimeout(this.timeout)
+
             this.$store.commit('conference/SET_FILTERED_CONFERENCES', [])
-            this.$store.dispatch('conference/fetchFilteredConferences', this.filter)
+
+            const self = this
+            this.timeout = setTimeout(() => self.fetchFilteredConferences(), 800);
+        },
+
+        fetchFilteredConferences() {
+            this.$store.dispatch('conference/fetchFilteredConferences', {
+                minLectureCount: this.filter.lecturesCountRange[0],
+                maxLectureCount: this.filter.lecturesCountRange[1],
+
+                dateAfter: this.filter.dateAfter,
+                dateBefore: this.filter.dateBefore,
+
+                categoriesId: this.filter.selectedCategoriesId,
+            })
         },
 
         reserFilters() {

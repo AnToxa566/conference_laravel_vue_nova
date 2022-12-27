@@ -166,34 +166,20 @@ export default {
         },
 
 
-        fetchFilteredConferences({ commit, state, dispatch }, query) {
-            let filteredConferences = []
+        fetchFilteredConferences({ commit, state, dispatch }, filter) {
+            axios.post('/api/conferences/filtered', filter, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('SET_FILTERED_CONFERENCES', res.data)
 
-            if (query) {
-                if (query.lecturesCountRange.length !== 0) {
-                    filteredConferences = state.conferences.filter(c => c.lectures_count >= query.lecturesCountRange[0] && c.lectures_count <= query.lecturesCountRange[1])
-                }
-
-                if (query.dateAfter) {
-                    filteredConferences = filteredConferences.filter(c => new Date(c.date_time_event) >= new Date(query.dateAfter))
-                }
-
-                if (query.dateBefore) {
-                    filteredConferences = filteredConferences.filter(c => new Date(c.date_time_event) <= new Date(query.dateBefore))
-                }
-
-                if (query.selectedCategoriesId.length !== 0) {
-                    filteredConferences = filteredConferences.filter(c => query.selectedCategoriesId.includes(c.category_id))
-                }
-            }
-
-            commit('SET_FILTERED_CONFERENCES', filteredConferences)
-
-            dispatch('fetchPaginatedConferences', {
-                page: state.conferencesPaginatedData.currentPage,
-                perPage: state.conferencesPaginatedData.perPage,
-                conferences: filteredConferences,
-            })
+                    dispatch('fetchPaginatedConferences', {
+                        page: 1,
+                        perPage: state.conferencesPaginatedData.perPage,
+                        conferences: res.data,
+                    })
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
         },
 
 
