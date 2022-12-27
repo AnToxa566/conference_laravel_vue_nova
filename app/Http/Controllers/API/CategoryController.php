@@ -38,7 +38,7 @@ class CategoryController extends Controller
 
     public function fetchAll(): JsonResponse
     {
-        $categories = Category::all();
+        $categories = Category::withCount('conferences', 'lectures')->get();
 
         foreach ($categories as $category) {
             $children = $category->childs()->get();

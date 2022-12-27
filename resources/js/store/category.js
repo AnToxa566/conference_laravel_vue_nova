@@ -79,6 +79,8 @@ export default {
                         disabled: false,
                         checked: false,
                     },
+                    conferences_count: category.conferences_count,
+                    lectures_count: category.lectures_count,
                 }
             });
 

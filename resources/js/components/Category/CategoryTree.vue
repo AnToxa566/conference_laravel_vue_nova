@@ -19,10 +19,23 @@
                 v-if="this.deletion"
                 size="small"
                 color="red-darken-2"
+                class="me-2"
                 @click="this.openConfirmationDialog(props)"
             >
                 mdi-tag-minus-outline
             </v-icon>
+
+            <v-badge
+                v-if="props.node.conferences_count"
+                :content="'conferences: ' + props.node.conferences_count"
+                inline
+            ></v-badge>
+
+            <v-badge
+                v-if="props.node.lectures_count"
+                :content="'lectures: ' + props.node.lectures_count"
+                inline
+            ></v-badge>
 
             <action-confirmation
                 v-model="confirmationDialog"
@@ -109,6 +122,7 @@ export default {
         },
 
         openConfirmationDialog(props) {
+            console.log(props.node)
             this.nodeToDelete = props.node
             this.confirmationDialog = true
         },
