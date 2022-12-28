@@ -15,10 +15,20 @@
     <v-btn
         v-else
         variant="text" color="white" class="mx-1"
-        @click="this.cancelParticipation()"
+        @click="this.confirmationDialog = true"
     >
         Сancel participation
     </v-btn>
+
+    <action-confirmation
+        v-model="confirmationDialog"
+
+        title="Cancel participation?"
+        text="Are you sure you want to cancel your participation in this conference?"
+
+        @confirm="this.cancelParticipation"
+    >
+    </action-confirmation>
 </template>
 
 
@@ -29,11 +39,10 @@ import userTypes from '../../config/user_types'
 export default {
     name: 'my-join-cancel-buttons',
 
-    data() {
-        return {
-            dialog: false,
-        }
-    },
+    data: () => ({
+        dialog: false,
+        confirmationDialog: false,
+    }),
 
     components: {
         LectureFormDialog,
@@ -79,8 +88,8 @@ export default {
             }
         },
 
-        cancelParticipation() {
-            if (this.isJoined) {
+        cancelParticipation(event) {
+            if (this.isJoined && event) {
                 if (this.isAnnouncer) {
                     this.$store.dispatch('lecture/deleteLecture', this.lectureId)
                 }

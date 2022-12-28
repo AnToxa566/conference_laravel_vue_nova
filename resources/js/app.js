@@ -1,7 +1,8 @@
 
 // Bootstrap
-import './bootstrap';
+import './bootstrap'
 import '../sass/app.scss'
+import '../css/app.css'
 
 
 // Vuex
@@ -58,13 +59,17 @@ import "vue3-treeview/dist/style.css";
 
 
 // My UI Components
-import MyAppBar from './components/UI/MyAppBar.vue'
+import AppBarFavorite from './components/UI/AppBarFavorite.vue'
+import ActionConfirmation from './components/UI/ActionConfirmation.vue'
+import AppBarSearchInput from './components/UI/AppBarSearchInput.vue'
 import BreadCrumb from './components/UI/BreadCrumb.vue'
+import DropdownMenu from './components/UI/DropdownMenu.vue'
+import FavoriteBtn from './components/UI/FavoriteBtn.vue'
+import MyAppBar from './components/UI/MyAppBar.vue'
 import MyHeader from './components/UI/MyHeader.vue'
 import MyInfoCard from './components/UI/MyInfoCard.vue'
 import MyJoinCancelButtons from './components/UI/MyJoinCancelButtons.vue'
 import MyShareButtons from './components/UI/MyShareButtons.vue'
-import FavoriteBtn from './components/UI/FavoriteBtn.vue'
 
 
 // My Form Components
@@ -72,8 +77,23 @@ import CustomErrorAlert from './components/UI/CustomErrorAlert.vue'
 import CustomInput from './components/FormComponents/CustomInput.vue'
 import CustomPhoneNumberInput from './components/FormComponents/CustomPhoneNumberInput.vue'
 import CustomDatepicker from './components/FormComponents/CustomDatepicker.vue'
+import CustomTimepicker from './components/FormComponents/CustomTimepicker.vue'
 import CountrySelected from './components/FormComponents/CountrySelected.vue'
 import CategorySelected from './components/FormComponents/CategorySelected.vue'
+
+
+// My Filter Components
+import ConferenceFilterNavigation from './components/Filter/ConferenceFilterNavigation.vue'
+import LectureFilterNavigation from './components/Filter/LectureFilterNavigation.vue'
+import FilterMultipleSelects from './components/Filter/FilterMultipleSelects.vue'
+import FilterRangeSlider from './components/Filter/FilterRangeSlider.vue'
+import FilterDate from './components/Filter/FilterDate.vue'
+import FilterTime from './components/Filter/FilterTime.vue'
+
+
+// My Skeleton Components
+import ConferenceItemSkeleton from './components/Skeleton/ConferenceItemSkeleton.vue'
+import LectureItemSkeleton from './components/Skeleton/LectureItemSkeleton.vue'
 
 
 // Vue
@@ -93,16 +113,31 @@ app
     .component('CustomInput', CustomInput)
     .component('CustomErrorAlert', CustomErrorAlert)
     .component('CustomDatepicker', CustomDatepicker)
+    .component('CustomTimepicker', CustomTimepicker)
     .component('CustomPhoneNumberInput', CustomPhoneNumberInput)
     .component('CountrySelected', CountrySelected)
     .component('CategorySelected', CategorySelected)
 
     .component('MyAppBar', MyAppBar)
+    .component('ActionConfirmation', ActionConfirmation)
+    .component('DropdownMenu', DropdownMenu)
+    .component('AppBarFavorite', AppBarFavorite)
+    .component('AppBarSearchInput', AppBarSearchInput)
     .component('BreadCrumb', BreadCrumb)
     .component('MyHeader', MyHeader)
     .component('MyInfoCard', MyInfoCard)
     .component('MyJoinCancelButtons', MyJoinCancelButtons)
     .component('MyShareButtons', MyShareButtons)
+
+    .component('ConferenceFilterNavigation', ConferenceFilterNavigation)
+    .component('LectureFilterNavigation', LectureFilterNavigation)
+    .component('FilterMultipleSelects', FilterMultipleSelects)
+    .component('FilterRangeSlider', FilterRangeSlider)
+    .component('FilterDate', FilterDate)
+    .component('FilterTime', FilterTime)
+
+    .component('ConferenceItemSkeleton', ConferenceItemSkeleton)
+    .component('LectureItemSkeleton', LectureItemSkeleton)
 
     .use(vuetify)
     .use(store)

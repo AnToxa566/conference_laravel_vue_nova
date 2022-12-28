@@ -3,9 +3,33 @@
         <template v-slot:header>Lectures</template>
     </my-header>
 
-    <lecture-list
-        :lectures="this.lecturesOfConference"
-    ></lecture-list>
+    <custom-error-alert
+        :errorMessage='this.error'
+        class="mb-6"
+    >
+    </custom-error-alert>
+
+    <div class="d-flex">
+        <div
+            v-if="isAuthenticated"
+            class="w-25 me-4"
+        >
+            <lecture-filter-navigation
+                :conferenceId="this.conferenceId"
+            ></lecture-filter-navigation>
+        </div>
+
+        <div class="w-100">
+            <lecture-list
+                v-if="this.filteredLectures.length !== 0"
+                :lectures="this.filteredLectures"
+            ></lecture-list>
+
+            <lecture-item-skeleton
+                v-else
+            ></lecture-item-skeleton>
+        </div>
+    </div>
 </template>
 
 
@@ -26,14 +50,17 @@ export default {
     },
 
     computed: {
-        lecturesOfConference() {
-            return this.$store.getters['lecture/lectures'].filter(lecture => parseInt(lecture.conference_id, 10) === this.conferenceId)
+        isAuthenticated() {
+            return this.$store.getters['auth/authenticated']
+        },
+
+        filteredLectures() {
+            return this.$store.getters['lecture/filteredLectures']
+        },
+
+        error() {
+            return this.$store.getters['lecture/error']
         },
     },
 }
 </script>
-
-
-<style scoped>
-
-</style>

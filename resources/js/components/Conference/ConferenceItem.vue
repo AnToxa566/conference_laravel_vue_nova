@@ -27,7 +27,17 @@
                     ></my-join-cancel-buttons>
                     <div v-else>
                         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/edit`)"> Update </v-btn>
-                        <v-btn variant="text" color="red" class="mx-1" @click="this.delete"> Delete </v-btn>
+                        <v-btn variant="text" color="red" class="mx-1" @click="this.confirmationDialog = true"> Delete </v-btn>
+
+                        <action-confirmation
+                            v-model="confirmationDialog"
+
+                            title="Delete conference?"
+                            text="Are you sure you want to delete this conference?"
+
+                            @confirm="this.delete"
+                        >
+                        </action-confirmation>
                     </div>
                 </div>
 
@@ -55,24 +65,33 @@
     </v-hover>
 </template>
 
+
 <script>
+import ActionConfirmation from '../UI/ActionConfirmation.vue';
 export default {
+    components: {
+        ActionConfirmation
+    },
+
+    data: () => ({
+        confirmationDialog: false,
+    }),
+
     props: {
         conference: {
             type: Object,
             required: true,
         },
-        isJoined: {
-            type: Boolean,
-            required: true,
-        },
-        isAdmin: {
-            type: Boolean,
-            required: true,
-        }
     },
 
     computed: {
+        isJoined() {
+            return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conference.id, 10))
+        },
+        isAdmin() {
+            return this.$store.getters['auth/user'].type === this.$store.getters['auth/adminType']
+        },
+
         formatedDateTime() {
             return this.$store.getters['conference/formatedDateTime'](this.conference.id)
         },
@@ -83,12 +102,15 @@ export default {
     },
 
     methods: {
-        delete() {
-            this.$store.dispatch('conference/deleteConference', this.conference.id)
+        delete(event) {
+            if (event) {
+                this.$store.dispatch('conference/deleteConference', this.conference.id)
+            }
         },
     },
 };
 </script>
+
 
 <style scoped>
     .v-card:not(.on-hover) {

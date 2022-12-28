@@ -4,15 +4,19 @@
         modelType="yyyy-MM-dd"
 
         :placeholder=this.placeholder
-        :minDate=this.minDate
-        :maxDate=this.maxDate
+        :minDate=this.min
+        :maxDate=this.max
 
         :modelValue="modelValue"
         :enableTimePicker="false"
         @update:modelValue="updateInput"
     />
 
-    <div id="message__wrapper" class="hidden__message">
+    <div
+        v-if="!hideDetails"
+        id="message__wrapper"
+        class="hidden__message"
+    >
         <p class="message">Field is required!</p>
     </div>
 </template>
@@ -31,25 +35,33 @@ export default {
             default: 'Enter a date'
         },
 
-        maxDate: {
+        min: {
+            type: Date,
+            required: false,
+            default: new Date(1800, 1, 1),
+        },
+
+        max: {
             type: Date,
             required: false,
             default: new Date(2100, 1, 1),
         },
 
-        minDate: {
-            type: Date,
+        hideDetails: {
+            type: Boolean,
             required: false,
-            default: new Date(1800, 1, 1),
+            default: false,
         },
     },
 
     methods: {
         updateInput(event) {
-            const messageWrapper = document.getElementById("message__wrapper")
-
             this.$emit('update:modelValue', event)
-            this.modelValue ? messageWrapper.classList.remove("hidden__message") : messageWrapper.classList.add("hidden__message")
+
+            if (!this.hideDetails) {
+                const messageWrapper = document.getElementById("message__wrapper")
+                this.modelValue ? messageWrapper.classList.remove("hidden__message") : messageWrapper.classList.add("hidden__message")
+            }
         },
     },
 }

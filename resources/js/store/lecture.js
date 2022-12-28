@@ -9,9 +9,12 @@ export default {
 
     state: {
         lecture: {},
-        lectures: [],
 
-        commentsCounts: [],
+        lectures: [],
+        searchedLectures: [],
+        filteredLectures: [],
+
+        error: '',
     },
 
     getters: {
@@ -25,14 +28,20 @@ export default {
         lectures(state) {
             return state.lectures
         },
+        searchedLectures(state) {
+            return state.searchedLectures
+        },
+        filteredLectures(state) {
+            return state.filteredLectures
+        },
+
+        error(state) {
+            return state.error
+        },
 
         lectureIdByConferenceId: (state) => (conferenceId) => {
             const lecture = state.lectures.find(lecture => lecture.conference_id == conferenceId && lecture.user_id == store.state.auth.user.id)
             return lecture ? lecture.id : undefined
-        },
-
-        commentsCounts(state) {
-            return state.commentsCounts
         },
 
         titleRules() {
@@ -145,26 +154,20 @@ export default {
             state.lectures = value
         },
 
-        SET_COMMENTS_COUNTS (state, lectures) {
-            state.commentsCounts = []
+        SET_SEARCHED_LECTURES (state, value) {
+            state.searchedLectures = value
+        },
 
-            lectures.forEach(lecture => {
-                state.commentsCounts.push({
-                    'lecture_id': lecture.id,
-                    'comments_count': lecture.comments_count ? lecture.comments_count : 0,
-                })
-            })
+        SET_FILTERED_LECTURES (state, value) {
+            state.filteredLectures = value
+        },
+
+        SET_ERROR (state, value) {
+            state.error = value
         },
 
         PUSH_LECTURE (state, value) {
             state.lectures.push(value)
-        },
-
-        PUSH_COMMENTS_COUNT (state, lectureId) {
-            state.commentsCounts.push({
-                'lecture_id': lectureId,
-                'comments_count': 0,
-            })
         },
 
         UPDATE_LECTURE (state, value) {
@@ -177,9 +180,9 @@ export default {
             state.lectures.splice(index, 1);
         },
 
-        COMMENT_INCREMENT (state, lectureId) {
-            const counterIndex = state.commentsCounts.findIndex(counter => counter.lecture_id === lectureId);
-            state.commentsCounts[counterIndex].comments_count++
+        COMMENT_INCREMENT (state, id) {
+            const index = state.lectures.findIndex(lec => lec.id === id);
+            state.lectures[index].comments_count++
         }
     },
 
@@ -188,10 +191,21 @@ export default {
             axios.get('/api/lectures')
                 .then(res => {
                     commit('SET_LECTURES', res.data)
-                    commit('SET_COMMENTS_COUNTS', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
+                })
+        },
+
+        fetchFilteredLectures({ commit }, filter) {
+            axios.post('/api/lectures/filtered', filter, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('SET_FILTERED_LECTURES', res.data)
+                    commit('SET_ERROR', '')
+                })
+                .catch(err => {
+                    console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 
@@ -205,16 +219,26 @@ export default {
                 })
         },
 
+        searchLectures({ commit }, query) {
+            axios.get(`/api/lectures/search/${query.search}/limit/${query.limit}`, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('SET_SEARCHED_LECTURES', res.data)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
         storeLecture({ commit }, lecture) {
             axios.post('/api/lectures/add', lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('PUSH_LECTURE', res.data)
-                    commit('PUSH_COMMENTS_COUNT', res.data.id)
-
+                    commit('SET_ERROR', '')
                     store.dispatch('user_conferences/joinConference', res.data.conference_id)
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
 
@@ -222,7 +246,24 @@ export default {
             axios.post(`/api/lectures/${lecture.id}/update`, lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('UPDATE_LECTURE', res.data)
+                    commit('SET_ERROR', '')
                     router.go(-1)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
+                })
+        },
+
+        downloadPresentation({ }, query) {
+            axios.get(`/api/lectures/${query.id}/presentation/download`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
+                .then(res => {
+                    const blob = new Blob([res.data])
+                    const fileLink = document.createElement('a')
+
+                    fileLink.href = URL.createObjectURL(blob)
+                    fileLink.download = query.presentationName
+                    fileLink.click()
                 })
                 .catch(err => {
                     console.log(err.response)

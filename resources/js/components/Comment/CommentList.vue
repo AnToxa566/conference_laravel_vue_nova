@@ -58,7 +58,7 @@ export default {
 
     computed: {
         commentsCount() {
-            return this.$store.getters['lecture/commentsCounts'].find(counts => parseInt(counts.lecture_id, 10) === this.lecture_id).comments_count
+            return this.$store.getters['lecture/lectures'].find(lec => lec.id === this.lecture_id).comments_count
         },
 
         comments() {

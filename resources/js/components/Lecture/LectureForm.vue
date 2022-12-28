@@ -14,8 +14,10 @@
             >
                 <v-text-field
                     v-model="lecture.title"
+
                     label="Lecture's title*"
                     variant="solo"
+
                     :counter="255"
                     :rules="titleRules"
                 ></v-text-field>
@@ -70,26 +72,12 @@
             >
                 <v-textarea
                     v-model="lecture.description"
+
                     label="Lecture's description*"
                     variant="solo"
+
                     :rules="descriptionRules"
                 ></v-textarea>
-            </v-col>
-
-            <!-- Presentation -->
-
-            <v-col
-                cols="12"
-            >
-                <v-file-input
-                    show-size
-                    label="Lecture's presentation*"
-                    variant="solo"
-                    prepend-icon="mdi-presentation"
-                    accept=".ppt, .pptx"
-                    v-on:change="onFileChange"
-                    :rules="fileRules"
-                ></v-file-input>
             </v-col>
 
             <!-- Category -->
@@ -112,6 +100,38 @@
                 >
                 </category-selected>
             </v-col>
+
+            <!-- Presentation -->
+
+            <v-col
+                cols="12"
+            >
+                <v-file-input
+                    v-if="!this.lectureToEdit"
+                    v-on:change="onFileChange"
+                    :rules="fileRules"
+
+                    label="Lecture's presentation*"
+                    accept=".ppt, .pptx"
+                    variant="solo"
+
+                    show-size
+                ></v-file-input>
+
+                <div
+                    v-else
+                    class="d-flex mb-8"
+                >
+                    <v-icon icon="mdi-monitor-arrow-down-variant" class="mx-2"></v-icon>
+                    <span
+                        class="text-decoration-underline mx-2"
+                        style="cursor: pointer;"
+                        @click="downloadPresentation"
+                    >
+                        {{ this.lectureToEdit.presentation_name }}
+                    </span>
+                </div>
+            </v-col>
         </v-row>
 
         <small>*indicates required field</small>
@@ -131,6 +151,7 @@
 
 
 <script>
+import lecture from '../../config/lecture'
 import moment from 'moment'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
@@ -168,7 +189,7 @@ export default {
             date_time_end: '',
 
             description: '',
-            presentation_path: '',
+            presentation: null,
 
             category_id: null,
         },
@@ -189,9 +210,7 @@ export default {
         if (this.conference.category_id) {
             this.$store.dispatch('category/fetchBranche', this.conference.category_id)
         }
-    },
 
-    mounted() {
         if (this.lectureToEdit) {
             this.lecture = this.lectureToEdit
 
@@ -207,7 +226,7 @@ export default {
                 minutes: endtDateTime.getMinutes(),
             }
 
-            this.$store.dispatch('lecture/fetchLectureById', this.lecture.id)
+            this.$store.dispatch('lecture/fetchLectureById', this.lectureToEdit.id)
             this.isEditMode = true
         }
     },
@@ -260,11 +279,11 @@ export default {
             if (endTotalMinutes - startTotalMinutes < 0) {
                 return 'The end time cannot be earlier than the start time!'
             }
-            else if (endTotalMinutes - startTotalMinutes < 10) {
-                return 'The lecture cannot last less than 10 minutes!'
+            else if (endTotalMinutes - startTotalMinutes < lecture.MIN_LECTURE_DURATION) {
+                return `The lecture cannot last less than ${lecture.MIN_LECTURE_DURATION} minutes!`
             }
-            else if (endTotalMinutes - startTotalMinutes > 60) {
-                return 'The lecture should last no more than 60 minutes!'
+            else if (endTotalMinutes - startTotalMinutes > lecture.MAX_LECTURE_DURATION) {
+                return `The lecture should last no more than ${lecture.MAX_LECTURE_DURATION} minutes!`
             }
 
             const customerDateTimeStart = new Date(this.getFormatedDateTime(this.lecture.date_time_start))
@@ -302,15 +321,14 @@ export default {
                 return
             }
 
-            let reader = new FileReader()
-            reader.readAsDataURL(event.target.files[0])
+            this.lecture.presentation = files[0]
+        },
 
-            let baseFile = ''
-            reader.onload = () => {
-                // baseFile = reader.result
-                // this.lecture.presentation_path = baseFile // TODO: Сохранение файла. При хранение в таком формате переполняется память vuex
-                this.lecture.presentation_path = 'TODO'
-            };
+        downloadPresentation() {
+            this.$store.dispatch('lecture/downloadPresentation', {
+                id: this.lectureToEdit.id,
+                presentationName: this.lectureToEdit.presentation_name,
+            })
         },
 
         isTimeFree(startDateTime, endDateTime = null) {
@@ -350,7 +368,7 @@ export default {
 
             data.append('title', lecture.title)
             data.append('description', lecture.description)
-            data.append('presentation_path', lecture.presentation_path)
+            data.append('presentation', lecture.presentation)
 
             return data
         },

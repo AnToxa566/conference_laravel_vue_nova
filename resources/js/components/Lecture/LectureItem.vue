@@ -34,7 +34,7 @@
 
         <div class="d-flex justify-space-between align-center">
             <v-card-subtitle>
-                <span class="text-caption">{{ commentsCount + ' comments' }}</span>
+                <span class="text-caption">{{ this.lecture.comments_count + ' comments' }}</span>
             </v-card-subtitle>
 
             <favorite-btn
@@ -84,10 +84,6 @@ export default {
             return this.lecture.description.slice(0, 100) + '...'
         },
 
-        commentsCount() {
-            return this.$store.getters['lecture/commentsCounts'].find(counts => parseInt(counts.lecture_id, 10) === this.lecture.id).comments_count
-        },
-
         isFavourite() {
             return this.$store.getters['favorite/isLectureFavoritedById'](this.lecture.id)
         },
@@ -104,8 +100,3 @@ export default {
     },
 }
 </script>
-
-
-<style scoped>
-
-</style>

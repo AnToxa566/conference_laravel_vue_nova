@@ -5,13 +5,6 @@
         :lecture="lecture"
     >
     </lecture-item>
-
-    <div
-        v-if="!this.lectures.length"
-        class="text-h6 font-weight-medium text-center"
-    >
-        Lectures not added yet :(
-    </div>
 </template>
 
 

@@ -1,107 +1,42 @@
 <template>
     <v-app-bar class="px-15" app elevate-on-scroll>
 
+        <!-- Prepend Slot -->
+
         <template v-slot:prepend>
             <v-app-bar-title>
                 <router-link to="/" class="text-decoration-none text-white font-weight-bold"> CONFY </router-link>
             </v-app-bar-title>
         </template>
 
+        <!-- Append Slot -->
+
         <template v-slot:append>
-            <v-sheet
+
+            <!-- App bar when user is authorized -->
+
+            <div
                 v-if="this.isAuthenticated"
+                class="d-flex align-center"
             >
-                <div class="d-flex align-center">
-                    <v-menu
-                        open-on-hover
-                        class="me-2"
-                    >
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                color="white"
-                                v-bind="props"
-                            >
-                                <v-icon
-                                    size="x-large"
-                                    class="me-2"
-                                >
-                                    mdi-account
-                                </v-icon>
+                <!-- Search Input -->
+                <app-bar-search-input></app-bar-search-input>
 
-                                Your account
-                            </v-btn>
-                        </template>
+                <!-- Dropdown menu -->
+                <dropdown-menu></dropdown-menu>
 
-                        <v-list>
-                            <v-list-subheader
-                                class="font-weight-bold text-white"
-                            >
-                                {{ this.getUserFullName }}
-                            </v-list-subheader>
+                <!-- Button leading to the page with favorited lectures -->
+                <app-bar-favorite></app-bar-favorite>
+            </div>
 
-                            <v-list-item
-                                v-if="this.isAdmin"
-                                value="true"
-                                prepend-icon="mdi-monitor-account"
-                                @click="this.$router.push('/conferences/add')"
-                            >
-                                Add conference
-                            </v-list-item>
+            <!-- App bar when user isn't authorized -->
 
-                            <v-list-item
-                                v-if="this.isAdmin"
-                                value="true"
-                                prepend-icon="mdi-tag-outline"
-                                @click="this.$router.push('/categories')"
-                            >
-                                Categories
-                            </v-list-item>
-
-                            <v-list-item
-                                value="true"
-                                prepend-icon="mdi-account-outline"
-                                @click="this.$router.push('/profile')"
-                            >
-                                Profile
-                            </v-list-item>
-
-                            <v-list-item
-                                value="true"
-                                prepend-icon="mdi-exit-to-app"
-                                @click="logout()"
-                            >
-                                Logout
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
-
-                    <router-link to="/favorite" class="text-decoration-none mx-2">
-                        <v-badge
-                            v-if="hasFavoritedLectures"
-                            :content="badgeContent"
-                            color="error"
-                        >
-                            <v-icon size="x-large" color="white">
-                                {{ this.heartFull }}
-                            </v-icon>
-                        </v-badge>
-
-                        <v-icon
-                            v-else
-                            size="x-large" color="white"
-                        >
-                            {{ this.heartOutline }}
-                        </v-icon>
-                    </router-link>
-                </div>
-            </v-sheet>
-
-            <v-sheet
+            <div
                 v-else
             >
                 <router-link to="/login" class="mx-2 text-decoration-none text-white"> Login </router-link>
                 <router-link to="/register" class="mx-2 text-decoration-none text-white"> Register </router-link>
-            </v-sheet>
+            </div>
         </template>
     </v-app-bar>
 </template>
@@ -110,43 +45,10 @@
 export default {
     name: 'my-app-bar',
 
-    data: () => ({
-        heartOutline: 'mdi-cards-heart-outline',
-        heartFull: 'mdi-cards-heart',
-    }),
-
     computed: {
-        isAdmin() {
-            return this.$store.getters['auth/isAdmin']
-        },
-
         isAuthenticated() {
             return this.$store.state.auth.authenticated
-        },
-
-        getUserFullName() {
-            return this.$store.getters['auth/user'].first_name + ' ' + this.$store.getters['auth/user'].last_name
-        },
-
-        badgeContent() {
-            return this.$store.getters['favorite/favoritedLecturesId'].length > 99 ? '99+' : this.$store.getters['favorite/favoritedLecturesId'].length
-        },
-
-        hasFavoritedLectures() {
-            return this.$store.getters['favorite/hasFavoritedLectures']
-        },
-    },
-
-    methods: {
-        logout() {
-            axios.get("/sanctum/csrf-cookie").then(response => {
-                this.$store.dispatch('auth/logout')
-            });
         },
     },
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -3,6 +3,12 @@
         <template v-slot:header>Add conference</template>
     </my-header>
 
+    <custom-error-alert
+        :errorMessage='this.error'
+        class="mb-6"
+    >
+    </custom-error-alert>
+
     <v-form
         action=""
         @submit="add(conference)"
@@ -153,6 +159,7 @@ export default {
 
     created() {
         this.countries = this.$store.getters['conference/countriesName']
+        this.$store.commit('conference/SET_ERROR', '')
     },
 
     computed: {
@@ -162,6 +169,10 @@ export default {
 
         nodes() {
             return this.$store.getters['category/nodes']
+        },
+
+        error() {
+            return this.$store.getters['conference/error']
         },
 
         markerVisible() {

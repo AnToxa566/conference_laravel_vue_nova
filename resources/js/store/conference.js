@@ -9,10 +9,14 @@ export default {
     state: {
         conference: {},
         conferences: [],
+        filteredConferences: [],
+        searchedConferences: [],
         conferencesPaginatedData: {},
 
         countries: [],
         countriesName: [],
+
+        error: '',
 
         addressPosition: '',
         formatedAddress: '',
@@ -29,8 +33,18 @@ export default {
         conferences(state) {
             return state.conferences
         },
+        filteredConferences(state) {
+            return state.filteredConferences
+        },
+        searchedConferences(state) {
+            return state.searchedConferences
+        },
         conferencesPaginatedData(state) {
             return state.conferencesPaginatedData
+        },
+
+        error(state) {
+            return state.error
         },
 
         countries(state) {
@@ -58,17 +72,45 @@ export default {
         formatedAddress(state) {
             return state.formatedAddress
         },
+
+        getMinCountLectures(state) {
+            const counts = state.conferences.map(conference => conference.lectures_count)
+            return Math.min(...counts)
+        },
+        getMaxCountLectures(state) {
+            const counts = state.conferences.map(conference => conference.lectures_count)
+            return Math.max(...counts)
+        },
+
+        getMinDateEvent(state) {
+            const dates = state.conferences.map(conference => new Date(conference.date_time_event))
+            return Math.min(...dates)
+        },
+        getMaxDateEvent(state) {
+            const dates = state.conferences.map(conference => new Date(conference.date_time_event))
+            return Math.max(...dates)
+        },
     },
 
     mutations: {
-        SET_CONFERENCES (state, value) {
-            state.conferences = value
-        },
         SET_CONFERENCE (state, value) {
             state.conference = value
         },
+        SET_CONFERENCES (state, value) {
+            state.conferences = value
+        },
+        SET_FILTERED_CONFERENCES (state, value) {
+            state.filteredConferences = value
+        },
+        SET_SEARCHED_CONFERENCES (state, value) {
+            state.searchedConferences = value
+        },
         SET_CONFERENCES_PAGINATED_DATA (state, value) {
             state.conferencesPaginatedData = value
+        },
+
+        SET_ERROR (state, value) {
+            state.error = value
         },
 
         SET_COUNTRIES (state, value) {
@@ -96,8 +138,8 @@ export default {
             let index = state.conferences.map(conference => conference.id).indexOf(id);
             state.conferences.splice(index, 1);
 
-            index = state.conferencesPaginatedData.paginated_conferences.map(conference => conference.id).indexOf(id);
-            state.conferencesPaginatedData.paginated_conferences.splice(index, 1);
+            index = state.conferencesPaginatedData.paginatedConferences.map(conference => conference.id).indexOf(id);
+            state.conferencesPaginatedData.paginatedConferences.splice(index, 1);
         },
 
         UPDATE_LECTURES_CATEGORIES (state, lectures) {
@@ -112,6 +154,7 @@ export default {
         fetchAllConferences({ commit }) {
             axios.get('/api/conferences')
                 .then(res => {
+                    commit('SET_ERROR', '')
                     commit('SET_CONFERENCES', res.data)
                 })
                 .catch(err => {
@@ -119,29 +162,40 @@ export default {
                 })
         },
 
-        fetchAllCountries({ commit }) {
-            axios.get('/api/country')
-                .then(res => {
-                    commit('SET_COUNTRIES', res.data)
-                    commit('SET_COUNTRIES_NAME', res.data.map(country => country.name))
-                })
-                .catch(err => {
-                    console.log(err.response)
-                })
-        },
 
-        fetchPaginatedConferences({ commit, state }, page) {
+        fetchPaginatedConferences({ commit }, query) {
             const pagination = {
-                current_page: page,
-                per_page: 15,
-                total_conferences: state.conferences.length,
-                total_pages: Math.ceil(state.conferences.length / 15),
+                currentPage: query.page,
+                perPage: query.perPage,
+                totalConferences: query.conferences.length,
+                totalPages: Math.ceil(query.conferences.length / query.perPage),
 
-                paginated_conferences: state.conferences.slice((page - 1) * 15, page * 15)
+                paginatedConferences: query.conferences.slice((query.page - 1) * query.perPage, query.page * query.perPage)
             }
 
             commit('SET_CONFERENCES_PAGINATED_DATA', pagination)
         },
+
+
+        fetchFilteredConferences({ commit, state, dispatch }, filter) {
+            axios.post('/api/conferences/filtered', filter, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('SET_FILTERED_CONFERENCES', res.data)
+
+                    dispatch('fetchPaginatedConferences', {
+                        page: 1,
+                        perPage: state.conferencesPaginatedData.perPage,
+                        conferences: res.data,
+                    })
+
+                    commit('SET_ERROR', '')
+                })
+                .catch(err => {
+                    console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
+                })
+        },
+
 
         fetchDetailConference({ commit, dispatch }, id) {
             axios.get(`/api/conferences/${id}`, JSON.parse(localStorage.getItem('config')))
@@ -160,16 +214,43 @@ export default {
                 })
         },
 
-        storeConference({ commit }, conference) {
-            axios.post('/api/conferences/add', conference, JSON.parse(localStorage.getItem('config')))
+
+        searchConferences({ commit }, query) {
+            axios.get(`/api/conferences/search/${query.search}/limit/${query.limit}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('ADD_CONFERENCE', res.data)
-                    router.push({ name: 'conferenceShow', params: { id: res.data.id } })
+                    commit('SET_SEARCHED_CONFERENCES', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
                 })
         },
+
+
+        fetchAllCountries({ commit }) {
+            axios.get('/api/country')
+                .then(res => {
+                    commit('SET_COUNTRIES', res.data)
+                    commit('SET_COUNTRIES_NAME', res.data.map(country => country.name))
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
+
+        storeConference({ commit }, conference) {
+            axios.post('/api/conferences/add', conference, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('ADD_CONFERENCE', res.data)
+                    commit('SET_ERROR', '')
+                    router.push({ name: 'conferenceShow', params: { id: res.data.id } })
+                })
+                .catch(err => {
+                    console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
+                })
+        },
+
 
         updateConference({ commit }, conference) {
             axios.post(`/api/conferences/${conference.id}/update`, conference, JSON.parse(localStorage.getItem('config')))
@@ -180,12 +261,15 @@ export default {
                         commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
                     }
 
+                    commit('SET_ERROR', '')
                     router.go(-1)
                 })
                 .catch(err => {
                     console.log(err.response)
+                    commit('SET_ERROR', err.response.data.message)
                 })
         },
+
 
         updateConferenceCategories({ state, dispatch }, categories) {
             categories.forEach(category => {
@@ -197,6 +281,7 @@ export default {
                 })
             })
         },
+
 
         deleteConference({ commit }, id) {
             axios.get(`/api/conferences/${id}/delete`, JSON.parse(localStorage.getItem('config')))
@@ -210,6 +295,7 @@ export default {
                     console.log(err.response)
                 })
         },
+
 
         async getFormatedAddress({commit}, conference) {
             if (conference.latitude !== null && conference.longitude !== null) {

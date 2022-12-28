@@ -34,9 +34,8 @@ class LectureStoreRequest extends FormRequest
             'date_time_start' => ['required', 'date'],
             'date_time_end' => ['required', 'date'],
             'description' => ['required', 'string'],
-            // TODO: Сохранение файла в БД
-            // 'presentation_path' => ['required', 'file', 'size:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
-            'presentation_path' => ['required'],
+
+            'presentation' => ['required', 'file', 'max:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
         ];
     }
 }
