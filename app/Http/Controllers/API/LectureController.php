@@ -5,19 +5,26 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
 use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
+
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
 use App\Models\Conference;
+
+use App\Mail\AnnouncerJoined;
 use Illuminate\Http\JsonResponse;
 use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use App\UserConsts;
+
 class LectureController extends Controller
 {
-    public function fetchAll(): JsonResponse
+    public function fetchAll(): JsonResponse|string
     {
         return response()->json(Lecture::withCount('comments')->get());
     }
@@ -90,23 +97,16 @@ class LectureController extends Controller
     {
         $response = $request->validated();
 
-        if ($request->hasFile('presentation')) {
-            $presentation_name = $request->file('presentation')->getClientOriginalName();
-            $presentation_path = Storage::disk('local')->put('presentations', $request->file('presentation'));
+        $response['presentation_name'] = $request->file('presentation')->getClientOriginalName();
+        $response['presentation_path'] = Storage::disk('local')->put('presentations', $request->file('presentation'));
 
-            $response['presentation_name'] = $presentation_name;
-            $response['presentation_path'] = $presentation_path;
-        }
+        $lecture = Lecture::create($response);
 
-        $response = Lecture::create($response);
+        $listeners = Conference::find($lecture->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
+        Mail::to($listeners)->send(new AnnouncerJoined($lecture));
 
-        if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
-        }
-
-        $response->{'comments_count'} = 0;
-
-        return response()->json($response);
+        $lecture->{'comments_count'} = 0;
+        return response()->json($lecture);
     }
 
 

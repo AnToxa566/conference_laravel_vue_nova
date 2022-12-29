@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json(['name' => $request->user()->name]);
 });
 
+
 Route::controller(AuthController::class)->group(function () {
     Route::middleware(['guest'])->group(function () {
         Route::post('/register', 'register')->name('auth.register');
