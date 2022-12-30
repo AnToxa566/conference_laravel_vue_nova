@@ -5,7 +5,7 @@
         </v-avatar>
 
         <div class="d-flex align-center ">
-            <span class="font-weight-bold me-2">{{ this.comment.first_name + ' ' + this.comment.last_name }}</span>
+            <span class="font-weight-bold me-2">{{ this.comment.user_name }}</span>
             <span class="text-disabled text-caption me-2">{{ this.formattedCreatedAt }}</span>
 
             <v-btn

@@ -11,6 +11,9 @@ use App\Models\Comment;
 use App\Models\Lecture;
 use Illuminate\Http\JsonResponse;
 
+use App\Mail\CommentAdded;
+use Illuminate\Support\Facades\Mail;
+
 class CommentController extends Controller
 {
     public function fetchByLectureId(int $lectureId, int $limit, int $page): JsonResponse
@@ -25,8 +28,7 @@ class CommentController extends Controller
         $response = $lecture->comments()->latest()->skip($offset)->take($limit)->get();
 
         foreach ($response as $comment) {
-            $comment->{'first_name'} = $comment->user->first_name;
-            $comment->{'last_name'} = $comment->user->last_name;
+            $comment->{'user_name'} = $comment->user->first_name . ' ' . $comment->user->last_name;
         }
 
         return response()->json($response);
@@ -41,8 +43,9 @@ class CommentController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
-        $response->{'first_name'} = $response->user->first_name;
-        $response->{'last_name'} = $response->user->last_name;
+        $response->{'user_name'} = $response->user->first_name . ' ' . $response->user->last_name;
+
+        Mail::to($response->lecture->user)->send(new CommentAdded($response));
 
         return response()->json($response);
     }
@@ -56,8 +59,7 @@ class CommentController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
-        $response->{'first_name'} = $response->user->first_name;
-        $response->{'last_name'} = $response->user->last_name;
+        $response->{'user_name'} = $response->user->first_name . ' ' . $response->user->last_name;
 
         return response()->json($response);
     }

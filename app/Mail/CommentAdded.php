@@ -4,37 +4,34 @@ declare(strict_types=1);
 
 namespace App\Mail;
 
-use App\Models\Lecture;
-
-use Carbon\Carbon;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class AnnouncerJoined extends Mailable
+use App\Models\Comment;
+
+class CommentAdded extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * The lecture instance.
+     * The conference instance.
      *
-     * @var \App\Models\Lecture
+     * @var \App\Models\Comment
      */
-    public $lecture;
+    public $comment;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Lecture $lecture)
+    public function __construct(Comment $comment)
     {
-        $this->lecture = $lecture;
+        $this->comment = $comment;
     }
 
     /**
@@ -45,7 +42,7 @@ class AnnouncerJoined extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'A new announcer has joined the conference',
+            subject: 'New comment added to your lecture',
         );
     }
 
@@ -57,18 +54,16 @@ class AnnouncerJoined extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.announcer.joined',
+            markdown: 'emails.comment.added',
 
             with: [
-                'announcerName' => $this->lecture->user->first_name . ' ' . $this->lecture->user->last_name,
+                'userName' => $this->comment->user_name,
 
-                'conferenceId' => $this->lecture->conference->id,
-                'conferenceTitle' => $this->lecture->conference->title,
+                'lectureId' => $this->comment->lecture->id,
+                'lectureTitle' => $this->comment->lecture->title,
 
-                'lectureId' => $this->lecture->id,
-                'lectureTitle' => $this->lecture->title,
-                'lectureStartTime' => Carbon::parse($this->lecture->date_time_start)->format('H:i'),
-                'lectureEndTime' => Carbon::parse($this->lecture->date_time_end)->format('H:i'),
+                'conferenceId' => $this->comment->lecture->conference->id,
+                'conferenceTitle' => $this->comment->lecture->conference->title,
             ],
         );
     }

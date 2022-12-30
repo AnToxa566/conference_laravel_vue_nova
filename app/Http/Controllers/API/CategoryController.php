@@ -12,7 +12,8 @@ use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
-    protected function deleteChilds(Category $category): array {
+    protected function deleteChilds(Category $category): array
+    {
         $cats = [];
 
         foreach($category->childs as $child) {
@@ -42,7 +43,7 @@ class CategoryController extends Controller
 
         foreach ($categories as $category) {
             $children = $category->childs()->get();
-            $category->{'children'} = count($children) !== 0 ? $children : array();
+            $category->{'children'} = count($children) !== 0 ? $children : [];
         }
 
         return response()->json($categories);
@@ -57,7 +58,7 @@ class CategoryController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
-        $response->{"children"} = array();
+        $response->{"children"} = [];
         return response()->json($response);
     }
 

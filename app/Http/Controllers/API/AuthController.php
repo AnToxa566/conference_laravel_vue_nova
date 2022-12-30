@@ -5,19 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\AuthLoginRequest;
-use App\Http\Requests\Auth\AuthRegisterRequest;
-use App\Http\Requests\Auth\AuthUpdateRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\UpdateRequest;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function register(AuthRegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
@@ -34,7 +32,7 @@ class AuthController extends Controller
     }
 
 
-    public function login(AuthLoginRequest $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -54,7 +52,7 @@ class AuthController extends Controller
     }
 
 
-    public function update(AuthUpdateRequest $request): JsonResponse
+    public function update(UpdateRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);

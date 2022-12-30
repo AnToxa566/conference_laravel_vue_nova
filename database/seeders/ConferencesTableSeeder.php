@@ -18,7 +18,7 @@ class ConferencesTableSeeder extends Seeder
      */
     public function run()
     {
-        $conferences = array();
+        $conferences = [];
 
         foreach (range(1, 50) as $i) {
             array_push($conferences, [
