@@ -11,27 +11,27 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\Comment;
+use App\Models\Conference;
 
-class CommentAdded extends Mailable
+class ConferenceDeleted extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * The comment instance.
+     * The conference instance.
      *
-     * @var \App\Models\Comment
+     * @var \App\Models\Conference
      */
-    public $comment;
+    public $conference;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment)
+    public function __construct(Conference $conference)
     {
-        $this->comment = $comment;
+        $this->conference = $conference;
     }
 
     /**
@@ -42,7 +42,7 @@ class CommentAdded extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New comment added to your lecture',
+            subject: 'Conference has been deleted',
         );
     }
 
@@ -54,16 +54,10 @@ class CommentAdded extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.comment.added',
+            markdown: 'emails.conference.deleted',
 
             with: [
-                'userName' => $this->comment->user_name,
-
-                'lectureId' => $this->comment->lecture->id,
-                'lectureTitle' => $this->comment->lecture->title,
-
-                'conferenceId' => $this->comment->lecture->conference->id,
-                'conferenceTitle' => $this->comment->lecture->conference->title,
+                'conferenceTitle' => $this->conference->title,
             ],
         );
     }

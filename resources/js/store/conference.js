@@ -286,7 +286,7 @@ export default {
         deleteConference({ commit }, id) {
             axios.get(`/api/conferences/${id}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (res.data !== 0) {
+                    if (res.data) {
                         commit('DELETE_CONFERENCE', id)
                         router.push({ name: 'conferences' })
                     }

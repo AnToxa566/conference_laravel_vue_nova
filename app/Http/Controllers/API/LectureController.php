@@ -10,13 +10,14 @@ use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
 use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 
+use App\Mail\AnnouncerJoined;
+use App\Mail\LectureTimeChanged;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Lecture;
 use App\Models\Conference;
 
-use App\Mail\AnnouncerJoined;
 use Illuminate\Http\JsonResponse;
 use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -73,7 +74,6 @@ class LectureController extends Controller
         }
 
         $response->{'comments_count'} = count($response->comments);
-
         return response()->json($response);
     }
 
@@ -112,14 +112,26 @@ class LectureController extends Controller
 
     public function update(LectureUpdateRequest $request, int $id): JsonResponse
     {
-        $response = tap(Lecture::find($id))->update($request->validated());
+        $request->validated();
+
+        $lecture = Lecture::find($id);
+        $lecture->date_time_start = $request->date_time_start;
+        $lecture->date_time_end = $request->date_time_end;
+
+        $timeChanged = $lecture->isDirty('date_time_start') || $lecture->isDirty('date_time_end');
+
+        $response = tap($lecture)->update($request->toArray());
 
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);
         }
 
-        $response->{'comments_count'} = count($response->comments);
+        if ($timeChanged) {
+            $listeners = Conference::find($response->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
+            Mail::to($listeners)->send(new LectureTimeChanged($response));
+        }
 
+        $response->{'comments_count'} = count($response->comments);
         return response()->json($response);
     }
 

@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Mail;
 
-use App\Models\Lecture;
-
-use Carbon\Carbon;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -15,6 +11,9 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+
+use Carbon\Carbon;
+use App\Models\Lecture;
 
 class AnnouncerJoined extends Mailable
 {

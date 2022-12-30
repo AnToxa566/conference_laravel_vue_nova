@@ -11,27 +11,28 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\Comment;
+use Carbon\Carbon;
+use App\Models\Lecture;
 
-class CommentAdded extends Mailable
+class LectureTimeChanged extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * The comment instance.
+     * The lecture instance.
      *
-     * @var \App\Models\Comment
+     * @var \App\Models\Lecture
      */
-    public $comment;
+    public $lecture;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment)
+    public function __construct(Lecture $lecture)
     {
-        $this->comment = $comment;
+        $this->lecture = $lecture;
     }
 
     /**
@@ -42,7 +43,7 @@ class CommentAdded extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New comment added to your lecture',
+            subject: 'Lecture times have been changed',
         );
     }
 
@@ -54,16 +55,18 @@ class CommentAdded extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.comment.added',
+            markdown: 'emails.lecture.changed.time',
 
             with: [
-                'userName' => $this->comment->user_name,
+                'announcerName' => $this->lecture->user->first_name . ' ' . $this->lecture->user->last_name,
 
-                'lectureId' => $this->comment->lecture->id,
-                'lectureTitle' => $this->comment->lecture->title,
+                'conferenceId' => $this->lecture->conference->id,
+                'conferenceTitle' => $this->lecture->conference->title,
 
-                'conferenceId' => $this->comment->lecture->conference->id,
-                'conferenceTitle' => $this->comment->lecture->conference->title,
+                'lectureId' => $this->lecture->id,
+                'lectureTitle' => $this->lecture->title,
+                'lectureStartTime' => Carbon::parse($this->lecture->date_time_start)->format('H:i'),
+                'lectureEndTime' => Carbon::parse($this->lecture->date_time_end)->format('H:i'),
             ],
         );
     }
