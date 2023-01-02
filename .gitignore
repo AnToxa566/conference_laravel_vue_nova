@@ -2,6 +2,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/exports_csv
 /public/presentations
 /storage/*.key
 /storage/app/presentations

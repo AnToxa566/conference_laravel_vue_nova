@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\UserConsts;
 
 class Conference extends Model
 {
@@ -24,6 +25,10 @@ class Conference extends Model
 
     public function users() {
         return $this->belongsToMany(User::class);
+    }
+
+    public function listeners() {
+        return $this->belongsToMany(User::class)->where('type', '=', UserConsts::LISTENER);
     }
 
     public function lectures() {

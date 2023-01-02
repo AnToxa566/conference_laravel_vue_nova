@@ -4,7 +4,7 @@
     </my-header>
 
     <lecture-list
-        v-if="this.favoriteLectures.length !== 0"
+        v-if="this.favoriteLectures.length"
         :lectures="this.favoriteLectures"
     ></lecture-list>
 

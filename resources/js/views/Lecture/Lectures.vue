@@ -21,7 +21,7 @@
 
         <div class="w-100">
             <lecture-list
-                v-if="this.filteredLectures.length !== 0"
+                v-if="this.filteredLectures.length"
                 :lectures="this.filteredLectures"
             ></lecture-list>
 

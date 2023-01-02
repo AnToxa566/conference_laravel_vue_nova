@@ -47,14 +47,17 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(ConferenceController::class)->group(function () {
     Route::get('/conferences', 'fetchAll')->name('conferences.fetchAll');
 
-    Route::middleware(['auth:sanctum'])->get('/conferences/{id}', 'fetchDetail')->name('conferences.fetchDetail');
-    Route::middleware(['auth:sanctum'])->post('/conferences/filtered', 'fetchFiltered')->name('conferences.fetchFiltered');
-    Route::middleware(['auth:sanctum'])->get('/conferences/search/{search}/limit/{limit}', 'fetchSearchedConferences')->name('conferences.fetchSearchedConferences');
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/conferences/{id}', 'fetchDetail')->name('conferences.fetchDetail');
+        Route::post('/conferences/filtered', 'fetchFiltered')->name('conferences.fetchFiltered');
+        Route::get('/conferences/search/{search}/limit/{limit}', 'fetchSearchedConferences')->name('conferences.fetchSearchedConferences');
 
-    Route::middleware(['admin', 'auth:sanctum'])->group(function () {
-        Route::post('/conferences/add', 'store')->name('conferences.store');
-        Route::post('/conferences/{id}/update', 'update')->name('conferences.update');
-        Route::get('/conferences/{id}/delete', 'destroy')->name('conferences.destroy');
+        Route::middleware(['admin'])->group(function () {
+            Route::post('/conferences/add', 'store')->name('conferences.store');
+            Route::post('/conferences/{id}/update', 'update')->name('conferences.update');
+            Route::get('/conferences/{id}/delete', 'destroy')->name('conferences.destroy');
+            Route::get('/conferences/export/all', 'exportAll')->name('conferences.exportAll');
+        });
     });
 });
 

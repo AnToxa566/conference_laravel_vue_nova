@@ -19,7 +19,6 @@ export default {
         error: '',
 
         addressPosition: '',
-        formatedAddress: '',
     },
 
     getters: {
@@ -68,9 +67,6 @@ export default {
 
         addressPosition(state) {
             return state.addressPosition
-        },
-        formatedAddress(state) {
-            return state.formatedAddress
         },
 
         getMinCountLectures(state) {
@@ -122,9 +118,6 @@ export default {
 
         SET_ADDRESS_POSITION (state, value) {
             state.addressPosition = value
-        },
-        SET_FORMATED_ADDRESS (state, value) {
-            state.formatedAddress = value
         },
 
         ADD_CONFERENCE (state, value) {
@@ -206,8 +199,6 @@ export default {
                         'lat': res.data.latitude,
                         'lng': res.data.longitude
                     })
-
-                    dispatch('getFormatedAddress', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -257,7 +248,7 @@ export default {
                 .then(res => {
                     commit('UPDATE_CONFERENCE', res.data)
 
-                    if (res.data.lectures.length !== 0) {
+                    if (res.data.lectures.length) {
                         commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
                     }
 
@@ -297,25 +288,19 @@ export default {
         },
 
 
-        async getFormatedAddress({commit}, conference) {
-            if (conference.latitude !== null && conference.longitude !== null) {
-                const url = new URL('https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
-                            conference.latitude + ',' + conference.longitude +
-                            '&key=' + import.meta.env.VITE_PUSHER_GOOGLE_MAPS_API_KEY)
+        exportConferences({ }) {
+            axios.get(`/api/conferences/export/all`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
+                .then(res => {
+                    const fileURL = window.URL.createObjectURL(new Blob([res.data]))
+                    const fileLink = document.createElement('a')
 
-                const response = await fetch(url)
-                const json = await response.json()
-                let address = 'undefined'
-
-                if (json.status === 'OK') {
-                    address = await json.results[0].formatted_address
-                }
-
-                commit('SET_FORMATED_ADDRESS', address)
-            }
-            else {
-                commit('SET_FORMATED_ADDRESS', 'undefined')
-            }
+                    fileLink.href = fileURL
+                    fileLink.download = moment(Date.now()).format('YYYYMMDD_HHmmss_') + 'conferences.csv'
+                    fileLink.click()
+                })
+                .catch(err => {
+                    console.log(err)
+                })
         },
     }
 }

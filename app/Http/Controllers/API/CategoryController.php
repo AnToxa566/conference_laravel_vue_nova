@@ -43,7 +43,7 @@ class CategoryController extends Controller
 
         foreach ($categories as $category) {
             $children = $category->childs()->get();
-            $category->{'children'} = count($children) !== 0 ? $children : [];
+            $category->{'children'} = count($children) ? $children : [];
         }
 
         return response()->json($categories);

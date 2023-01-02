@@ -32,7 +32,7 @@ class UserConferenceController extends Controller
         if ($user->type === UserConsts::LISTENER) {
             $announcers = Conference::find($conferenceId)->users()->where('type', '=', UserConsts::ANNOUNCER)->get();
 
-            if (count($announcers) !== 0) {
+            if (count($announcers)) {
                 Mail::to($announcers)->send(new ListenerJoined($user, Conference::find($conferenceId)));
             }
         }

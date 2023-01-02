@@ -106,7 +106,7 @@ class LectureController extends Controller
         $lecture = Lecture::create($response);
 
         $listeners = Conference::find($lecture->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
-        if (count($listeners) !== 0) {
+        if (count($listeners)) {
             Mail::to($listeners)->send(new AnnouncerJoined($lecture));
         }
 
@@ -134,7 +134,7 @@ class LectureController extends Controller
         if ($timeChanged) {
             $listeners = Conference::find($response->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
 
-            if (count($listeners) !== 0) {
+            if (count($listeners)) {
                 Mail::to($listeners)->send(new LectureTimeChanged($response));
             }
         }

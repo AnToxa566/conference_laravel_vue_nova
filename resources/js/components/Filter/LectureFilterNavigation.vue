@@ -62,7 +62,7 @@
     <!-- Reset all filters button -->
 
     <div
-        class="text-red-darken-1 my-4"
+        class="text-red-darken-1 mt-4"
         style="cursor: pointer;"
         @click="reserFilters"
     >

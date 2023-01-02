@@ -14,11 +14,35 @@ use App\Events\LectureDeleted;
 use App\Mail\ConferenceDeleted;
 use Illuminate\Support\Facades\Mail;
 
+use App\Exports\ConferencesExport;
+use Maatwebsite\Excel\Excel as ExcelTypes;
+
 use App\Models\Conference;
 use Illuminate\Http\JsonResponse;
+use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ConferenceController extends Controller
 {
+    public function getConferenceAddressById($id): string
+    {
+        $conference = Conference::find($id);
+
+        if (!$conference->latitude || !$conference->longitude) {
+            return 'Address not set';
+        }
+
+        $url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $conference->latitude . ',' . $conference->longitude . '&key=' . config('app.map_key');
+        $geocode = file_get_contents($url);
+        $json = json_decode($geocode);
+
+        if (count($json->results)) {
+            return $json->results[0]->formatted_address;
+        }
+
+        return 'undefined';
+    }
+
+
     public function fetchAll(): JsonResponse
     {
         $response = Conference::withCount('lectures')->get();
@@ -38,6 +62,8 @@ class ConferenceController extends Controller
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);
         }
+
+        $response->{'address'} = $this->getConferenceAddressById($id);
 
         return response()->json($response);
     }
@@ -115,11 +141,11 @@ class ConferenceController extends Controller
             return response()->json('Error! Please, try again.', 500);
         }
 
-        if (count($users) !== 0) {
+        if (count($users)) {
             Mail::to($users)->send(new ConferenceDeleted($response->title));
         }
 
-        if (count($lectures) !== 0) {
+        if (count($lectures)) {
             $emails = [];
 
             foreach ($lectures as $lecture) {
@@ -130,5 +156,15 @@ class ConferenceController extends Controller
         }
 
         return response()->json($response);
+    }
+
+
+    public function exportAll(): BinaryFileResponse
+    {
+        $export = new ConferencesExport();
+        $filename = date('Y_m_d_His') . '_conferences.csv';
+
+        $export->store($filename, 'exports_csv', ExcelTypes::CSV);
+        return $export->download($filename, ExcelTypes::CSV, ['Content-Type' => 'text/csv']);
     }
 }

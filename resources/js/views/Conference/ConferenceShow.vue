@@ -15,7 +15,7 @@
 
     <my-info-card v-if="isHasAddress">
         <template v-slot:header> Address </template>
-        <template v-slot:body> {{ this.formatedAddress }} </template>
+        <template v-slot:body> {{ this.conference.address }} </template>
     </my-info-card>
 
     <v-card v-if="isHasAddress" class="mb-4">
@@ -71,11 +71,9 @@
 
 <script>
 export default {
-    data() {
-        return {
-            id: null,
-        };
-    },
+    data: () => ({
+        id: null,
+    }),
 
     computed: {
         conference() {
@@ -87,9 +85,6 @@ export default {
 
         formatedDateTime() {
             return this.$store.getters['conference/formatedDateTime'](this.id)
-        },
-        formatedAddress() {
-            return this.$store.getters['conference/formatedAddress']
         },
 
         joinedConferencesId() {
