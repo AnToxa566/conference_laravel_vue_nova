@@ -15,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use Carbon\Carbon;
 use App\Models\Lecture;
 
-class AnnouncerJoined extends Mailable
+class AnnouncerJoined extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

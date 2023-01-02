@@ -10,11 +10,14 @@ use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
 use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 
+use App\Events\LectureDeleted;
+
 use App\Mail\AnnouncerJoined;
 use App\Mail\LectureTimeChanged;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
+use App\Models\User;
 use App\Models\Lecture;
 use App\Models\Conference;
 
@@ -103,7 +106,9 @@ class LectureController extends Controller
         $lecture = Lecture::create($response);
 
         $listeners = Conference::find($lecture->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
-        Mail::to($listeners)->send(new AnnouncerJoined($lecture));
+        if (count($listeners) !== 0) {
+            Mail::to($listeners)->send(new AnnouncerJoined($lecture));
+        }
 
         $lecture->{'comments_count'} = 0;
         return response()->json($lecture);
@@ -128,7 +133,10 @@ class LectureController extends Controller
 
         if ($timeChanged) {
             $listeners = Conference::find($response->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
-            Mail::to($listeners)->send(new LectureTimeChanged($response));
+
+            if (count($listeners) !== 0) {
+                Mail::to($listeners)->send(new LectureTimeChanged($response));
+            }
         }
 
         $response->{'comments_count'} = count($response->comments);
@@ -142,6 +150,15 @@ class LectureController extends Controller
 
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);
+        }
+
+        User::find($response->user_id)->conferences()->detach($response->conference_id);
+
+        if (auth('sanctum')->user()->type === UserConsts::ADMIN) {
+            $emails = [];
+            array_push($emails, User::find($response->user_id)->email);
+
+            LectureDeleted::dispatch($emails, $response->conference->id, $response->conference->title);
         }
 
         return response()->json($response);

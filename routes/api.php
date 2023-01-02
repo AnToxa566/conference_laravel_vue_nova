@@ -80,7 +80,7 @@ Route::controller(LectureController::class)->group(function () {
 
         Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
         Route::middleware(['user.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
-        Route::middleware(['user.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+        Route::middleware(['can.delete.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
     });
 });
 

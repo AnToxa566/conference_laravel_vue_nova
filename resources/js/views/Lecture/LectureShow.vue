@@ -67,8 +67,7 @@
         <template v-slot:body> {{ this.category.title }} </template>
     </my-info-card>
 
-
-    <!-- Buttons -->
+    <!-- Buttons for owner this lecture -->
 
     <div
         v-if="isUserOwnThisLecture"
@@ -82,6 +81,26 @@
         ></my-join-cancel-buttons>
     </div>
 
+    <!-- Buttons for admins -->
+
+    <div
+        v-if="isAdmin"
+        class="d-flex"
+    >
+        <v-spacer></v-spacer>
+
+        <v-btn variant="tonal" color="red" @click="this.confirmationDialog = true"> Delete </v-btn>
+
+        <action-confirmation
+            v-model="confirmationDialog"
+
+            title="Delete lecture?"
+            text="Are you sure you want to delete this lecture?"
+
+            @confirm="this.delete"
+        >
+        </action-confirmation>
+    </div>
 
     <!-- Comments Form and List-->
 
@@ -112,6 +131,8 @@ export default {
     },
 
     data: () => ({
+        confirmationDialog: false,
+
         conferenceId: null,
         lectureId: null,
     }),
@@ -133,6 +154,9 @@ export default {
 
         userId() {
             return this.$store.getters['auth/user'].id
+        },
+        isAdmin() {
+            return this.$store.getters['auth/isAdmin']
         },
 
         isUserOwnThisLecture() {
@@ -165,6 +189,12 @@ export default {
                 id: this.lecture.id,
                 presentationName: this.lecture.presentation_name,
             })
+        },
+
+        delete(event) {
+            if (event) {
+                this.$store.dispatch('lecture/deleteLecture', this.lectureId)
+            }
         },
 
         async storeComment(comment) {

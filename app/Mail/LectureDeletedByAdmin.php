@@ -11,28 +11,33 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-use Carbon\Carbon;
-use App\Models\Lecture;
-
-class LectureTimeChanged extends Mailable implements ShouldQueue
+class LectureDeletedByAdmin extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
-     * The lecture instance.
+     * The conference's id.
      *
-     * @var \App\Models\Lecture
+     * @var int
      */
-    public $lecture;
+    public $conferenceId;
+
+    /**
+     * The conference's title.
+     *
+     * @var string
+     */
+    public $conferenceTitle;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Lecture $lecture)
+    public function __construct(int $conferenceId, string $conferenceTitle)
     {
-        $this->lecture = $lecture;
+        $this->conferenceId = $conferenceId;
+        $this->conferenceTitle = $conferenceTitle;
     }
 
     /**
@@ -43,7 +48,7 @@ class LectureTimeChanged extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Lecture times have been changed',
+            subject: 'Lecture has been deleted by administrator',
         );
     }
 
@@ -55,18 +60,11 @@ class LectureTimeChanged extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.lecture.changed.time',
+            markdown: 'emails.lecture.admin.deleted',
 
             with: [
-                'announcerName' => $this->lecture->user->first_name . ' ' . $this->lecture->user->last_name,
-
-                'conferenceId' => $this->lecture->conference->id,
-                'conferenceTitle' => $this->lecture->conference->title,
-
-                'lectureId' => $this->lecture->id,
-                'lectureTitle' => $this->lecture->title,
-                'lectureStartTime' => Carbon::parse($this->lecture->date_time_start)->format('H:i'),
-                'lectureEndTime' => Carbon::parse($this->lecture->date_time_end)->format('H:i'),
+                'conferenceId' => $this->conferenceId,
+                'conferenceTitle' => $this->conferenceTitle,
             ],
         );
     }

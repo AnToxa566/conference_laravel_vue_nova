@@ -11,27 +11,25 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\Conference;
-
-class ConferenceDeleted extends Mailable
+class ConferenceDeleted extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
      * The conference instance.
      *
-     * @var \App\Models\Conference
+     * @var string
      */
-    public $conference;
+    public $conferenceTitle;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Conference $conference)
+    public function __construct(string $conferenceTitle)
     {
-        $this->conference = $conference;
+        $this->conferenceTitle = $conferenceTitle;
     }
 
     /**
@@ -57,7 +55,7 @@ class ConferenceDeleted extends Mailable
             markdown: 'emails.conference.deleted',
 
             with: [
-                'conferenceTitle' => $this->conference->title,
+                'conferenceTitle' => $this->conferenceTitle,
             ],
         );
     }

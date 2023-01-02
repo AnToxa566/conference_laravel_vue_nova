@@ -9,6 +9,8 @@ use App\Http\Requests\Conference\ConferenceStoreRequest;
 use App\Http\Requests\Conference\ConferenceUpdateRequest;
 use App\Http\Requests\Conference\ConferenceFetchFilteredRequest;
 
+use App\Events\LectureDeleted;
+
 use App\Mail\ConferenceDeleted;
 use Illuminate\Support\Facades\Mail;
 
@@ -106,13 +108,26 @@ class ConferenceController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $users = Conference::find($id)->users;
+        $lectures = Conference::find($id)->lectures;
         $response = tap(Conference::find($id))->delete();
 
         if (!$response) {
             return response()->json('Error! Please, try again.', 500);
         }
 
-        Mail::to($users)->send(new ConferenceDeleted($response));
+        if (count($users) !== 0) {
+            Mail::to($users)->send(new ConferenceDeleted($response->title));
+        }
+
+        if (count($lectures) !== 0) {
+            $emails = [];
+
+            foreach ($lectures as $lecture) {
+                array_push($emails, $lecture->user->email);
+            }
+
+            LectureDeleted::dispatch($emails, $response->id, $response->title);
+        }
 
         return response()->json($response);
     }

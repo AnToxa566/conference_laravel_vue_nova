@@ -285,8 +285,6 @@ export default {
             axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_LECTURE', res.data.id)
-                    store.dispatch('user_conferences/cancelParticipation', res.data.conference_id)
-
                     router.push({ name: 'conferences' })
                 })
                 .catch(err => {

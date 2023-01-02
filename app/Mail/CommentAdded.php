@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Comment;
 
-class CommentAdded extends Mailable
+class CommentAdded extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -57,7 +57,7 @@ class CommentAdded extends Mailable
             markdown: 'emails.comment.added',
 
             with: [
-                'userName' => $this->comment->user_name,
+                'userName' => $this->comment->user->first_name . ' ' . $this->comment->user->last_name,
 
                 'lectureId' => $this->comment->lecture->id,
                 'lectureTitle' => $this->comment->lecture->title,
