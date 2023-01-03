@@ -64,6 +64,7 @@ import ActionConfirmation from './components/UI/ActionConfirmation.vue'
 import AppBarSearchInput from './components/UI/AppBarSearchInput.vue'
 import BreadCrumb from './components/UI/BreadCrumb.vue'
 import DropdownMenu from './components/UI/DropdownMenu.vue'
+import ExportButton from './components/UI/ExportButton.vue'
 import FavoriteBtn from './components/UI/FavoriteBtn.vue'
 import MyAppBar from './components/UI/MyAppBar.vue'
 import MyHeader from './components/UI/MyHeader.vue'
@@ -121,6 +122,7 @@ app
     .component('MyAppBar', MyAppBar)
     .component('ActionConfirmation', ActionConfirmation)
     .component('DropdownMenu', DropdownMenu)
+    .component('ExportButton', ExportButton)
     .component('AppBarFavorite', AppBarFavorite)
     .component('AppBarSearchInput', AppBarSearchInput)
     .component('BreadCrumb', BreadCrumb)

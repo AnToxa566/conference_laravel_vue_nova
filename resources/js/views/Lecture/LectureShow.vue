@@ -89,7 +89,7 @@
     >
         <v-spacer></v-spacer>
 
-        <v-btn variant="tonal" color="red" @click="this.confirmationDialog = true"> Delete </v-btn>
+        <v-btn class="mb-6" variant="tonal" color="red" @click="this.confirmationDialog = true"> Delete </v-btn>
 
         <action-confirmation
             v-model="confirmationDialog"
@@ -104,8 +104,15 @@
 
     <!-- Comments Form and List-->
 
-    <div class="py-3 mt-6 text-h6 font-weight-bold">
-        Comments
+    <div class="d-flex justify-space-between align-center">
+        <span class="py-3 text-h6 font-weight-bold"> Comments </span>
+
+        <export-button
+            v-if="isAdmin"
+            @startExport="exportComments"
+        >
+            <template v-slot:title> Export comments </template>
+        </export-button>
     </div>
 
     <comment-form
@@ -189,6 +196,10 @@ export default {
                 id: this.lecture.id,
                 presentationName: this.lecture.presentation_name,
             })
+        },
+
+        exportComments() {
+            this.$store.dispatch('lecture/exportComments', this.lectureId)
         },
 
         delete(event) {

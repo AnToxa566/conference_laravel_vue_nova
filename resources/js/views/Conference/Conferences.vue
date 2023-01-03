@@ -14,7 +14,7 @@
     >
     </custom-error-alert>
 
-    <!-- Main Block -->
+    <!-- Main Content -->
 
     <div class="d-flex">
         <div
@@ -27,25 +27,13 @@
 
             <!-- Export Button -->
 
-            <div
+            <export-button
                 v-if="isAdmin"
                 class="mt-1"
+                @startExport="exportConferences"
             >
-                <span
-                    class="me-1"
-                    style="cursor: pointer;"
-                    @click="exportConferences"
-                >
-                    Export conferences
-                </span>
-
-                <v-progress-circular
-                    v-if="exportLoading"
-                    indeterminate
-                    size="15"
-                    width="3"
-                ></v-progress-circular>
-            </div>
+                <template v-slot:title> Export conferences </template>
+            </export-button>
         </div>
 
         <!-- Conferences List -->
@@ -65,10 +53,6 @@ export default {
         ConferenceList,
     },
 
-    data: () => ({
-        exportLoading: false,
-    }),
-
     computed: {
         isAuthenticated() {
             return this.$store.getters['auth/authenticated']
@@ -85,11 +69,7 @@ export default {
 
     methods: {
         exportConferences() {
-            if (!this.exportLoading) {
-                this.exportLoading = true
-
-                this.$store.dispatch('conference/exportConferences')
-            }
+            this.$store.dispatch('conference/exportConferences')
         },
     }
 }

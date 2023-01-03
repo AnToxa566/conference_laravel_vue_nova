@@ -56,7 +56,9 @@ Route::controller(ConferenceController::class)->group(function () {
             Route::post('/conferences/add', 'store')->name('conferences.store');
             Route::post('/conferences/{id}/update', 'update')->name('conferences.update');
             Route::get('/conferences/{id}/delete', 'destroy')->name('conferences.destroy');
+
             Route::get('/conferences/export/all', 'exportAll')->name('conferences.exportAll');
+            Route::get('/conferences/export/listeners/{conferenceId}', 'exportListeners')->name('conferences.exportListeners');
         });
     });
 });
@@ -84,6 +86,11 @@ Route::controller(LectureController::class)->group(function () {
         Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
         Route::middleware(['user.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
         Route::middleware(['can.delete.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+
+        Route::middleware(['admin'])->group(function () {
+            Route::get('/lectures/export/{conferenceId}', 'exportByConferenceId')->name('lectures.exportByConferenceId');
+            Route::get('/lectures/export/comments/{lectureId}', 'exportComments')->name('lectures.exportComments');
+        });
     });
 });
 

@@ -15,21 +15,22 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-use App\Models\Conference;
-use App\Http\Controllers\API\ConferenceController;
+use App\Models\Lecture;
+use App\Models\Comment;
 
-class ConferencesExport implements FromCollection, ShouldQueue, WithHeadings, ShouldAutoSize, WithStrictNullComparison
+class CommentsByLectureExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithStrictNullComparison,WithHeadings
 {
     use Exportable;
+
+    protected int $lectureId;
 
     public function headings(): array
     {
         return [
-            'Title',
-            'Start date and time',
-            'Country',
-            'Lectures count',
-            'Listeners count',
+            'User first name',
+            'User last name',
+            'Published date',
+            'Content',
         ];
     }
 
@@ -38,13 +39,19 @@ class ConferencesExport implements FromCollection, ShouldQueue, WithHeadings, Sh
         return response()->json($exception);
     }
 
+    public function __construct(int $lectureId)
+    {
+        $this->lectureId = $lectureId;
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection(): Collection
     {
-        // dd((new ConferenceController)->getConferenceAddressById(24));
-
-        return Conference::select('title', 'date_time_event', 'country')->withCount('lectures', 'listeners')->get();
+        return Lecture::find($this->lectureId)->comments()
+                        ->leftJoin('users', 'users.id', '=', 'comments.user_id')
+                        ->select('users.first_name', 'users.last_name', 'comments.created_at', 'comments.description')
+                        ->get();
     }
 }

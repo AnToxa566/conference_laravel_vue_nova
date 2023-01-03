@@ -295,7 +295,23 @@ export default {
                     const fileLink = document.createElement('a')
 
                     fileLink.href = fileURL
-                    fileLink.download = moment(Date.now()).format('YYYYMMDD_HHmmss_') + 'conferences.csv'
+                    fileLink.download = moment(Date.now()).format('YYYY_MM_DD_HHmmss') + '_conferences.csv'
+                    fileLink.click()
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+
+
+        exportListeners({ }, conferenceId) {
+            axios.get(`/api/conferences/export/listeners/${conferenceId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
+                .then(res => {
+                    const fileURL = window.URL.createObjectURL(new Blob([res.data]))
+                    const fileLink = document.createElement('a')
+
+                    fileLink.href = fileURL
+                    fileLink.download = moment(Date.now()).format('YYYY_MM_DD_HHmmss') + '_c' + conferenceId + '_listeners.csv'
                     fileLink.click()
                 })
                 .catch(err => {

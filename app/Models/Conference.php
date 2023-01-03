@@ -27,6 +27,10 @@ class Conference extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function announcers() {
+        return $this->belongsToMany(User::class)->where('type', '=', UserConsts::ANNOUNCER);
+    }
+
     public function listeners() {
         return $this->belongsToMany(User::class)->where('type', '=', UserConsts::LISTENER);
     }

@@ -1,7 +1,12 @@
 <template>
+
+    <!-- Header -->
+
     <my-header>
         <template v-slot:header>Lectures</template>
     </my-header>
+
+    <!-- Error alert -->
 
     <custom-error-alert
         :errorMessage='this.error'
@@ -9,15 +14,31 @@
     >
     </custom-error-alert>
 
+    <!-- Main Content -->
+
     <div class="d-flex">
         <div
             v-if="isAuthenticated"
             class="w-25 me-4"
         >
+             <!-- Filter Navigation -->
+
             <lecture-filter-navigation
                 :conferenceId="this.conferenceId"
             ></lecture-filter-navigation>
+
+            <!-- Export Button -->
+
+            <export-button
+                v-if="isAdmin"
+                class="mt-1"
+                @startExport="exportLectures"
+            >
+                <template v-slot:title> Export lectures </template>
+            </export-button>
         </div>
+
+        <!-- List of Lectures -->
 
         <div class="w-100">
             <lecture-list
@@ -54,6 +75,10 @@ export default {
             return this.$store.getters['auth/authenticated']
         },
 
+        isAdmin() {
+            return this.$store.getters['auth/isAdmin']
+        },
+
         filteredLectures() {
             return this.$store.getters['lecture/filteredLectures']
         },
@@ -62,5 +87,11 @@ export default {
             return this.$store.getters['lecture/error']
         },
     },
+
+    methods: {
+        exportLectures() {
+            this.$store.dispatch('lecture/exportLectures', this.conferenceId)
+        },
+    }
 }
 </script>

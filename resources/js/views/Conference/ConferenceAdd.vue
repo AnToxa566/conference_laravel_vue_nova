@@ -113,15 +113,7 @@
 
         <!-- Buttons -->
 
-        <v-row>
-            <v-col cols="2">
-                <v-btn variant="tonal" color="white" class="w-100" @click="$router.go(-1)"> Back </v-btn>
-            </v-col>
-
-            <v-col cols="2">
-                <v-btn type="submit" variant="tonal" color="success" class="w-100" @click.prevent="add(conference)"> Save </v-btn>
-            </v-col>
-        </v-row>
+        <v-btn type="submit" variant="tonal" color="white" @click.prevent="add(conference)"> Save </v-btn>
     </v-form>
 </template>
 

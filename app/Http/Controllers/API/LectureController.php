@@ -17,6 +17,10 @@ use App\Mail\LectureTimeChanged;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
+use App\Exports\CommentsByLectureExport;
+use App\Exports\LecturesByConferenceExport;
+use Maatwebsite\Excel\Excel as ExcelTypes;
+
 use App\Models\User;
 use App\Models\Lecture;
 use App\Models\Conference;
@@ -162,5 +166,25 @@ class LectureController extends Controller
         }
 
         return response()->json($response);
+    }
+
+
+    public function exportByConferenceId(int $conferenceId): BinaryFileResponse
+    {
+        $export = new LecturesByConferenceExport($conferenceId);
+        $filename = 'c' . $conferenceId . '_lectures.csv';
+
+        $export->store($filename, 'exports_csv', ExcelTypes::CSV);
+        return $export->download($filename, ExcelTypes::CSV, ['Content-Type' => 'text/csv']);
+    }
+
+
+    public function exportComments(int $lectureId): BinaryFileResponse
+    {
+        $export = new CommentsByLectureExport($lectureId);
+        $filename = 'l' . $lectureId . '_comments.csv';
+
+        $export->store($filename, 'exports_csv', ExcelTypes::CSV);
+        return $export->download($filename, ExcelTypes::CSV, ['Content-Type' => 'text/csv']);
     }
 }

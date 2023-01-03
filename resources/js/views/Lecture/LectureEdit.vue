@@ -23,8 +23,6 @@
                 :isJoined="true"
                 :conferenceId="this.conferenceId"
             ></my-join-cancel-buttons>
-
-            <v-btn variant="tonal" color="white" class="mx-1" @click="$router.go(-1)"> Back </v-btn>
         </template>
     </lecture-form>
 </template>

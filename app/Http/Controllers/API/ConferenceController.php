@@ -14,7 +14,8 @@ use App\Events\LectureDeleted;
 use App\Mail\ConferenceDeleted;
 use Illuminate\Support\Facades\Mail;
 
-use App\Exports\ConferencesExport;
+use App\Exports\AllConferencesExport;
+use App\Exports\ListenersByConferenceExport;
 use Maatwebsite\Excel\Excel as ExcelTypes;
 
 use App\Models\Conference;
@@ -161,8 +162,18 @@ class ConferenceController extends Controller
 
     public function exportAll(): BinaryFileResponse
     {
-        $export = new ConferencesExport();
-        $filename = date('Y_m_d_His') . '_conferences.csv';
+        $export = new AllConferencesExport();
+        $filename = 'conferences.csv';
+
+        $export->store($filename, 'exports_csv', ExcelTypes::CSV);
+        return $export->download($filename, ExcelTypes::CSV, ['Content-Type' => 'text/csv']);
+    }
+
+
+    public function exportListeners(int $conferenceId): BinaryFileResponse
+    {
+        $export = new ListenersByConferenceExport($conferenceId);
+        $filename = 'c' . $conferenceId . '_listeners.csv';
 
         $export->store($filename, 'exports_csv', ExcelTypes::CSV);
         return $export->download($filename, ExcelTypes::CSV, ['Content-Type' => 'text/csv']);

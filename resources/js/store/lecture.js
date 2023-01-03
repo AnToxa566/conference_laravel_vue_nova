@@ -292,6 +292,37 @@ export default {
                 })
         },
 
+        exportLectures({ }, conferenceId) {
+            axios.get(`/api/lectures/export/${conferenceId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
+                .then(res => {
+                    const fileURL = window.URL.createObjectURL(new Blob([res.data]))
+                    const fileLink = document.createElement('a')
+
+                    fileLink.href = fileURL
+                    fileLink.download = moment(Date.now()).format('YYYY_MM_DD_HHmmss') + '_c' + conferenceId + '_lectures.csv'
+                    fileLink.click()
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+
+
+        exportComments({ }, lectureId) {
+            axios.get(`/api/lectures/export/comments/${lectureId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
+                .then(res => {
+                    const fileURL = window.URL.createObjectURL(new Blob([res.data]))
+                    const fileLink = document.createElement('a')
+
+                    fileLink.href = fileURL
+                    fileLink.download = moment(Date.now()).format('YYYY_MM_DD_HHmmss') + '_l' + lectureId + '_comments.csv'
+                    fileLink.click()
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+
         incrementCommentsCount({ commit }, lectureId) {
             commit('COMMENT_INCREMENT', lectureId)
         },

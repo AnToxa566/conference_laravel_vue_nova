@@ -121,8 +121,7 @@
         <!-- Buttons -->
 
         <div class="d-flex justify-content-start">
-            <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
-            <v-btn type="submit" variant="tonal" color="success" class="me-2" @click.prevent="update"> Save </v-btn>
+            <v-btn type="submit" variant="tonal" color="white" class="me-2" @click.prevent="update"> Save </v-btn>
             <v-btn variant="tonal" color="red" class="" @click="this.delete()"> Delete </v-btn>
         </div>
     </v-form>

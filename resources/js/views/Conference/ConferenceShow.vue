@@ -1,22 +1,33 @@
 <template>
+
+    <!-- Header -->
+
     <my-header>
         <template v-slot:header>Conference details</template>
     </my-header>
+
+    <!-- Title -->
 
     <my-info-card>
         <template v-slot:header> Topic </template>
         <template v-slot:body> {{ this.conference.title }} </template>
     </my-info-card>
 
+    <!-- Date & Time -->
+
     <my-info-card>
         <template v-slot:header> Date / Time </template>
         <template v-slot:body> {{ this.formatedDateTime }} </template>
     </my-info-card>
 
+    <!-- Address -->
+
     <my-info-card v-if="isHasAddress">
         <template v-slot:header> Address </template>
         <template v-slot:body> {{ this.conference.address }} </template>
     </my-info-card>
+
+    <!-- Google Map -->
 
     <v-card v-if="isHasAddress" class="mb-4">
         <GMapMap
@@ -39,10 +50,14 @@
         </GMapMap>
     </v-card>
 
+    <!-- Country -->
+
     <my-info-card>
         <template v-slot:header> Country </template>
         <template v-slot:body> {{ this.conference.country }} </template>
     </my-info-card>
+
+    <!-- Category -->
 
     <my-info-card
         v-if="this.category"
@@ -51,23 +66,37 @@
         <template v-slot:body> {{ this.category.title }} </template>
     </my-info-card>
 
-    <div class="d-flex justify-space-between">
+    <!-- Buttons -->
+
+    <div class="d-flex justify-space-between align-center">
+
+        <!-- Preppend buttons -->
+
         <div>
-            <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
+            <export-button
+                v-if="isAdmin"
+                @startExport="exportMembers"
+            >
+                <template v-slot:title> Export members </template>
+            </export-button>
 
             <my-join-cancel-buttons
-                v-if="!isAdmin"
+                v-else
                 :isJoined="this.isJoined"
                 :conferenceId="this.id"
             ></my-join-cancel-buttons>
-            <v-btn v-else variant="tonal" color="red" @click="this.delete"> Delete </v-btn>
         </div>
 
-        <div v-if="isJoined">
-            <my-share-buttons></my-share-buttons>
+        <!-- Append buttons -->
+
+        <div>
+            <my-share-buttons v-if="isJoined"></my-share-buttons>
+
+            <v-btn v-if="isAdmin" variant="tonal" color="red" @click="this.delete"> Delete </v-btn>
         </div>
     </div>
 </template>
+
 
 <script>
 export default {
@@ -112,13 +141,13 @@ export default {
     },
 
     methods: {
+        exportMembers() {
+            this.$store.dispatch('conference/exportListeners', this.id)
+        },
+
         delete() {
             this.$store.dispatch('conference/deleteConference', this.id)
         },
     },
 }
 </script>
-
-<style scoped>
-
-</style>
