@@ -43,9 +43,7 @@ class LectureController extends Controller
 
     public function fetchSearchedLectures(string $search, int $limit): JsonResponse
     {
-        $response = Lecture::where('title', 'LIKE', '%'.$search.'%')->limit($limit)->get();
-
-        return response()->json($response);
+        return response()->json(Lecture::search($search, $limit)->get());
     }
 
 
@@ -90,16 +88,15 @@ class LectureController extends Controller
 
     public function downloadPresentation(int $id): JsonResponse|BinaryFileResponse
     {
-        $query = Lecture::find($id);
+        $lecture = Lecture::find($id);
 
-        if (!Storage::disk('local')->exists($query->presentation_path)) {
+        if (!Storage::disk('local')->exists($lecture->presentation_path)) {
             return response()->json('Error! Please, try again.', 500);
         }
 
-        $path = storage_path('app/' . $query->presentation_path);
-        $response = response()->download($path, $query->presentation_name);
+        $path = storage_path('app/' . $lecture->presentation_path);
 
-        return $response;
+        return response()->download($path, $lecture->presentation_name);;
     }
 
 
