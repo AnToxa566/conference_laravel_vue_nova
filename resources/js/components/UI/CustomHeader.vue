@@ -7,6 +7,6 @@
 
 <script>
 export default {
-    name: 'my-header',
+    name: 'custom-header',
 }
 </script>

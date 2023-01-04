@@ -2,49 +2,49 @@
 
     <!-- Header -->
 
-    <my-header>
+    <custom-header>
         <template v-slot:header>Lecture details</template>
-    </my-header>
+    </custom-header>
 
 
     <!-- Title -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Topic </template>
         <template v-slot:body> {{ this.lecture.title }} </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Date -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Date </template>
         <template v-slot:body> {{ this.formattedDate }} </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Time -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Time </template>
         <template v-slot:body>
             from <span class="font-weight-bold">{{ this.startFormattedTime }}</span>
             to <span class="font-weight-bold">{{ this.endFormattedTime }}</span>
         </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Description -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Description </template>
         <template v-slot:body> {{ this.lecture.description }} </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Presentation -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Presentation </template>
         <template v-slot:body>
             <span
@@ -55,17 +55,17 @@
                 {{ this.lecture.presentation_name }}
             </span>
         </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Category -->
 
-    <my-info-card
+    <info-card
         v-if="this.category"
     >
         <template v-slot:header> Category </template>
         <template v-slot:body> {{ this.category.title }} </template>
-    </my-info-card>
+    </info-card>
 
     <!-- Buttons for owner this lecture -->
 
@@ -75,10 +75,10 @@
     >
         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conferenceId}/lectures/${this.lectureId}/edit`)"> Edit </v-btn>
 
-        <my-join-cancel-buttons
+        <join-cancel-buttons
             :isJoined="true"
             :conferenceId="this.conferenceId"
-        ></my-join-cancel-buttons>
+        ></join-cancel-buttons>
     </div>
 
     <!-- Buttons for admins -->

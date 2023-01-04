@@ -2,30 +2,30 @@
 
     <!-- Header -->
 
-    <my-header>
+    <custom-header>
         <template v-slot:header>Conference details</template>
-    </my-header>
+    </custom-header>
 
     <!-- Title -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Topic </template>
         <template v-slot:body> {{ this.conference.title }} </template>
-    </my-info-card>
+    </info-card>
 
     <!-- Date & Time -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Date / Time </template>
         <template v-slot:body> {{ this.formatedDateTime }} </template>
-    </my-info-card>
+    </info-card>
 
     <!-- Address -->
 
-    <my-info-card v-if="isHasAddress">
+    <info-card v-if="isHasAddress">
         <template v-slot:header> Address </template>
         <template v-slot:body> {{ this.conference.address }} </template>
-    </my-info-card>
+    </info-card>
 
     <!-- Google Map -->
 
@@ -52,19 +52,19 @@
 
     <!-- Country -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Country </template>
         <template v-slot:body> {{ this.conference.country }} </template>
-    </my-info-card>
+    </info-card>
 
     <!-- Category -->
 
-    <my-info-card
+    <info-card
         v-if="this.category"
     >
         <template v-slot:header> Category </template>
         <template v-slot:body> {{ this.category.title }} </template>
-    </my-info-card>
+    </info-card>
 
     <!-- Buttons -->
 
@@ -78,17 +78,17 @@
                 :conferenceId="this.id"
             ></conference-delete-button>
 
-            <my-join-cancel-buttons
+            <join-cancel-buttons
                 v-else
                 :isJoined="this.isJoined"
                 :conferenceId="this.id"
-            ></my-join-cancel-buttons>
+            ></join-cancel-buttons>
         </div>
 
         <!-- Append buttons -->
 
         <div>
-            <my-share-buttons v-if="isJoined"></my-share-buttons>
+            <share-buttons v-if="isJoined"></share-buttons>
 
             <export-button
                 v-if="isAdmin"

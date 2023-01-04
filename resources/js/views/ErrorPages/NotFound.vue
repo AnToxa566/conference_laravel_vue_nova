@@ -1,5 +1,5 @@
 <template>
-    <my-header>
+    <custom-header>
         <template v-slot:header>This Page Not Found!</template>
-    </my-header>
+    </custom-header>
 </template>

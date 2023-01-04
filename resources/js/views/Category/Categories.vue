@@ -1,7 +1,7 @@
 <template>
-    <my-header>
+    <custom-header>
         <template v-slot:header>Categories</template>
-    </my-header>
+    </custom-header>
 
     <category-tree
         :storeRoots="this.roots"

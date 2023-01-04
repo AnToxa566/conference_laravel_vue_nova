@@ -34,11 +34,11 @@
                     <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/lectures`)"> Lectures </v-btn>
 
                     <!-- Join / Cancel -->
-                    <my-join-cancel-buttons
+                    <join-cancel-buttons
                         v-if="!isAdmin"
                         :isJoined="this.isJoined"
                         :conferenceId="this.conference.id"
-                    ></my-join-cancel-buttons>
+                    ></join-cancel-buttons>
 
                     <div v-else>
                         <!-- Update -->
@@ -61,7 +61,7 @@
                         v-if="isJoined"
                         class="mx-2"
                     >
-                        <my-share-buttons></my-share-buttons>
+                        <share-buttons></share-buttons>
                     </div>
 
                     <!-- Category Chip -->

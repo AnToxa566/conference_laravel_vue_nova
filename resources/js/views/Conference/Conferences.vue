@@ -2,9 +2,9 @@
 
     <!-- Header -->
 
-    <my-header>
+    <custom-header>
         <template v-slot:header>Conferences</template>
-    </my-header>
+    </custom-header>
 
     <!-- Error Alert -->
 

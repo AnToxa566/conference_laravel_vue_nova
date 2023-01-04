@@ -37,7 +37,7 @@ import LectureFormDialog from '../Lecture/LectureFormDialog.vue'
 import userTypes from '../../config/user_types'
 
 export default {
-    name: 'my-join-cancel-buttons',
+    name: 'join-cancel-buttons',
 
     data: () => ({
         dialog: false,
@@ -101,8 +101,3 @@ export default {
     }
 }
 </script>
-
-
-<style scoped>
-
-</style>

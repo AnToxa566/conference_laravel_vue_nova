@@ -1,7 +1,7 @@
 <template>
-    <my-header>
+    <custom-header>
         <template v-slot:header>Profile</template>
-    </my-header>
+    </custom-header>
 
     <custom-error-alert
         :errorMessage='this.authErrors'

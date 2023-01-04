@@ -43,7 +43,7 @@
 
 <script>
 export default {
-    name: 'my-app-bar',
+    name: 'app-bar',
 
     computed: {
         isAuthenticated() {

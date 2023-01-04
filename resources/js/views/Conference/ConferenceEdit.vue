@@ -1,7 +1,7 @@
 <template>
-    <my-header>
+    <custom-header>
         <template v-slot:header>Update conference</template>
-    </my-header>
+    </custom-header>
 
     <custom-error-alert
         :errorMessage='this.error'

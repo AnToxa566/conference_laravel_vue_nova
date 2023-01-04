@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <my-app-bar></my-app-bar>
+        <app-bar></app-bar>
 
         <v-main>
             <v-container class="w-75 mx-auto">
@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import MyAppBar from './components/UI/MyAppBar.vue';
+import AppBar from './components/UI/AppBar.vue';
 
 export default {
     name: 'app',
 
     components: {
-        MyAppBar,
+        AppBar,
     },
 
     mounted() {
