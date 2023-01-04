@@ -10,6 +10,8 @@ use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
 use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 
+use App\Jobs\ExportFile;
+use App\Jobs\DeleteFile;
 use App\Jobs\ExportCompleted;
 use App\Events\LectureDeleted;
 
@@ -172,22 +174,18 @@ class LectureController extends Controller
 
     public function exportByConferenceId(int $conferenceId): void
     {
+        $fileName = 'c' . $conferenceId . '_lectures.csv';
         $export = new LecturesByConferenceExport($conferenceId);
-        $filename = 'c' . $conferenceId . '_lectures.csv';
 
-        $export->store($filename, 'exports_csv', ExcelTypes::CSV)->chain([
-            new ExportCompleted($filename),
-        ])->delay(now()->addSeconds(5));
+        ExportFile::dispatch($fileName, $export);
     }
 
 
     public function exportComments(int $lectureId): void
     {
+        $fileName = 'l' . $lectureId . '_comments.csv';
         $export = new CommentsByLectureExport($lectureId);
-        $filename = 'l' . $lectureId . '_comments.csv';
 
-        $export->store($filename, 'exports_csv', ExcelTypes::CSV)->chain([
-            new ExportCompleted($filename),
-        ])->delay(now()->addSeconds(5));
+        ExportFile::dispatch($fileName, $export);
     }
 }

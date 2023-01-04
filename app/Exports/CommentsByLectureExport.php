@@ -8,19 +8,12 @@ use Throwable;
 use Illuminate\Http\JsonResponse;
 
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\Exportable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 use App\Models\Lecture;
 
-class CommentsByLectureExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithStrictNullComparison,WithHeadings
+class CommentsByLectureExport extends BaseCsvExport implements WithHeadings
 {
-    use Exportable;
-
     protected int $lectureId;
 
     public function headings(): array

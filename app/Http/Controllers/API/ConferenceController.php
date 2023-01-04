@@ -9,8 +9,7 @@ use App\Http\Requests\Conference\ConferenceStoreRequest;
 use App\Http\Requests\Conference\ConferenceUpdateRequest;
 use App\Http\Requests\Conference\ConferenceFetchFilteredRequest;
 
-use App\Jobs\ExportCompleted;
-
+use App\Jobs\ExportFile;
 use App\Events\LectureDeleted;
 
 use App\Mail\ConferenceDeleted;
@@ -18,11 +17,9 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Exports\AllConferencesExport;
 use App\Exports\ListenersByConferenceExport;
-use Maatwebsite\Excel\Excel as ExcelTypes;
 
 use App\Models\Conference;
 use Illuminate\Http\JsonResponse;
-use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ConferenceController extends Controller
 {
@@ -164,22 +161,18 @@ class ConferenceController extends Controller
 
     public function exportAll(): void
     {
+        $fileName = 'conferences.csv';
         $export = new AllConferencesExport();
-        $filename = 'conferences.csv';
 
-        $export->store($filename, 'exports_csv', ExcelTypes::CSV)->chain([
-            new ExportCompleted($filename),
-        ])->delay(now()->addSeconds(5));
+        ExportFile::dispatch($fileName, $export);
     }
 
 
     public function exportListeners(int $conferenceId): void
     {
+        $fileName = 'c' . $conferenceId . '_listeners.csv';
         $export = new ListenersByConferenceExport($conferenceId);
-        $filename = 'c' . $conferenceId . '_listeners.csv';
 
-        $export->store($filename, 'exports_csv', ExcelTypes::CSV)->chain([
-            new ExportCompleted($filename),
-        ])->delay(now()->addSeconds(5));
+        ExportFile::dispatch($fileName, $export);
     }
 }

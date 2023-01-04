@@ -37,7 +37,7 @@ export default {
             .listen('FileExportCompleted', (e) => {
                 if (this.exportLoading) {
                     this.exportLoading = false
-                    this.$store.dispatch('storage/downloadExportFile', e.filename)
+                    this.$store.dispatch('storage/downloadExportFile', e.fileName)
                 }
             });
     },

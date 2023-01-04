@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Events\FileExportCompleted;
-
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ExportCompleted implements ShouldQueue
+class DeleteFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -41,6 +40,8 @@ class ExportCompleted implements ShouldQueue
      */
     public function handle(): void
     {
-        FileExportCompleted::dispatch($this->fileName);
+        if (Storage::disk('exports_csv')->exists($this->fileName)) {
+            Storage::disk('exports_csv')->delete($this->fileName);
+        }
     }
 }

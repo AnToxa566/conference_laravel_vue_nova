@@ -21,16 +21,16 @@ class FileExportCompleted implements ShouldBroadcast
     *
     * @var string
     */
-    public $filename;
+    public $fileName;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(string $filename)
+    public function __construct(string $fileName)
     {
-        $this->filename = $filename;
+        $this->fileName = $fileName;
     }
 
     /**
