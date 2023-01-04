@@ -10,46 +10,61 @@
             variant="tonal"
             v-bind="props"
         >
+            <!-- Title -->
             <v-card-title class="text-h5"> {{ conference.title }} </v-card-title>
 
+            <!-- Date & Time -->
             <v-card-subtitle> {{ formatedDateTime }} </v-card-subtitle>
+
+            <!-- Country -->
             <v-card-subtitle> {{ conference.country }} </v-card-subtitle>
 
+
+            <!-- Buttons -->
+
             <v-card-actions class="d-flex justify-space-between">
+
+                <!-- Prepend Buttons -->
+
                 <div class="d-flex">
+                    <!-- Details -->
                     <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}`)"> Details </v-btn>
+
+                    <!-- Lectures -->
                     <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/lectures`)"> Lectures </v-btn>
 
+                    <!-- Join / Cancel -->
                     <my-join-cancel-buttons
                         v-if="!isAdmin"
                         :isJoined="this.isJoined"
                         :conferenceId="this.conference.id"
                     ></my-join-cancel-buttons>
+
                     <div v-else>
+                        <!-- Update -->
                         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/edit`)"> Update </v-btn>
-                        <v-btn variant="text" color="red" class="mx-1" @click="this.confirmationDialog = true"> Delete </v-btn>
 
-                        <action-confirmation
-                            v-model="confirmationDialog"
-
-                            title="Delete conference?"
-                            text="Are you sure you want to delete this conference?"
-
-                            @confirm="this.delete"
-                        >
-                        </action-confirmation>
+                        <!-- Delete -->
+                        <conference-delete-button :conferenceId="this.conference.id"></conference-delete-button>
                     </div>
                 </div>
+
+                <!-- Append Buttons -->
 
                 <div
                     class="d-flex justify-content-end align-center"
                 >
+
+                    <!-- Share Buttons -->
+
                     <div
                         v-if="isJoined"
                         class="mx-2"
                     >
                         <my-share-buttons></my-share-buttons>
                     </div>
+
+                    <!-- Category Chip -->
 
                     <v-chip
                         v-if="this.category"
@@ -67,15 +82,12 @@
 
 
 <script>
-import ActionConfirmation from '../UI/ActionConfirmation.vue';
+import ConferenceDeleteButton from '../Conference/ConferenceDeleteButton.vue';
+
 export default {
     components: {
-        ActionConfirmation
+        ConferenceDeleteButton
     },
-
-    data: () => ({
-        confirmationDialog: false,
-    }),
 
     props: {
         conference: {
@@ -98,14 +110,6 @@ export default {
 
         category() {
             return this.$store.getters['category/categoryById'](this.conference.category_id)
-        },
-    },
-
-    methods: {
-        delete(event) {
-            if (event) {
-                this.$store.dispatch('conference/deleteConference', this.conference.id)
-            }
         },
     },
 };

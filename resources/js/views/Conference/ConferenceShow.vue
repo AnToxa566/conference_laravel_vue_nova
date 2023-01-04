@@ -73,12 +73,10 @@
         <!-- Preppend buttons -->
 
         <div>
-            <export-button
+            <conference-delete-button
                 v-if="isAdmin"
-                @startExport="exportMembers"
-            >
-                <template v-slot:title> Export members </template>
-            </export-button>
+                :conferenceId="this.id"
+            ></conference-delete-button>
 
             <my-join-cancel-buttons
                 v-else
@@ -92,17 +90,34 @@
         <div>
             <my-share-buttons v-if="isJoined"></my-share-buttons>
 
-            <v-btn v-if="isAdmin" variant="tonal" color="red" @click="this.delete"> Delete </v-btn>
+            <export-button
+                v-if="isAdmin"
+                @startExport="exportMembers"
+            >
+                <template v-slot:title> Export members </template>
+            </export-button>
         </div>
     </div>
 </template>
 
 
 <script>
+import ConferenceDeleteButton from '../../components/Conference/ConferenceDeleteButton.vue';
+
 export default {
+    components: {
+        ConferenceDeleteButton
+    },
+
     data: () => ({
         id: null,
+        confirmationDialog: false,
     }),
+
+    created() {
+        this.id = parseInt(this.$route.params.id, 10);
+        this.$store.dispatch('conference/fetchDetailConference', this.id)
+    },
 
     computed: {
         conference() {
@@ -135,18 +150,15 @@ export default {
         }
     },
 
-    created() {
-        this.id = parseInt(this.$route.params.id, 10);
-        this.$store.dispatch('conference/fetchDetailConference', this.id)
-    },
-
     methods: {
         exportMembers() {
             this.$store.dispatch('conference/exportListeners', this.id)
         },
 
-        delete() {
-            this.$store.dispatch('conference/deleteConference', this.id)
+        delete(event) {
+            if (event) {
+                this.$store.dispatch('conference/deleteConference', this.id)
+            }
         },
     },
 }
