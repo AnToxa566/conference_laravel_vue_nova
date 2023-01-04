@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategoryStoreRequest;
 
 use App\Models\Category;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
@@ -55,7 +56,7 @@ class CategoryController extends Controller
         $response = Category::create($request->validated());
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $response->{"children"} = [];
@@ -65,10 +66,10 @@ class CategoryController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        $category = Category::where('id', $id)->first();
+        $category = Category::find($id);
 
         if (!$category) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         $deleteCats = CategoryController::deleteChilds($category);

@@ -11,8 +11,6 @@ use App\Http\Requests\Lecture\LectureUpdateRequest;
 use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 
 use App\Jobs\ExportFile;
-use App\Jobs\DeleteFile;
-use App\Jobs\ExportCompleted;
 use App\Events\LectureDeleted;
 
 use App\Mail\AnnouncerJoined;
@@ -22,12 +20,12 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Exports\CommentsByLectureExport;
 use App\Exports\LecturesByConferenceExport;
-use Maatwebsite\Excel\Excel as ExcelTypes;
 
 use App\Models\User;
 use App\Models\Lecture;
 use App\Models\Conference;
 
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -54,8 +52,13 @@ class LectureController extends Controller
         $conference = Conference::find($request->get('conferenceId'));
         $query = $conference->lectures()->withCount('comments');
 
-        $query->whereRaw('TIMESTAMPDIFF(MINUTE, CAST(date_time_start AS DATETIME), CAST(date_time_end AS DATETIME)) >= ?', [$request->get('minDuration')]);
-        $query->whereRaw('TIMESTAMPDIFF(MINUTE, CAST(date_time_start AS DATETIME), CAST(date_time_end AS DATETIME)) <= ?', [$request->get('maxDuration')]);
+        if ($request->filled('minDuration')) {
+            $query->whereRaw('TIMESTAMPDIFF(MINUTE, CAST(date_time_start AS DATETIME), CAST(date_time_end AS DATETIME)) >= ?', [$request->get('minDuration')]);
+        }
+
+        if ($request->filled('maxDuration')) {
+            $query->whereRaw('TIMESTAMPDIFF(MINUTE, CAST(date_time_start AS DATETIME), CAST(date_time_end AS DATETIME)) <= ?', [$request->get('maxDuration')]);
+        }
 
         if ($request->filled('startTimeAfter')) {
             $query->whereTime('date_time_start', '>=', $request->get('startTimeAfter'));
@@ -78,7 +81,7 @@ class LectureController extends Controller
         $response = Lecture::find($id);
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         $response->{'comments_count'} = count($response->comments);
@@ -90,13 +93,15 @@ class LectureController extends Controller
     {
         $lecture = Lecture::find($id);
 
-        if (!Storage::disk('local')->exists($lecture->presentation_path)) {
-            return response()->json('Error! Please, try again.', 500);
+        if (!$lecture) {
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
-        $path = storage_path('app/' . $lecture->presentation_path);
+        if (!Storage::disk('local')->exists($lecture->presentation_path)) {
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
+        }
 
-        return response()->download($path, $lecture->presentation_name);;
+        return response()->download(storage_path('app/' . $lecture->presentation_path), $lecture->presentation_name);;
     }
 
 
@@ -109,7 +114,12 @@ class LectureController extends Controller
 
         $lecture = Lecture::create($response);
 
+        if (!$lecture) {
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $listeners = Conference::find($lecture->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
+
         if (count($listeners)) {
             Mail::to($listeners)->send(new AnnouncerJoined($lecture));
         }
@@ -124,6 +134,11 @@ class LectureController extends Controller
         $request->validated();
 
         $lecture = Lecture::find($id);
+
+        if (!$lecture) {
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
+        }
+
         $lecture->date_time_start = $request->date_time_start;
         $lecture->date_time_end = $request->date_time_end;
 
@@ -132,7 +147,7 @@ class LectureController extends Controller
         $response = tap($lecture)->update($request->toArray());
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ($timeChanged) {
@@ -153,7 +168,7 @@ class LectureController extends Controller
         $response = tap(Lecture::find($id))->delete();
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         User::find($response->user_id)->conferences()->detach($response->conference_id);

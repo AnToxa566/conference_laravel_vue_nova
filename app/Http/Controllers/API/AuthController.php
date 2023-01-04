@@ -11,6 +11,7 @@ use App\Http\Requests\Auth\UpdateRequest;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
@@ -23,7 +24,7 @@ class AuthController extends Controller
         $response = User::create($validated);
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
@@ -35,19 +36,17 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $validated = $request->validated();
-
         $response = User::where('email', $validated['email'])->first();
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (!Hash::check($validated['password'], $response->password)) {
-            return response()->json(['message' => 'Password doesn\'t match.'], 500);
+            return response()->json(['message' => 'Password doesn\'t match.'], Response::HTTP_BAD_REQUEST);
         }
 
         $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
-
         return response()->json($response);
     }
 
@@ -60,7 +59,7 @@ class AuthController extends Controller
         $response = tap(User::find($validated['id']))->update($validated);
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         return response()->json($response);
@@ -72,7 +71,7 @@ class AuthController extends Controller
         $response = User::find(auth('sanctum')->id());
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $response->tokens()->delete();

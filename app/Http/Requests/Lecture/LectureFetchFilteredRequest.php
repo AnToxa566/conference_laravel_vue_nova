@@ -28,8 +28,8 @@ class LectureFetchFilteredRequest extends FormRequest
         return [
             'conferenceId' => ['required', 'numeric', 'exists:App\Models\Conference,id'],
 
-            'minDuration' => ['required', 'numeric', 'min:0', 'lte:maxDuration'],
-            'maxDuration' => ['required', 'numeric', 'gte:minDuration'],
+            'minDuration' => ['nullable', 'numeric', 'min:0', 'lte:maxDuration'],
+            'maxDuration' => ['nullable', 'numeric', 'gte:minDuration'],
 
             'startTimeAfter' => ['nullable', 'date_format:H:i:s', 'before_or_equal:startTimeBefore'],
             'startTimeBefore' => ['nullable', 'date_format:H:i:s', 'after_or_equal:startTimeAfter'],

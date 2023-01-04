@@ -18,9 +18,7 @@ class UserConferenceController extends Controller
 {
     public function fetchJoinedConferences(int $userId): JsonResponse
     {
-        $response = array_column(User::find($userId)->conferences()->get()->toArray(), 'id');
-
-        return response()->json($response);
+        return response()->json(array_column(User::find($userId)->conferences()->get()->toArray(), 'id'));
     }
 
 

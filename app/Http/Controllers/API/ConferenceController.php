@@ -19,6 +19,7 @@ use App\Exports\AllConferencesExport;
 use App\Exports\ListenersByConferenceExport;
 
 use App\Models\Conference;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
 class ConferenceController extends Controller
@@ -45,13 +46,7 @@ class ConferenceController extends Controller
 
     public function fetchAll(): JsonResponse
     {
-        $response = Conference::withCount('lectures')->get();
-
-        if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
-        }
-
-        return response()->json($response);
+        return response()->json(Conference::withCount('lectures')->get());
     }
 
 
@@ -60,7 +55,7 @@ class ConferenceController extends Controller
         $response = Conference::find($id);
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         $response->{'address'} = $this->getConferenceAddressById($id);
@@ -81,8 +76,13 @@ class ConferenceController extends Controller
 
         $query = Conference::withCount('lectures');
 
-        $query->having('lectures_count', '>=', $request->get('minLectureCount'));
-        $query->having('lectures_count', '<=', $request->get('maxLectureCount'));
+        if ($request->filled('minLectureCount')) {
+            $query->having('lectures_count', '>=', $request->get('minLectureCount'));
+        }
+
+        if ($request->filled('maxLectureCount')) {
+            $query->having('lectures_count', '<=', $request->get('maxLectureCount'));
+        }
 
         if ($request->filled('dateAfter')) {
             $query->whereDate('date_time_event', '>=', $request->get('dateAfter'));
@@ -105,7 +105,7 @@ class ConferenceController extends Controller
         $response = Conference::create($request->validated());
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $response->{'lectures_count'} = 0;
@@ -119,7 +119,7 @@ class ConferenceController extends Controller
         $response = tap(Conference::find($id))->update($request->validated());
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         $response->{'lectures'} = $response->lectures;
@@ -136,7 +136,7 @@ class ConferenceController extends Controller
         $response = tap(Conference::find($id))->delete();
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         if (count($users)) {
