@@ -14,6 +14,7 @@ use App\Http\Controllers\API\UserLectureController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CountryController;
+use App\Http\Controllers\API\StorageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,4 +128,11 @@ Route::controller(CategoryController::class)->group(function () {
 
 Route::controller(CountryController::class)->group(function () {
     Route::get('/country', 'fetchAll')->name('country.fetchAll');
+});
+
+
+Route::controller(StorageController::class)->group(function () {
+    Route::middleware(['admin', 'auth:sanctum'])->group(function () {
+        Route::get('/storage/export/{fileName}/download', 'downloadExportCsvFile')->name('storages.downloadExportCsvFile');
+    });
 });

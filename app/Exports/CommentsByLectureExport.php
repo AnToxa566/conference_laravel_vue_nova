@@ -16,7 +16,6 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 use App\Models\Lecture;
-use App\Models\Comment;
 
 class CommentsByLectureExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithStrictNullComparison,WithHeadings
 {

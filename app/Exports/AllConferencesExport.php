@@ -16,7 +16,6 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 use App\Models\Conference;
-use App\Http\Controllers\API\ConferenceController;
 
 class AllConferencesExport implements FromCollection, ShouldQueue, WithHeadings, ShouldAutoSize, WithStrictNullComparison
 {
@@ -27,6 +26,8 @@ class AllConferencesExport implements FromCollection, ShouldQueue, WithHeadings,
         return [
             'Title',
             'Start date and time',
+            'Latitude',
+            'Longitude',
             'Country',
             'Lectures count',
             'Listeners count',
@@ -43,9 +44,6 @@ class AllConferencesExport implements FromCollection, ShouldQueue, WithHeadings,
     */
     public function collection(): Collection
     {
-        // TODO: address
-        // dd((new ConferenceController)->getConferenceAddressById(24));
-
-        return Conference::select('title', 'date_time_event', 'country')->withCount('lectures', 'listeners')->get();
+        return Conference::select('title', 'date_time_event', 'latitude', 'longitude', 'country')->withCount('lectures', 'listeners')->get();
     }
 }

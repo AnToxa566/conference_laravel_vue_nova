@@ -32,6 +32,16 @@ export default {
         exportLoading: false,
     }),
 
+    mounted() {
+        Echo.private('export')
+            .listen('FileExportCompleted', (e) => {
+                if (this.exportLoading) {
+                    this.exportLoading = false
+                    this.$store.dispatch('storage/downloadExportFile', e.filename)
+                }
+            });
+    },
+
     methods: {
         clickExport() {
             if (!this.exportLoading) {

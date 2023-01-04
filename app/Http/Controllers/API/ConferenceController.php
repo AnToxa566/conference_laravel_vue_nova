@@ -9,6 +9,8 @@ use App\Http\Requests\Conference\ConferenceStoreRequest;
 use App\Http\Requests\Conference\ConferenceUpdateRequest;
 use App\Http\Requests\Conference\ConferenceFetchFilteredRequest;
 
+use App\Jobs\ExportCompleted;
+
 use App\Events\LectureDeleted;
 
 use App\Mail\ConferenceDeleted;
@@ -160,22 +162,24 @@ class ConferenceController extends Controller
     }
 
 
-    public function exportAll(): BinaryFileResponse
+    public function exportAll(): void
     {
         $export = new AllConferencesExport();
         $filename = 'conferences.csv';
 
-        $export->store($filename, 'exports_csv', ExcelTypes::CSV);
-        return $export->download($filename, ExcelTypes::CSV, ['Content-Type' => 'text/csv']);
+        $export->store($filename, 'exports_csv', ExcelTypes::CSV)->chain([
+            new ExportCompleted($filename),
+        ])->delay(now()->addSeconds(5));
     }
 
 
-    public function exportListeners(int $conferenceId): BinaryFileResponse
+    public function exportListeners(int $conferenceId): void
     {
         $export = new ListenersByConferenceExport($conferenceId);
         $filename = 'c' . $conferenceId . '_listeners.csv';
 
-        $export->store($filename, 'exports_csv', ExcelTypes::CSV);
-        return $export->download($filename, ExcelTypes::CSV, ['Content-Type' => 'text/csv']);
+        $export->store($filename, 'exports_csv', ExcelTypes::CSV)->chain([
+            new ExportCompleted($filename),
+        ])->delay(now()->addSeconds(5));
     }
 }
