@@ -11,6 +11,10 @@ use App\Models\Comment;
 use App\Models\Lecture;
 use Illuminate\Http\JsonResponse;
 
+use App\Mail\CommentAdded;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
+
 class CommentController extends Controller
 {
     public function fetchByLectureId(int $lectureId, int $limit, int $page): JsonResponse
@@ -18,18 +22,17 @@ class CommentController extends Controller
         $lecture = Lecture::find($lectureId);
 
         if (!$lecture) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
         $offset = $limit * ($page - 1);
-        $response = $lecture->comments()->latest()->skip($offset)->take($limit)->get();
+        $comments = $lecture->comments()->latest()->skip($offset)->take($limit)->get();
 
-        foreach ($response as $comment) {
-            $comment->{'first_name'} = $comment->user->first_name;
-            $comment->{'last_name'} = $comment->user->last_name;
+        foreach ($comments as $comment) {
+            $comment->{'user_name'} = $comment->user->first_name . ' ' . $comment->user->last_name;
         }
 
-        return response()->json($response);
+        return response()->json($comments);
     }
 
 
@@ -38,11 +41,12 @@ class CommentController extends Controller
         $response = Comment::create($request->validated());
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $response->{'first_name'} = $response->user->first_name;
-        $response->{'last_name'} = $response->user->last_name;
+        $response->{'user_name'} = $response->user->first_name . ' ' . $response->user->last_name;
+
+        Mail::to($response->lecture->user)->send(new CommentAdded($response));
 
         return response()->json($response);
     }
@@ -53,11 +57,10 @@ class CommentController extends Controller
         $response = tap(Comment::find($id))->update($request->validated());
 
         if (!$response) {
-            return response()->json('Error! Please, try again.', 500);
+            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
-        $response->{'first_name'} = $response->user->first_name;
-        $response->{'last_name'} = $response->user->last_name;
+        $response->{'user_name'} = $response->user->first_name . ' ' . $response->user->last_name;
 
         return response()->json($response);
     }

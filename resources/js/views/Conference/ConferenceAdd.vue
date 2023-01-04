@@ -1,7 +1,7 @@
 <template>
-    <my-header>
+    <custom-header>
         <template v-slot:header>Add conference</template>
-    </my-header>
+    </custom-header>
 
     <custom-error-alert
         :errorMessage='this.error'
@@ -113,15 +113,7 @@
 
         <!-- Buttons -->
 
-        <v-row>
-            <v-col cols="2">
-                <v-btn variant="tonal" color="white" class="w-100" @click="$router.go(-1)"> Back </v-btn>
-            </v-col>
-
-            <v-col cols="2">
-                <v-btn type="submit" variant="tonal" color="success" class="w-100" @click.prevent="add(conference)"> Save </v-btn>
-            </v-col>
-        </v-row>
+        <v-btn type="submit" variant="tonal" color="white" @click.prevent="add(conference)"> Save </v-btn>
     </v-form>
 </template>
 
@@ -140,8 +132,6 @@ export default {
             category_id: null,
         },
 
-        countries: [],
-
         titleRules: [
             v => !!v || 'Topic is required!',
             v => (v && v.length >= 2) || 'Topic must be 2 characters or longer!',
@@ -158,7 +148,6 @@ export default {
     }),
 
     created() {
-        this.countries = this.$store.getters['conference/countriesName']
         this.$store.commit('conference/SET_ERROR', '')
     },
 

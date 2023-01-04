@@ -1,10 +1,10 @@
 <template>
-    <my-header>
+    <custom-header>
         <template v-slot:header>Favorite Lectures</template>
-    </my-header>
+    </custom-header>
 
     <lecture-list
-        v-if="this.favoriteLectures.length !== 0"
+        v-if="this.favoriteLectures.length"
         :lectures="this.favoriteLectures"
     ></lecture-list>
 

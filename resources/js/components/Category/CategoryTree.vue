@@ -122,7 +122,6 @@ export default {
         },
 
         openConfirmationDialog(props) {
-            console.log(props.node)
             this.nodeToDelete = props.node
             this.confirmationDialog = true
         },

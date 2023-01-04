@@ -1,3 +1,5 @@
 *
 !public/
+!exports_csv/
+!presentations/
 !.gitignore

@@ -27,7 +27,7 @@ export default {
     },
 
     created() {
-        this.allCountries = this.$store.getters['conference/countriesName']
+        this.allCountries = this.$store.getters['country/countries'].map(country => country.name)
     },
 
     methods: {

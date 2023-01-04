@@ -100,7 +100,7 @@ export default {
             categories.push(category)
 
             for (let i = 0; i < categories.length; i++) {
-                if (categories[i].children.length !== 0) {
+                if (categories[i].children.length) {
                     categories[i].children.forEach(child => {
                         category = state.categories.find(cat => cat.id === child.id)
                         categories.push(category)

@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'can.delete.lecture' => \App\Http\Middleware\CanDeleteLecture::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'user.lecture' => \App\Http\Middleware\SureUserLecture::class,
         'user.comment' => \App\Http\Middleware\SureUserComment::class,

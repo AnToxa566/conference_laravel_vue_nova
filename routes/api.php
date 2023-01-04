@@ -14,6 +14,7 @@ use App\Http\Controllers\API\UserLectureController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CountryController;
+use App\Http\Controllers\API\StorageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ use App\Http\Controllers\API\CountryController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json(['name' => $request->user()->name]);
 });
+
 
 Route::controller(AuthController::class)->group(function () {
     Route::middleware(['guest'])->group(function () {
@@ -46,14 +48,19 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(ConferenceController::class)->group(function () {
     Route::get('/conferences', 'fetchAll')->name('conferences.fetchAll');
 
-    Route::middleware(['auth:sanctum'])->get('/conferences/{id}', 'fetchDetail')->name('conferences.fetchDetail');
-    Route::middleware(['auth:sanctum'])->post('/conferences/filtered', 'fetchFiltered')->name('conferences.fetchFiltered');
-    Route::middleware(['auth:sanctum'])->get('/conferences/search/{search}/limit/{limit}', 'fetchSearchedConferences')->name('conferences.fetchSearchedConferences');
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/conferences/{id}', 'fetchDetail')->name('conferences.fetchDetail');
+        Route::post('/conferences/filtered', 'fetchFiltered')->name('conferences.fetchFiltered');
+        Route::get('/conferences/search/{search}/limit/{limit}', 'fetchSearchedConferences')->name('conferences.fetchSearchedConferences');
 
-    Route::middleware(['admin', 'auth:sanctum'])->group(function () {
-        Route::post('/conferences/add', 'store')->name('conferences.store');
-        Route::post('/conferences/{id}/update', 'update')->name('conferences.update');
-        Route::get('/conferences/{id}/delete', 'destroy')->name('conferences.destroy');
+        Route::middleware(['admin'])->group(function () {
+            Route::post('/conferences/add', 'store')->name('conferences.store');
+            Route::post('/conferences/{id}/update', 'update')->name('conferences.update');
+            Route::get('/conferences/{id}/delete', 'destroy')->name('conferences.destroy');
+
+            Route::get('/conferences/export/all', 'exportAll')->name('conferences.exportAll');
+            Route::get('/conferences/export/listeners/{conferenceId}', 'exportListeners')->name('conferences.exportListeners');
+        });
     });
 });
 
@@ -79,7 +86,12 @@ Route::controller(LectureController::class)->group(function () {
 
         Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
         Route::middleware(['user.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
-        Route::middleware(['user.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+        Route::middleware(['can.delete.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+
+        Route::middleware(['admin'])->group(function () {
+            Route::get('/lectures/export/{conferenceId}', 'exportByConferenceId')->name('lectures.exportByConferenceId');
+            Route::get('/lectures/export/comments/{lectureId}', 'exportComments')->name('lectures.exportComments');
+        });
     });
 });
 
@@ -116,4 +128,11 @@ Route::controller(CategoryController::class)->group(function () {
 
 Route::controller(CountryController::class)->group(function () {
     Route::get('/country', 'fetchAll')->name('country.fetchAll');
+});
+
+
+Route::controller(StorageController::class)->group(function () {
+    Route::middleware(['admin', 'auth:sanctum'])->group(function () {
+        Route::get('/storage/export/{fileName}/download', 'downloadExportCsvFile')->name('storages.downloadExportCsvFile');
+    });
 });

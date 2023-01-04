@@ -19,6 +19,7 @@
                     class="mx-1"
 
                     hide-details
+                    @update:modelValue="inputUpdated"
                 ></v-text-field>
 
                 <v-text-field
@@ -30,6 +31,7 @@
                     class="mx-1"
 
                     hide-details
+                    @update:modelValue="inputUpdated"
                 ></v-text-field>
             </div>
 
@@ -45,7 +47,7 @@
                 thumb-label
                 hide-details
 
-                @update:modelValue="updateSlider"
+                @update:modelValue="updateModelValue"
             >
             </v-range-slider>
         </v-expansion-panel-text>
@@ -72,7 +74,11 @@ export default {
     },
 
     methods: {
-        updateSlider(event) {
+        inputUpdated() {
+            this.$emit('update:modelValue', this.modelValue)
+        },
+
+        updateModelValue(event) {
             this.$emit('update:modelValue', event)
         }
     },

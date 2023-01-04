@@ -1,11 +1,11 @@
 <template>
-    <my-header
+    <custom-header
         class="mb-4"
     >
         <template v-slot:header>
             {{ this.isUserOwnThisLecture ? 'Update lecture ' : this.$router.push({ name: '404' }) }}
         </template>
-    </my-header>
+    </custom-header>
 
     <custom-error-alert
         :errorMessage='this.error'
@@ -19,12 +19,10 @@
         @submit="updateLecture"
     >
         <template v-slot:extraButtons>
-            <my-join-cancel-buttons
+            <join-cancel-buttons
                 :isJoined="true"
                 :conferenceId="this.conferenceId"
-            ></my-join-cancel-buttons>
-
-            <v-btn variant="tonal" color="white" class="mx-1" @click="$router.go(-1)"> Back </v-btn>
+            ></join-cancel-buttons>
         </template>
     </lecture-form>
 </template>

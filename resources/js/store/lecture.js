@@ -285,12 +285,31 @@ export default {
             axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_LECTURE', res.data.id)
-                    store.dispatch('user_conferences/cancelParticipation', res.data.conference_id)
-
                     router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     console.log(err.response)
+                })
+        },
+
+        exportLectures({ }, conferenceId) {
+            axios.get(`/api/lectures/export/${conferenceId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
+                .then(res => {
+                    //
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+
+
+        exportComments({ }, lectureId) {
+            axios.get(`/api/lectures/export/comments/${lectureId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
+                .then(res => {
+                    //
+                })
+                .catch(err => {
+                    console.log(err)
                 })
         },
 

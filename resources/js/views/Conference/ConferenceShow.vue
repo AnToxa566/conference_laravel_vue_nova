@@ -1,22 +1,33 @@
 <template>
-    <my-header>
-        <template v-slot:header>Conference details</template>
-    </my-header>
 
-    <my-info-card>
+    <!-- Header -->
+
+    <custom-header>
+        <template v-slot:header>Conference details</template>
+    </custom-header>
+
+    <!-- Title -->
+
+    <info-card>
         <template v-slot:header> Topic </template>
         <template v-slot:body> {{ this.conference.title }} </template>
-    </my-info-card>
+    </info-card>
 
-    <my-info-card>
+    <!-- Date & Time -->
+
+    <info-card>
         <template v-slot:header> Date / Time </template>
         <template v-slot:body> {{ this.formatedDateTime }} </template>
-    </my-info-card>
+    </info-card>
 
-    <my-info-card v-if="isHasAddress">
+    <!-- Address -->
+
+    <info-card v-if="isHasAddress">
         <template v-slot:header> Address </template>
-        <template v-slot:body> {{ this.formatedAddress }} </template>
-    </my-info-card>
+        <template v-slot:body> {{ this.conference.address }} </template>
+    </info-card>
+
+    <!-- Google Map -->
 
     <v-card v-if="isHasAddress" class="mb-4">
         <GMapMap
@@ -39,42 +50,73 @@
         </GMapMap>
     </v-card>
 
-    <my-info-card>
+    <!-- Country -->
+
+    <info-card>
         <template v-slot:header> Country </template>
         <template v-slot:body> {{ this.conference.country }} </template>
-    </my-info-card>
+    </info-card>
 
-    <my-info-card
+    <!-- Category -->
+
+    <info-card
         v-if="this.category"
     >
         <template v-slot:header> Category </template>
         <template v-slot:body> {{ this.category.title }} </template>
-    </my-info-card>
+    </info-card>
 
-    <div class="d-flex justify-space-between">
+    <!-- Buttons -->
+
+    <div class="d-flex justify-space-between align-center">
+
+        <!-- Preppend buttons -->
+
         <div>
-            <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
+            <conference-delete-button
+                v-if="isAdmin"
+                :conferenceId="this.id"
+            ></conference-delete-button>
 
-            <my-join-cancel-buttons
-                v-if="!isAdmin"
+            <join-cancel-buttons
+                v-else
                 :isJoined="this.isJoined"
                 :conferenceId="this.id"
-            ></my-join-cancel-buttons>
-            <v-btn v-else variant="tonal" color="red" @click="this.delete"> Delete </v-btn>
+            ></join-cancel-buttons>
         </div>
 
-        <div v-if="isJoined">
-            <my-share-buttons></my-share-buttons>
+        <!-- Append buttons -->
+
+        <div>
+            <share-buttons v-if="isJoined"></share-buttons>
+
+            <export-button
+                v-if="isAdmin"
+                @startExport="exportMembers"
+            >
+                <template v-slot:title> Export members </template>
+            </export-button>
         </div>
     </div>
 </template>
 
+
 <script>
+import ConferenceDeleteButton from '../../components/Conference/ConferenceDeleteButton.vue';
+
 export default {
-    data() {
-        return {
-            id: null,
-        };
+    components: {
+        ConferenceDeleteButton
+    },
+
+    data: () => ({
+        id: null,
+        confirmationDialog: false,
+    }),
+
+    created() {
+        this.id = parseInt(this.$route.params.id, 10);
+        this.$store.dispatch('conference/fetchDetailConference', this.id)
     },
 
     computed: {
@@ -88,16 +130,16 @@ export default {
         formatedDateTime() {
             return this.$store.getters['conference/formatedDateTime'](this.id)
         },
-        formatedAddress() {
-            return this.$store.getters['conference/formatedAddress']
-        },
 
         joinedConferencesId() {
             return this.$store.getters['user_conferences/joinedConferencesId']
         },
 
         addressPosition() {
-            return this.$store.getters['conference/addressPosition']
+            return {
+                lat: this.conference.latitude,
+                lng: this.conference.longitude,
+            }
         },
 
         isJoined() {
@@ -111,19 +153,16 @@ export default {
         }
     },
 
-    created() {
-        this.id = parseInt(this.$route.params.id, 10);
-        this.$store.dispatch('conference/fetchDetailConference', this.id)
-    },
-
     methods: {
-        delete() {
-            this.$store.dispatch('conference/deleteConference', this.id)
+        exportMembers() {
+            this.$store.dispatch('conference/exportListeners', this.id)
+        },
+
+        delete(event) {
+            if (event) {
+                this.$store.dispatch('conference/deleteConference', this.id)
+            }
         },
     },
 }
 </script>
-
-<style scoped>
-
-</style>

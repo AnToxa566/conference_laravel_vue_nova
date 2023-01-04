@@ -2,49 +2,49 @@
 
     <!-- Header -->
 
-    <my-header>
+    <custom-header>
         <template v-slot:header>Lecture details</template>
-    </my-header>
+    </custom-header>
 
 
     <!-- Title -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Topic </template>
         <template v-slot:body> {{ this.lecture.title }} </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Date -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Date </template>
         <template v-slot:body> {{ this.formattedDate }} </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Time -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Time </template>
         <template v-slot:body>
             from <span class="font-weight-bold">{{ this.startFormattedTime }}</span>
             to <span class="font-weight-bold">{{ this.endFormattedTime }}</span>
         </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Description -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Description </template>
         <template v-slot:body> {{ this.lecture.description }} </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Presentation -->
 
-    <my-info-card>
+    <info-card>
         <template v-slot:header> Presentation </template>
         <template v-slot:body>
             <span
@@ -55,20 +55,19 @@
                 {{ this.lecture.presentation_name }}
             </span>
         </template>
-    </my-info-card>
+    </info-card>
 
 
     <!-- Category -->
 
-    <my-info-card
+    <info-card
         v-if="this.category"
     >
         <template v-slot:header> Category </template>
         <template v-slot:body> {{ this.category.title }} </template>
-    </my-info-card>
+    </info-card>
 
-
-    <!-- Buttons -->
+    <!-- Buttons for owner this lecture -->
 
     <div
         v-if="isUserOwnThisLecture"
@@ -76,17 +75,44 @@
     >
         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conferenceId}/lectures/${this.lectureId}/edit`)"> Edit </v-btn>
 
-        <my-join-cancel-buttons
+        <join-cancel-buttons
             :isJoined="true"
             :conferenceId="this.conferenceId"
-        ></my-join-cancel-buttons>
+        ></join-cancel-buttons>
     </div>
 
+    <!-- Buttons for admins -->
+
+    <div
+        v-if="isAdmin"
+        class="d-flex"
+    >
+        <v-spacer></v-spacer>
+
+        <v-btn class="mb-6" variant="tonal" color="red" @click="this.confirmationDialog = true"> Delete </v-btn>
+
+        <action-confirmation
+            v-model="confirmationDialog"
+
+            title="Delete lecture?"
+            text="Are you sure you want to delete this lecture?"
+
+            @confirm="this.delete"
+        >
+        </action-confirmation>
+    </div>
 
     <!-- Comments Form and List-->
 
-    <div class="py-3 mt-6 text-h6 font-weight-bold">
-        Comments
+    <div class="d-flex justify-space-between align-center">
+        <span class="py-3 text-h6 font-weight-bold"> Comments </span>
+
+        <export-button
+            v-if="isAdmin"
+            @startExport="exportComments"
+        >
+            <template v-slot:title> Export comments </template>
+        </export-button>
     </div>
 
     <comment-form
@@ -112,6 +138,8 @@ export default {
     },
 
     data: () => ({
+        confirmationDialog: false,
+
         conferenceId: null,
         lectureId: null,
     }),
@@ -133,6 +161,9 @@ export default {
 
         userId() {
             return this.$store.getters['auth/user'].id
+        },
+        isAdmin() {
+            return this.$store.getters['auth/isAdmin']
         },
 
         isUserOwnThisLecture() {
@@ -165,6 +196,16 @@ export default {
                 id: this.lecture.id,
                 presentationName: this.lecture.presentation_name,
             })
+        },
+
+        exportComments() {
+            this.$store.dispatch('lecture/exportComments', this.lectureId)
+        },
+
+        delete(event) {
+            if (event) {
+                this.$store.dispatch('lecture/deleteLecture', this.lectureId)
+            }
         },
 
         async storeComment(comment) {

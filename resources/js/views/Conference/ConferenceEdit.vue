@@ -1,7 +1,7 @@
 <template>
-    <my-header>
+    <custom-header>
         <template v-slot:header>Update conference</template>
-    </my-header>
+    </custom-header>
 
     <custom-error-alert
         :errorMessage='this.error'
@@ -121,21 +121,24 @@
         <!-- Buttons -->
 
         <div class="d-flex justify-content-start">
-            <v-btn variant="tonal" color="white" class="me-2" @click="$router.go(-1)"> Back </v-btn>
-            <v-btn type="submit" variant="tonal" color="success" class="me-2" @click.prevent="update"> Save </v-btn>
-            <v-btn variant="tonal" color="red" class="" @click="this.delete()"> Delete </v-btn>
+            <v-btn type="submit" variant="tonal" color="white" class="me-2" @click.prevent="update"> Save </v-btn>
+            <conference-delete-button :conferenceId="this.id"></conference-delete-button>
         </div>
     </v-form>
 </template>
 
 
 <script>
+import ConferenceDeleteButton from '../../components/Conference/ConferenceDeleteButton.vue';
+
 export default {
+    components: {
+        ConferenceDeleteButton
+    },
+
     data: () => ({
         id: null,
         valid: false,
-
-        countries: [],
 
         titleRules: [
             v => !!v || 'Topic is required!',
@@ -151,6 +154,12 @@ export default {
             v => ('' || v >= -180 && v <= 180) || 'Latitude value must be range -180 to 180!',
         ],
     }),
+
+    created() {
+        this.id = parseInt(this.$route.params.id, 10);
+        this.$store.dispatch('conference/fetchDetailConference', this.id)
+        this.$store.commit('conference/SET_ERROR', '')
+    },
 
     computed: {
         conference() {
@@ -174,10 +183,6 @@ export default {
             return this.$store.getters['conference/error']
         },
 
-        countriesName() {
-            return this.$store.getters['conference/countriesName']
-        },
-
         latLng() {
             if (this.conference.latitude === '' || this.conference.longitude === '' || this.conference.latitude === null || this.conference.longitude === null) {
                 return {
@@ -195,14 +200,6 @@ export default {
         markerVisible() {
             return this.conference.latitude !== '' && this.conference.longitude !== ''
         },
-    },
-
-    created() {
-        this.id = this.$route.params.id;
-        this.$store.dispatch('conference/fetchDetailConference', this.id)
-        this.$store.commit('conference/SET_ERROR', '')
-
-        this.countries = this.$store.getters['conference/countriesName']
     },
 
     methods: {
@@ -235,10 +232,6 @@ export default {
                     this.$store.dispatch('conference/updateConference', this.conference)
                 }
             }
-        },
-
-        delete() {
-            this.$store.dispatch('conference/deleteConference', this.id)
         },
     }
 };

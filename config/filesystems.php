@@ -33,7 +33,13 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
-            'throw' => true,
+            'throw' => false,
+        ],
+
+        'exports_csv' => [
+            'driver' => 'local',
+            'root' => storage_path('app/exports_csv'),
+            'throw' => false,
         ],
 
         'public' => [
@@ -71,6 +77,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('exports_csv') => storage_path('app/exports_csv'),
         public_path('presentations') => storage_path('app/presentations'),
     ],
 

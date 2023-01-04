@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="this.filteredConferences.length !== 0"
+        v-if="this.filteredConferences.length"
     >
         <conference-item
             v-for="conference in conferencesPaginatedData.paginatedConferences"

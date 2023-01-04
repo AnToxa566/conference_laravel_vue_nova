@@ -1,6 +1,8 @@
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import auth from './auth'
+import storage from './storage'
+import country from './country'
 import comment from './comment'
 import lecture from './lecture'
 import favorite from './favorite'
@@ -14,6 +16,8 @@ const store = createStore({
     ],
     modules: {
         auth,
+        storage,
+        country,
         lecture,
         comment,
         favorite,
