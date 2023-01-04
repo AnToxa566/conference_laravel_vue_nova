@@ -8,17 +8,13 @@ export default {
 
     state: {
         conference: {},
+
         conferences: [],
         filteredConferences: [],
         searchedConferences: [],
         conferencesPaginatedData: {},
 
-        countries: [],
-        countriesName: [],
-
         error: '',
-
-        addressPosition: '',
     },
 
     getters: {
@@ -46,13 +42,6 @@ export default {
             return state.error
         },
 
-        countries(state) {
-            return state.countries
-        },
-        countriesName(state) {
-            return state.countriesName
-        },
-
         formatedDateTime(state) {
             return id => {
                 const conferencesId = state.conferences.map(conference => conference.id);
@@ -63,10 +52,6 @@ export default {
                     return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
                 }
             }
-        },
-
-        addressPosition(state) {
-            return state.addressPosition
         },
 
         getMinCountLectures(state) {
@@ -107,17 +92,6 @@ export default {
 
         SET_ERROR (state, value) {
             state.error = value
-        },
-
-        SET_COUNTRIES (state, value) {
-            state.countries = value
-        },
-        SET_COUNTRIES_NAME (state, value) {
-            state.countriesName = value
-        },
-
-        SET_ADDRESS_POSITION (state, value) {
-            state.addressPosition = value
         },
 
         ADD_CONFERENCE (state, value) {
@@ -194,11 +168,6 @@ export default {
             axios.get(`/api/conferences/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_CONFERENCE', res.data)
-
-                    commit('SET_ADDRESS_POSITION', {
-                        'lat': res.data.latitude,
-                        'lng': res.data.longitude
-                    })
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -210,18 +179,6 @@ export default {
             axios.get(`/api/conferences/search/${query.search}/limit/${query.limit}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_SEARCHED_CONFERENCES', res.data)
-                })
-                .catch(err => {
-                    console.log(err.response)
-                })
-        },
-
-
-        fetchAllCountries({ commit }) {
-            axios.get('/api/country')
-                .then(res => {
-                    commit('SET_COUNTRIES', res.data)
-                    commit('SET_COUNTRIES_NAME', res.data.map(country => country.name))
                 })
                 .catch(err => {
                     console.log(err.response)

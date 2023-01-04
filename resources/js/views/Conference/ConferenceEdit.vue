@@ -140,8 +140,6 @@ export default {
         id: null,
         valid: false,
 
-        countries: [],
-
         titleRules: [
             v => !!v || 'Topic is required!',
             v => (v && v.length >= 2) || 'Topic must be 2 characters or longer!',
@@ -158,11 +156,9 @@ export default {
     }),
 
     created() {
-        this.id = this.$route.params.id;
+        this.id = parseInt(this.$route.params.id, 10);
         this.$store.dispatch('conference/fetchDetailConference', this.id)
         this.$store.commit('conference/SET_ERROR', '')
-
-        this.countries = this.$store.getters['conference/countriesName']
     },
 
     computed: {
@@ -185,10 +181,6 @@ export default {
 
         error() {
             return this.$store.getters['conference/error']
-        },
-
-        countriesName() {
-            return this.$store.getters['conference/countriesName']
         },
 
         latLng() {

@@ -136,7 +136,10 @@ export default {
         },
 
         addressPosition() {
-            return this.$store.getters['conference/addressPosition']
+            return {
+                lat: this.conference.latitude,
+                lng: this.conference.longitude,
+            }
         },
 
         isJoined() {

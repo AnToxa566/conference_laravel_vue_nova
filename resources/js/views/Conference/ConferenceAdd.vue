@@ -132,8 +132,6 @@ export default {
             category_id: null,
         },
 
-        countries: [],
-
         titleRules: [
             v => !!v || 'Topic is required!',
             v => (v && v.length >= 2) || 'Topic must be 2 characters or longer!',
@@ -150,7 +148,6 @@ export default {
     }),
 
     created() {
-        this.countries = this.$store.getters['conference/countriesName']
         this.$store.commit('conference/SET_ERROR', '')
     },
 

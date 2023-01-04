@@ -197,8 +197,6 @@ export default {
             password: '',
             password_confirmation: '',
         },
-
-        countries: [],
     }),
 
     computed: {
@@ -216,8 +214,6 @@ export default {
 
     created() {
         this.$store.dispatch('auth/removeAuthErrors')
-
-        this.countries = this.$store.getters['conference/countriesName']
         this.user.country_phone_code ='UA'
     },
 
