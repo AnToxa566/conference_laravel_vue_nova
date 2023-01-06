@@ -10,7 +10,6 @@
 
                 :min="minTime"
                 :max="maxTime"
-                :hideDetails="true"
 
                 @update:modelValue="updateDate"
             >

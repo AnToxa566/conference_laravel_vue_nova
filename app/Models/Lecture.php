@@ -20,11 +20,15 @@ class Lecture extends Model
         'category_id',
 
         'title',
+        'description',
+
         'date_time_start',
         'date_time_end',
-        'description',
+
         'presentation_path',
         'presentation_name',
+
+        'is_online',
     ];
 
     public function followingUsers() {
@@ -42,6 +46,10 @@ class Lecture extends Model
     public function comments() {
       return $this->hasMany(Comment::class);
     }
+
+    public function zoomMeeting() {
+        return $this->hasOne(ZoomMeeting::class);
+      }
 
     public function category() {
       return $this->belongsTo(Category::class, 'category_id', 'id');

@@ -26,16 +26,18 @@ class LectureStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'numeric'],
-            'conference_id' => ['required', 'numeric'],
-            'category_id' => ['nullable', 'string'],
+            'user_id'           => ['required', 'numeric'],
+            'conference_id'     => ['required', 'numeric'],
+            'category_id'       => ['nullable', 'string'],
 
-            'title' => ['required', 'string', 'min:2', 'max:255'],
-            'date_time_start' => ['required', 'date'],
-            'date_time_end' => ['required', 'date'],
-            'description' => ['required', 'string'],
+            'title'             => ['required', 'string', 'min:2', 'max:255'],
+            'description'       => ['required', 'string'],
 
-            'presentation' => ['required', 'file', 'max:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
+            'date_time_start'   => ['required', 'date'],
+            'date_time_end'     => ['required', 'date'],
+
+            'presentation'      => ['required', 'file', 'max:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
+            'is_online'         => ['required', 'boolean'],
         ];
     }
 }

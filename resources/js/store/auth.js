@@ -58,6 +58,7 @@ export default {
             }
 
             localStorage.setItem('config', JSON.stringify(state.config))
+            localStorage.setItem('auth_token', JSON.stringify(user.auth_token))
         },
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value

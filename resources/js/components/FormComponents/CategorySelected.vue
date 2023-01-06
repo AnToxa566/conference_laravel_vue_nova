@@ -15,6 +15,7 @@
                     item-title="text"
                     item-value="id"
 
+                    class="mb-4"
                     variant="solo"
                     label="Choose category"
 

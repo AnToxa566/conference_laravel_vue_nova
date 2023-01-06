@@ -8,6 +8,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ConferenceController;
 use App\Http\Controllers\API\UserConferenceController;
 
+use App\Http\Controllers\API\MeetingController;
 use App\Http\Controllers\API\LectureController;
 use App\Http\Controllers\API\UserLectureController;
 
@@ -76,9 +77,9 @@ Route::controller(UserConferenceController::class)->group(function () {
 
 
 Route::controller(LectureController::class)->group(function () {
-    Route::get('/lectures', 'fetchAll')->name('lectures.fetchAll');
-
     Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/lectures', 'fetchAll')->name('lectures.fetchAll');
+
         Route::get('/lectures/{id}', 'fetchById')->name('lectures.fetchById');
         Route::post('/lectures/filtered', 'fetchFiltered')->name('lectures.fetchFiltered');
         Route::get('/lectures/search/{search}/limit/{limit}', 'fetchSearchedLectures')->name('lectures.fetchSearchedLectures');
@@ -134,5 +135,12 @@ Route::controller(CountryController::class)->group(function () {
 Route::controller(StorageController::class)->group(function () {
     Route::middleware(['admin', 'auth:sanctum'])->group(function () {
         Route::get('/storage/export/{fileName}/download', 'downloadExportCsvFile')->name('storages.downloadExportCsvFile');
+    });
+});
+
+
+Route::controller(MeetingController::class)->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/meetings', 'fetchAll')->name('meetings.fetchAll');
     });
 });

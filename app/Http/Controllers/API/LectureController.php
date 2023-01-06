@@ -33,7 +33,7 @@ use App\UserConsts;
 
 class LectureController extends Controller
 {
-    public function fetchAll(): JsonResponse|string
+    public function fetchAll(): JsonResponse
     {
         return response()->json(Lecture::withCount('comments')->get());
     }
@@ -118,6 +118,8 @@ class LectureController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $meeting = $lecture->is_online ? (new MeetingController)->store($lecture->id) : null;
+
         $listeners = Conference::find($lecture->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
 
         if (count($listeners)) {
@@ -125,7 +127,11 @@ class LectureController extends Controller
         }
 
         $lecture->{'comments_count'} = 0;
-        return response()->json($lecture);
+
+        return response()->json([
+            'lecture' => $lecture,
+            'meeting' => $meeting ? $meeting->original : $meeting,
+        ]);
     }
 
 

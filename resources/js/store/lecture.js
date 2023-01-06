@@ -4,6 +4,7 @@ import axios from 'axios'
 import store from '../store'
 import router from '../router'
 
+
 export default {
     namespaced: true,
 
@@ -16,6 +17,7 @@ export default {
 
         error: '',
     },
+
 
     getters: {
         lecture(state) {
@@ -145,6 +147,7 @@ export default {
         },
     },
 
+
     mutations: {
         SET_LECTURE (state, value) {
             state.lecture = value
@@ -186,9 +189,10 @@ export default {
         }
     },
 
+
     actions: {
         fetchAllLectures({ commit }) {
-            axios.get('/api/lectures')
+            axios.get('/api/lectures', JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('SET_LECTURES', res.data)
                 })
@@ -232,9 +236,11 @@ export default {
         storeLecture({ commit }, lecture) {
             axios.post('/api/lectures/add', lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('PUSH_LECTURE', res.data)
+                    commit('PUSH_LECTURE', res.data.lecture)
                     commit('SET_ERROR', '')
-                    store.dispatch('user_conferences/joinConference', res.data.conference_id)
+
+                    store.dispatch('user_conferences/joinConference', res.data.lecture.conference_id)
+                    store.commit('meeting/PUSH_MEETING', res.data.meeting)
                 })
                 .catch(err => {
                     console.log(err.response)
