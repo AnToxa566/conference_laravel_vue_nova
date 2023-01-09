@@ -1,5 +1,6 @@
 <template>
     <v-expansion-panels
+        v-model="panel"
         variant="accordion"
         multiple
     >
@@ -86,6 +87,8 @@ export default {
         minLectureDuration: lecture.MIN_LECTURE_DURATION,
         maxLectureDuration: lecture.MAX_LECTURE_DURATION,
 
+        panel: [],
+
         timeout: null,
     }),
 
@@ -147,6 +150,8 @@ export default {
             this.filter.startTimeBefore = null
             this.filter.lectureDurationRange = [lecture.MIN_LECTURE_DURATION, lecture.MAX_LECTURE_DURATION]
             this.filter.selectedCategoriesId = []
+
+            this.panel = []
 
             this.updateFilters()
         },

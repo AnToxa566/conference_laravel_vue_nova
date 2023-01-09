@@ -1,5 +1,6 @@
 <template>
     <v-expansion-panels
+        v-model="panel"
         variant="accordion"
         multiple
     >
@@ -81,6 +82,8 @@ export default {
             selectedCategoriesId: [],
         },
 
+        panel: [],
+
         timeout: null,
     }),
 
@@ -136,6 +139,8 @@ export default {
             this.filter.dateAfter = null
             this.filter.dateBefore = null
             this.filter.selectedCategoriesId = []
+
+            this.panel = []
 
             this.updateFilters()
         },

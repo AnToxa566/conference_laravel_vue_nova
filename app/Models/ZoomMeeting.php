@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class ZoomMeeting extends Model
@@ -28,7 +29,8 @@ class ZoomMeeting extends Model
         'join_url',
     ];
 
-    public function lecture() {
+    public function lecture(): BelongsTo
+    {
         return $this->belongsTo(Lecture::class);
     }
 }
