@@ -117,6 +117,7 @@
         <!-- Online checkbox -->
 
         <v-checkbox
+            v-if="!this.isEditMode"
             v-model="lecture.isOnline"
             color="white"
             label="Online"
@@ -208,8 +209,8 @@ export default {
     }),
 
     props: {
-        conference: {
-            type: Object,
+        conferenceId: {
+            type: Number,
             required: true,
         },
         lectureToEdit: {
@@ -219,9 +220,7 @@ export default {
     },
 
     created() {
-        if (this.conference.category_id) {
-            this.$store.dispatch('category/fetchBranche', this.conference.category_id)
-        }
+        this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
 
         if (this.lectureToEdit) {
             this.lecture = this.lectureToEdit
@@ -243,7 +242,16 @@ export default {
         }
     },
 
+    mounted() {
+        if (this.conference.category_id) {
+            this.$store.dispatch('category/fetchBranche', this.conference.category_id)
+        }
+    },
+
     computed: {
+        conference() {
+            return this.$store.getters['conference/conference']
+        },
         category() {
             return this.$store.getters['category/categoryById'](this.lecture.category_id)
         },

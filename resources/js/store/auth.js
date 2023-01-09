@@ -2,6 +2,7 @@ import axios from 'axios'
 import store from '../store'
 import router from '../router'
 import userTypes from '../config/user_types'
+import pagination from '../config/pagination'
 
 export default {
     namespaced: true,
@@ -158,7 +159,11 @@ export default {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    store.dispatch('user_conferences/removeJoinedConferences')
+                    store.dispatch('conference/fetchPaginatedConferences', {
+                        page: 1,
+                        perPage: pagination.PER_PAGE,
+                    })
+                    store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
 
                     localStorage.removeItem('config')
 

@@ -23,15 +23,23 @@
 
 <script>
 import ConferenceItem from './ConferenceItem.vue'
+import pagination from '../../config/pagination'
 
 export default {
-    data: () => ({
-        page: 1,
-        perPage: 15,
-    }),
-
     components: {
         ConferenceItem,
+    },
+
+    data: () => ({
+        page: 1,
+        perPage: pagination.PER_PAGE,
+    }),
+
+    created() {
+        this.$store.dispatch('conference/fetchPaginatedConferences', {
+            page: this.page,
+            perPage: this.perPage,
+        })
     },
 
     computed: {
@@ -39,9 +47,6 @@ export default {
             return this.$store.getters['auth/authenticated']
         },
 
-        conferences() {
-            return this.$store.getters['conference/conferences']
-        },
         filteredConferences() {
             return this.$store.getters['conference/filteredConferences']
         },
@@ -51,14 +56,6 @@ export default {
         },
     },
 
-    created() {
-        this.$store.dispatch('conference/fetchPaginatedConferences', {
-            page: this.page,
-            perPage: this.perPage,
-            conferences: this.isAuthenticated ? this.filteredConferences : this.conferences,
-        })
-    },
-
     methods: {
         getResults(event) {
             this.page = event
@@ -66,7 +63,6 @@ export default {
             this.$store.dispatch('conference/fetchPaginatedConferences', {
                 page: this.page,
                 perPage: this.perPage,
-                conferences: this.isAuthenticated ? this.filteredConferences : this.conferences,
             })
         },
     },

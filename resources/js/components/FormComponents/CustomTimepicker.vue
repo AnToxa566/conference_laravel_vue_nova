@@ -3,6 +3,7 @@
         <Datepicker
             dark
             timePicker
+            teleportCenter
             model-type="HH:mm:ss"
 
             :placeholder=this.placeholder

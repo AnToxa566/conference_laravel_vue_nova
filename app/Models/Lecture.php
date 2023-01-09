@@ -59,4 +59,11 @@ class Lecture extends Model
     {
         return $query->where('title', 'LIKE', '%'.$search.'%')->limit($limit);
     }
+
+    public function scopeBeforeConferenceEvent(Builder $query): Builder
+    {
+        return $query->whereHas('conference', function($q) {
+            $q->whereDate('date_time_event', '>=', date('Y-m-d'));
+        });
+    }
 }

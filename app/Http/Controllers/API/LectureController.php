@@ -41,7 +41,7 @@ class LectureController extends Controller
 
     public function fetchSearchedLectures(string $search, int $limit): JsonResponse
     {
-        return response()->json(Lecture::search($search, $limit)->get());
+        return response()->json(Lecture::beforeConferenceEvent()->search($search, $limit)->get());
     }
 
 

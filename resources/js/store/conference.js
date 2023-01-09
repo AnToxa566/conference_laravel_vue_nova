@@ -95,12 +95,14 @@ export default {
         },
 
         ADD_CONFERENCE (state, value) {
-            state.conferences.push(value)
+            state.conferences.unshift(value)
         },
+
         UPDATE_CONFERENCE (state, value) {
             const index = state.conferences.map(conference => conference.id).indexOf(value.id);
             state.conferences.splice(index, 1, value);
         },
+
         DELETE_CONFERENCE (state, id) {
             let index = state.conferences.map(conference => conference.id).indexOf(id);
             state.conferences.splice(index, 1);
@@ -130,14 +132,16 @@ export default {
         },
 
 
-        fetchPaginatedConferences({ commit }, query) {
+        fetchPaginatedConferences({ commit, state }, query) {
+            const conferences = store.state.auth.authenticated ? state.filteredConferences : state.conferences
+
             const pagination = {
                 currentPage: query.page,
                 perPage: query.perPage,
-                totalConferences: query.conferences.length,
-                totalPages: Math.ceil(query.conferences.length / query.perPage),
+                totalConferences: conferences.length,
+                totalPages: Math.ceil(conferences.length / query.perPage),
 
-                paginatedConferences: query.conferences.slice((query.page - 1) * query.perPage, query.page * query.perPage)
+                paginatedConferences: conferences.slice((query.page - 1) * query.perPage, query.page * query.perPage)
             }
 
             commit('SET_CONFERENCES_PAGINATED_DATA', pagination)
@@ -150,9 +154,8 @@ export default {
                     commit('SET_FILTERED_CONFERENCES', res.data)
 
                     dispatch('fetchPaginatedConferences', {
-                        page: 1,
+                        page: state.conferencesPaginatedData.currentPage,
                         perPage: state.conferencesPaginatedData.perPage,
-                        conferences: res.data,
                     })
 
                     commit('SET_ERROR', '')

@@ -240,7 +240,10 @@ export default {
                     commit('SET_ERROR', '')
 
                     store.dispatch('user_conferences/joinConference', res.data.lecture.conference_id)
-                    store.commit('meeting/PUSH_MEETING', res.data.meeting)
+
+                    if (res.data.lecture.is_online != false) {
+                        store.commit('meeting/PUSH_MEETING', res.data.meeting)
+                    }
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -291,6 +294,7 @@ export default {
             axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_LECTURE', res.data.id)
+                    store.commit('user_conferences/REMOVE_JOINED_CONFERENCE_ID', res.data.conference_id)
                     router.push({ name: 'conferences' })
                 })
                 .catch(err => {

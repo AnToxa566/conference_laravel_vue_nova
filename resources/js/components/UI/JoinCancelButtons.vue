@@ -9,7 +9,7 @@
 
     <lecture-form-dialog
         v-else-if="!isJoined && this.isAnnouncer"
-        :conferenceId="this.conferenceId"
+        :conference="this.conference"
     ></lecture-form-dialog>
 
     <v-btn
@@ -49,8 +49,8 @@ export default {
     },
 
     props: {
-        conferenceId: {
-            type: Number,
+        conference: {
+            type: Object,
             required: true,
         },
 
@@ -65,7 +65,7 @@ export default {
             return this.$store.getters['auth/user']
         },
         lectureId() {
-            return this.$store.getters['lecture/lectureIdByConferenceId'](this.conferenceId)
+            return this.$store.getters['lecture/lectureIdByConferenceId'](this.conference.id)
         },
         authenticated() {
             return this.$store.getters['auth/authenticated']
@@ -80,7 +80,7 @@ export default {
         joinConference() {
             if (this.authenticated) {
                 if (!this.isJoined) {
-                    this.$store.dispatch('user_conferences/joinConference', this.conferenceId)
+                    this.$store.dispatch('user_conferences/joinConference', this.conference.id)
                 }
             }
             else {
@@ -94,7 +94,7 @@ export default {
                     this.$store.dispatch('lecture/deleteLecture', this.lectureId)
                 }
                 else {
-                    this.$store.dispatch('user_conferences/cancelParticipation', this.conferenceId)
+                    this.$store.dispatch('user_conferences/cancelParticipation', this.conference.id)
                 }
             }
         },

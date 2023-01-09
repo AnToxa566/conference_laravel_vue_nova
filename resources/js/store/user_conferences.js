@@ -58,9 +58,5 @@ export default {
                     console.log(err.response)
                 })
         },
-
-        removeJoinedConferences({ commit }) {
-            commit('SET_JOINED_CONFERENCES_ID', [])
-        }
     }
 }

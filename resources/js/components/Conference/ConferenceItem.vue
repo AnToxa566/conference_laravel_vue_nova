@@ -37,7 +37,7 @@
                     <join-cancel-buttons
                         v-if="!isAdmin"
                         :isJoined="this.isJoined"
-                        :conferenceId="this.conference.id"
+                        :conference="this.conference"
                     ></join-cancel-buttons>
 
                     <div v-else>

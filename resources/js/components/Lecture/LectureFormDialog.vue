@@ -35,7 +35,7 @@
             </custom-error-alert>
 
             <lecture-form
-                :conference="this.conferenceById"
+                :conferenceId="this.conference.id"
                 @submit="createLecture"
             >
                 <template v-slot:extraButtons>
@@ -65,8 +65,8 @@ export default {
     }),
 
     props: {
-        conferenceId: {
-            type: Number,
+        conference: {
+            type: Object,
             required: true,
         },
     },
@@ -76,12 +76,8 @@ export default {
     },
 
     computed: {
-        conferenceById() {
-            return this.$store.getters['conference/conferenceById'](this.conferenceId)
-        },
-
         getFreeStartTime() {
-            return this.$store.getters['lecture/getFreeStartTime'](this.conferenceById)
+            return this.$store.getters['lecture/getFreeStartTime'](this.conference)
         },
 
         error() {

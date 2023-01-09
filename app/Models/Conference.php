@@ -48,4 +48,9 @@ class Conference extends Model
     {
         return $query->where('title', 'LIKE', '%'.$search.'%')->limit($limit);
     }
+
+    public function scopeBeforeEvent(Builder $query): Builder
+    {
+        return $query->whereDate('date_time_event', '>=', date('Y-m-d'));
+    }
 }

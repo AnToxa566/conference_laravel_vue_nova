@@ -46,7 +46,7 @@ class ConferenceController extends Controller
 
     public function fetchAll(): JsonResponse
     {
-        return response()->json(Conference::withCount('lectures')->get());
+        return response()->json(Conference::withCount('lectures')->beforeEvent()->get());
     }
 
 
@@ -66,7 +66,7 @@ class ConferenceController extends Controller
 
     public function fetchSearchedConferences(string $search, int $limit): JsonResponse
     {
-        return response()->json(Conference::search($search, $limit)->get());
+        return response()->json(Conference::beforeEvent()->search($search, $limit)->get());
     }
 
 
@@ -74,7 +74,7 @@ class ConferenceController extends Controller
     {
         $request->validated();
 
-        $query = Conference::withCount('lectures');
+        $query = Conference::withCount('lectures')->beforeEvent();
 
         if ($request->filled('minLectureCount')) {
             $query->having('lectures_count', '>=', $request->get('minLectureCount'));

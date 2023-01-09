@@ -77,7 +77,7 @@
 
         <join-cancel-buttons
             :isJoined="true"
-            :conferenceId="this.conferenceId"
+            :conference="this.conference"
         ></join-cancel-buttons>
     </div>
 
@@ -148,10 +148,14 @@ export default {
         this.conferenceId = parseInt(this.$route.params.conference_id, 10);
         this.lectureId = parseInt(this.$route.params.lecture_id, 10);
 
+        this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
         this.$store.dispatch('lecture/fetchLectureById', this.lectureId)
     },
 
     computed: {
+        conference() {
+            return this.$store.getters['conference/conference']
+        },
         lecture() {
             return this.$store.getters['lecture/lecture']
         },
