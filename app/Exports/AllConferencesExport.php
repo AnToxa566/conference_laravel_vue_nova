@@ -9,10 +9,11 @@ use Illuminate\Http\JsonResponse;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
 
 use App\Models\Conference;
 
-class AllConferencesExport extends BaseCsvExport implements WithHeadings
+class AllConferencesExport extends BaseCsvExport implements WithHeadings, FromCollection
 {
     public function headings(): array
     {

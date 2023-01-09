@@ -24,14 +24,14 @@ class ExportFile implements ShouldQueue
     *
     * @var string
     */
-    public $fileName;
+    public string $fileName;
 
     /*
     * Exportable instance
     *
     * @var BaseCsvExport
     */
-    public $export;
+    public BaseCsvExport $export;
 
     /**
      * Create a new job instance.
@@ -51,15 +51,15 @@ class ExportFile implements ShouldQueue
      */
     public function handle(): void
     {
-        if (!Storage::disk('exports_csv')->exists($this->fileName)) {
-            $this->export->store($this->fileName, 'exports_csv', ExcelTypes::CSV)->chain([
-                new ExportCompleted($this->fileName),
-            ])->delay(now()->addSeconds(5));
-
-            DeleteFile::dispatch($this->fileName)->delay(now()->addMinutes(15));
-        }
-        else {
+        if (Storage::disk('exports_csv')->exists($this->fileName)) {
             ExportCompleted::dispatch($this->fileName)->delay(now()->addSeconds(5));
+            return;
         }
+
+        $this->export->store($this->fileName, 'exports_csv', ExcelTypes::CSV)->chain([
+            new ExportCompleted($this->fileName),
+        ])->delay(now()->addSeconds(5));
+
+        DeleteFile::dispatch($this->fileName)->delay(now()->addMinutes(15));
     }
 }

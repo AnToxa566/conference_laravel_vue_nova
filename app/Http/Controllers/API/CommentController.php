@@ -29,7 +29,7 @@ class CommentController extends Controller
         $comments = $lecture->comments()->latest()->skip($offset)->take($limit)->get();
 
         foreach ($comments as $comment) {
-            $comment->{'user_name'} = $comment->user->first_name . ' ' . $comment->user->last_name;
+            $comment->{'user_name'} = $comment->user_name;
         }
 
         return response()->json($comments);
@@ -44,7 +44,7 @@ class CommentController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $response->{'user_name'} = $response->user->first_name . ' ' . $response->user->last_name;
+        $response->{'user_name'} = $response->user_name;
 
         Mail::to($response->lecture->user)->send(new CommentAdded($response));
 
@@ -60,7 +60,7 @@ class CommentController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
-        $response->{'user_name'} = $response->user->first_name . ' ' . $response->user->last_name;
+        $response->{'user_name'} = $response->user_name;
 
         return response()->json($response);
     }

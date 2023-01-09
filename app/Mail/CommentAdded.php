@@ -22,7 +22,7 @@ class CommentAdded extends Mailable implements ShouldQueue
      *
      * @var \App\Models\Comment
      */
-    public $comment;
+    public Comment $comment;
 
     /**
      * Create a new message instance.
@@ -66,15 +66,5 @@ class CommentAdded extends Mailable implements ShouldQueue
                 'conferenceTitle' => $this->comment->lecture->conference->title,
             ],
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }

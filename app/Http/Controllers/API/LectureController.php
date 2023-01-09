@@ -35,7 +35,11 @@ class LectureController extends Controller
 {
     public function fetchAll(): JsonResponse
     {
-        return response()->json(Lecture::withCount('comments')->get());
+        return response()->json(
+            Lecture::withCount('comments')
+            ->orderBy('date_time_start')
+            ->get()
+        );
     }
 
 
@@ -72,7 +76,7 @@ class LectureController extends Controller
             $query->whereIn('category_id', $request->get('categoriesId'));
         }
 
-        return response()->json($query->get());
+        return response()->json($query->orderBy('date_time_start')->get());
     }
 
 
@@ -192,18 +196,12 @@ class LectureController extends Controller
 
     public function exportByConferenceId(int $conferenceId): void
     {
-        $fileName = 'c' . $conferenceId . '_lectures.csv';
-        $export = new LecturesByConferenceExport($conferenceId);
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('c'.$conferenceId.'_lectures.csv', new LecturesByConferenceExport($conferenceId));
     }
 
 
     public function exportComments(int $lectureId): void
     {
-        $fileName = 'l' . $lectureId . '_comments.csv';
-        $export = new CommentsByLectureExport($lectureId);
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('l'.$lectureId.'_comments.csv', new CommentsByLectureExport($lectureId));
     }
 }

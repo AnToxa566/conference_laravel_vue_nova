@@ -20,14 +20,14 @@ class LectureDeletedByAdmin extends Mailable implements ShouldQueue
      *
      * @var int
      */
-    public $conferenceId;
+    public int $conferenceId;
 
     /**
      * The conference's title.
      *
      * @var string
      */
-    public $conferenceTitle;
+    public string $conferenceTitle;
 
     /**
      * Create a new message instance.
@@ -67,15 +67,5 @@ class LectureDeletedByAdmin extends Mailable implements ShouldQueue
                 'conferenceTitle' => $this->conferenceTitle,
             ],
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }

@@ -9,11 +9,17 @@ use Illuminate\Http\JsonResponse;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
 
 use App\Models\Lecture;
 
-class CommentsByLectureExport extends BaseCsvExport implements WithHeadings
+class CommentsByLectureExport extends BaseCsvExport implements WithHeadings, FromCollection
 {
+    /*
+    * The lecture's id
+    *
+    * @var int
+    */
     protected int $lectureId;
 
     public function headings(): array

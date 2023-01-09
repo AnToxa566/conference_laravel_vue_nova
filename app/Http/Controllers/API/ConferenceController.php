@@ -24,7 +24,7 @@ use Illuminate\Http\JsonResponse;
 
 class ConferenceController extends Controller
 {
-    public function getConferenceAddressById($id): string
+    private function getConferenceAddressById($id): string
     {
         $conference = Conference::find($id);
 
@@ -46,7 +46,12 @@ class ConferenceController extends Controller
 
     public function fetchAll(): JsonResponse
     {
-        return response()->json(Conference::withCount('lectures')->beforeEvent()->get());
+        return response()->json(
+            Conference::withCount('lectures')
+            ->beforeEvent()
+            ->orderBy('date_time_event')
+            ->get()
+        );
     }
 
 
@@ -96,7 +101,7 @@ class ConferenceController extends Controller
             $query->whereIn('category_id', $request->get('categoriesId'));
         }
 
-        return response()->json($query->get());
+        return response()->json($query->orderBy('date_time_event')->get());
     }
 
 
@@ -159,18 +164,12 @@ class ConferenceController extends Controller
 
     public function exportAll(): void
     {
-        $fileName = 'conferences.csv';
-        $export = new AllConferencesExport();
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('conferences.csv', new AllConferencesExport());
     }
 
 
     public function exportListeners(int $conferenceId): void
     {
-        $fileName = 'c' . $conferenceId . '_listeners.csv';
-        $export = new ListenersByConferenceExport($conferenceId);
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('c'.$conferenceId.'_listeners.csv', new ListenersByConferenceExport($conferenceId));
     }
 }

@@ -24,7 +24,7 @@ class AnnouncerJoined extends Mailable implements ShouldQueue
      *
      * @var \App\Models\Lecture
      */
-    public $lecture;
+    public Lecture $lecture;
 
     /**
      * Create a new message instance.
@@ -70,15 +70,5 @@ class AnnouncerJoined extends Mailable implements ShouldQueue
                 'lectureEndTime' => Carbon::parse($this->lecture->date_time_end)->format('H:i'),
             ],
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }

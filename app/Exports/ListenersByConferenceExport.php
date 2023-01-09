@@ -9,11 +9,17 @@ use Illuminate\Http\JsonResponse;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
 
 use App\Models\Conference;
 
-class ListenersByConferenceExport extends BaseCsvExport implements WithHeadings
+class ListenersByConferenceExport extends BaseCsvExport implements WithHeadings, FromCollection
 {
+    /*
+    * The conference's id
+    *
+    * @var int
+    */
     protected int $conferenceId;
 
     public function headings(): array
