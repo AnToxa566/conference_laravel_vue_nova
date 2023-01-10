@@ -15,6 +15,27 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * User Type - Admin.
+     *
+     * @var string
+     */
+    const ADMIN = 'Admin';
+
+    /**
+     * User Type - Listener.
+     *
+     * @var string
+     */
+    const LISTENER = 'Listener';
+
+    /**
+     * User Type - Announcer.
+     *
+     * @var string
+     */
+    const ANNOUNCER = 'Announcer';
+
     protected $table = 'users';
 
     /**

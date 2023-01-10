@@ -118,23 +118,23 @@ Route::controller(CommentController::class)->group(function () {
 
 
 Route::controller(CategoryController::class)->group(function () {
-    Route::get('/category', 'fetchAll')->name('category.fetchAll');
+    Route::get('/categories', 'fetchAll')->name('categories.fetchAll');
 
     Route::middleware(['admin', 'auth:sanctum'])->group(function () {
-        Route::post('/category/add', 'store')->name('category.store');
-        Route::get('/category/{id}/delete', 'destroy')->name('category.destroy');
+        Route::post('/categories/add', 'store')->name('categories.store');
+        Route::get('/categories/{id}/delete', 'destroy')->name('categories.destroy');
     });
 });
 
 
 Route::controller(CountryController::class)->group(function () {
-    Route::get('/country', 'fetchAll')->name('country.fetchAll');
+    Route::get('/countries', 'fetchAll')->name('countries.fetchAll');
 });
 
 
 Route::controller(StorageController::class)->group(function () {
     Route::middleware(['admin', 'auth:sanctum'])->group(function () {
-        Route::get('/storage/export/{fileName}/download', 'downloadExportCsvFile')->name('storages.downloadExportCsvFile');
+        Route::get('/storages/export/{fileName}/download', 'downloadExportCsvFile')->name('storages.downloadExportCsvFile');
     });
 });
 

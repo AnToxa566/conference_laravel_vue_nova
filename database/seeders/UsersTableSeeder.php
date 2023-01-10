@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
-use App\UserConsts;
 
 class UsersTableSeeder extends Seeder
 {
@@ -25,7 +24,7 @@ class UsersTableSeeder extends Seeder
                 'first_name' => 'Anton',
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2003-03-16',
-                'type' => UserConsts::LISTENER,
+                'type' => User::LISTENER,
                 'country' => 'Ukraine',
                 'email' => 'anton@groupbwt.com',
                 'phone_number' => '+380991124364',
@@ -36,7 +35,7 @@ class UsersTableSeeder extends Seeder
                 'first_name' => 'Bohdan',
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2007-05-13',
-                'type' => UserConsts::ANNOUNCER,
+                'type' => User::ANNOUNCER,
                 'country' => 'Ukraine',
                 'email' => 'bohdan@groupbwt.com',
                 'phone_number' => '+380662037939',
@@ -47,7 +46,7 @@ class UsersTableSeeder extends Seeder
                 'first_name' => 'Liza',
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2004-04-28',
-                'type' => UserConsts::ANNOUNCER,
+                'type' => User::ANNOUNCER,
                 'country' => 'Ukraine',
                 'email' => 'liza@groupbwt.com',
                 'phone_number' => '+380998888888',

@@ -29,15 +29,13 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use App\UserConsts;
-
 class LectureController extends Controller
 {
     public function fetchAll(): JsonResponse
     {
         return response()->json(
             Lecture::withCount('comments')
-            ->orderBy('date_time_start')
+            ->oldest('date_time_start')
             ->get()
         );
     }
@@ -76,7 +74,7 @@ class LectureController extends Controller
             $query->whereIn('category_id', $request->get('categoriesId'));
         }
 
-        return response()->json($query->orderBy('date_time_start')->get());
+        return response()->json($query->oldest('date_time_start')->get());
     }
 
 
@@ -124,7 +122,7 @@ class LectureController extends Controller
 
         $meeting = $lecture->is_online ? (new MeetingController)->store($lecture->id) : null;
 
-        $listeners = Conference::find($lecture->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
+        $listeners = Conference::find($lecture->conference_id)->users()->where('type', User::LISTENER)->get();
 
         if (count($listeners)) {
             Mail::to($listeners)->send(new AnnouncerJoined($lecture));
@@ -161,7 +159,7 @@ class LectureController extends Controller
         }
 
         if ($timeChanged) {
-            $listeners = Conference::find($response->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
+            $listeners = Conference::find($response->conference_id)->users()->where('type', User::LISTENER)->get();
 
             if (count($listeners)) {
                 Mail::to($listeners)->send(new LectureTimeChanged($response));
@@ -183,7 +181,7 @@ class LectureController extends Controller
 
         User::find($response->user_id)->conferences()->detach($response->conference_id);
 
-        if (auth('sanctum')->user()->type === UserConsts::ADMIN) {
+        if (auth('sanctum')->user()->type === User::ADMIN) {
             $emails = [];
             array_push($emails, User::find($response->user_id)->email);
 

@@ -49,7 +49,10 @@ class LecturesByConferenceExport extends BaseCsvExport implements WithHeadings, 
     */
     public function collection(): Collection
     {
-        $lectures = Lecture::where('conference_id', $this->conferenceId)->select('title', 'date_time_start', 'date_time_end', 'description')->withCount('comments')->get();
+        $lectures = Lecture::where('conference_id', $this->conferenceId)
+                                ->select('title', 'date_time_start', 'date_time_end', 'description')
+                                ->withCount('comments')
+                                ->get();
 
         foreach ($lectures as $lecture) {
             $lecture->date_time_start = Carbon::parse($lecture->date_time_start)->format('H:i:s');

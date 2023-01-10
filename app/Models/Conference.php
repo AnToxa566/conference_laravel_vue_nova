@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use App\UserConsts;
 
 class Conference extends Model
 {
@@ -34,12 +33,12 @@ class Conference extends Model
 
     public function announcers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->where('type', '=', UserConsts::ANNOUNCER);
+        return $this->belongsToMany(User::class)->where('type', User::ANNOUNCER);
     }
 
     public function listeners(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->where('type', '=', UserConsts::LISTENER);
+        return $this->belongsToMany(User::class)->where('type', User::LISTENER);
     }
 
     public function lectures(): HasMany

@@ -39,9 +39,9 @@ class AllConferencesExport extends BaseCsvExport implements WithHeadings, FromCo
     public function collection(): Collection
     {
         return Conference::beforeEvent()
-        ->orderBy('date_time_event')
-        ->select('title', 'date_time_event', 'latitude', 'longitude', 'country')
-        ->withCount('lectures', 'listeners')
-        ->get();
+                            ->oldest('date_time_event')
+                            ->select('title', 'date_time_event', 'latitude', 'longitude', 'country')
+                            ->withCount('lectures', 'listeners')
+                            ->get();
     }
 }

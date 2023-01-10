@@ -49,7 +49,7 @@ class ConferenceController extends Controller
         return response()->json(
             Conference::withCount('lectures')
             ->beforeEvent()
-            ->orderBy('date_time_event')
+            ->oldest('date_time_event')
             ->get()
         );
     }
@@ -101,7 +101,7 @@ class ConferenceController extends Controller
             $query->whereIn('category_id', $request->get('categoriesId'));
         }
 
-        return response()->json($query->orderBy('date_time_event')->get());
+        return response()->json($query->oldest('date_time_event')->get());
     }
 
 

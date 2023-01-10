@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\UserConsts;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class IsAnnouncer
@@ -17,7 +17,7 @@ class IsAnnouncer
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth('sanctum')->user()->type !== UserConsts::ANNOUNCER) {
+        if (auth('sanctum')->user()->type !== User::ANNOUNCER) {
             abort(403);
         }
 

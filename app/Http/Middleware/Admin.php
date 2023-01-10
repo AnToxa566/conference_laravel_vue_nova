@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Closure;
-use App\UserConsts;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class Admin
@@ -19,7 +19,7 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth('sanctum')->user()->type !== UserConsts::ADMIN) {
+        if (auth('sanctum')->user()->type !== User::ADMIN) {
             abort(403);
         }
 

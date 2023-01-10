@@ -21,7 +21,7 @@ export default {
 
     actions: {
         fetchAllCountries({ commit }) {
-            axios.get('/api/country')
+            axios.get('/api/countries')
                 .then(res => {
                     commit('SET_COUNTRIES', res.data)
                 })

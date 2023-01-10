@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Closure;
-use App\UserConsts;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\RedirectResponse;
 
+use App\Models\User;
 use App\Models\Lecture;
 
 class CanDeleteLecture
@@ -25,7 +25,7 @@ class CanDeleteLecture
     {
         $lecture = Lecture::find($request->route()->parameter('id'));
 
-        if (auth('sanctum')->user()->type !== UserConsts::ADMIN && auth('sanctum')->id() !== $lecture->user_id) {
+        if (auth('sanctum')->user()->type !== User::ADMIN && auth('sanctum')->id() !== $lecture->user_id) {
             abort(403);
         }
 
