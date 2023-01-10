@@ -31,9 +31,10 @@ class LectureUpdateRequest extends FormRequest
             'category_id' => ['nullable', 'string'],
 
             'title' => ['required', 'string', 'min:2', 'max:255'],
+            'description' => ['required', 'string'],
+
             'date_time_start' => ['required', 'date'],
             'date_time_end' => ['required', 'date'],
-            'description' => ['required', 'string'],
         ];
     }
 }

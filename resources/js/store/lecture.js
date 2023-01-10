@@ -82,8 +82,8 @@ export default {
             ]
         },
 
-        isUserOwnThisLecture(state) {
-            return parseInt(store.state.auth.user.id, 10) === parseInt(state.lecture.user_id, 10)
+        isUserOwnThisLecture: (state) => (id) => {
+            return parseInt(store.state.auth.user.id, 10) === parseInt(state.lectures.find(lecture => lecture.id === parseInt(id, 10)).user_id, 10)
         },
 
         getFreeStartTime: () => (conference, isEditMode = false) => {

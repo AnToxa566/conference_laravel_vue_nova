@@ -1,11 +1,16 @@
 <template>
-    <span>{{ this.timestampToHumanDate }}</span>
+    <span v-if="this.visible">{{ this.timestampToHumanDate }}</span>
 </template>
 
 
 <script>
 export default {
     name: 'custom-timer',
+
+    emits: [
+        'update:modelValue',
+        'timerStoped',
+    ],
 
     data: () => ({
         leftTime: {
@@ -21,10 +26,18 @@ export default {
     }),
 
     props: {
+        modelValue: [Object],
+
         toTimestamp: {
             type: Number,
             required: true,
-        }
+        },
+
+        visible: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
     },
 
     mounted() {
@@ -83,10 +96,17 @@ export default {
     },
 
     watch: {
-        leftTime(time) {
-            if (time.timestamp <= 0) {
-                this.stopTimer()
-            }
+        leftTime: {
+            handler(newValue) {
+                this.$emit('update:modelValue', newValue)
+
+                if (newValue.timestamp <= 0) {
+                    this.stopTimer()
+                    this.$emit('timerStoped')
+                }
+            },
+
+            deep: true
         }
     },
 }

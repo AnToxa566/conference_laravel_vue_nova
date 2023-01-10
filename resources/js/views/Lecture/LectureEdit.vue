@@ -62,7 +62,7 @@ export default {
         },
 
         isUserOwnThisLecture() {
-            return this.$store.getters['lecture/isUserOwnThisLecture']
+            return this.$store.getters['lecture/isUserOwnThisLecture'](this.lectureId)
         },
 
         error() {

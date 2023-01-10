@@ -67,11 +67,57 @@
         <template v-slot:body> {{ this.category.title }} </template>
     </info-card>
 
+
+    <!-- Timer & Zoom Link -->
+
+    <info-card
+        v-if="this.lecture.is_online && this.isJoined"
+    >
+        <template v-slot:header> Zoom Link </template>
+
+        <template v-slot:body>
+
+            <!-- Timer -->
+            <div v-if="this.isLectureWaiting">
+                Show up in
+                <custom-timer
+                    :toTimestamp="this.getStartLectureTimestamp"
+                    class="font-weight-bold"
+                    @timerStoped="lectureStarted"
+                ></custom-timer>
+            </div>
+
+            <!-- Zoom Link -->
+            <div v-else-if="this.isLectureStarted">
+                <a
+                    class="text-white"
+                    target="_blank"
+
+                    :href="this.meetingUrl"
+                >
+                    Join zoom meeting
+                </a>
+
+                <custom-timer
+                    :visible="false"
+                    :toTimestamp="this.getEndLectureTimestamp"
+                    @timerStoped="lectureEnded"
+                ></custom-timer>
+            </div>
+
+            <!-- Lecture Ended -->
+            <div v-else-if="this.isLectureEnded">
+                The lecture is already over.
+            </div>
+        </template>
+    </info-card>
+
+
     <!-- Buttons for owner this lecture -->
 
     <div
         v-if="isUserOwnThisLecture"
-        class="d-flex"
+        class="d-flex mb-6"
     >
         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conferenceId}/lectures/${this.lectureId}/edit`)"> Edit </v-btn>
 
@@ -85,11 +131,11 @@
 
     <div
         v-if="isAdmin"
-        class="d-flex"
+        class="d-flex mb-6"
     >
         <v-spacer></v-spacer>
 
-        <v-btn class="mb-6" variant="tonal" color="red" @click="this.confirmationDialog = true"> Delete </v-btn>
+        <v-btn variant="tonal" color="red" @click="this.confirmationDialog = true"> Delete </v-btn>
 
         <action-confirmation
             v-model="confirmationDialog"
@@ -139,9 +185,14 @@ export default {
 
     data: () => ({
         confirmationDialog: false,
+        isLectureWaiting: false,
+        isLectureStarted: false,
+        isLectureEnded: false,
 
         conferenceId: null,
         lectureId: null,
+
+        lecture: null,
     }),
 
     created() {
@@ -150,51 +201,80 @@ export default {
 
         this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
         this.$store.dispatch('lecture/fetchLectureById', this.lectureId)
+
+        this.lecture = this.$store.getters['lecture/lectureById'](this.lectureId)
+    },
+
+    mounted() {
+        this.isLectureWaiting = Date.now() < this.getStartLectureTimestamp
+        this.isLectureStarted = Date.now() > this.getStartLectureTimestamp && Date.now() < this.getEndLectureTimestamp
+        this.isLectureEnded = Date.now() > this.getEndLectureTimestamp
     },
 
     computed: {
         conference() {
             return this.$store.getters['conference/conference']
         },
-        lecture() {
-            return this.$store.getters['lecture/lecture']
-        },
         category() {
             return this.$store.getters['category/categoryById'](this.lecture.category_id)
+        },
+        meeting() {
+            return this.$store.getters['meeting/meetings'].find(m => m.lecture_id === this.lecture.id)
+        },
+        meetingUrl() {
+            return this.isUserOwnThisLecture ? this.meeting.start_url : this.meeting.join_url
         },
 
         userId() {
             return this.$store.getters['auth/user'].id
         },
+
         isAdmin() {
             return this.$store.getters['auth/isAdmin']
         },
-
+        isJoined() {
+            return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conferenceId, 10))
+        },
         isUserOwnThisLecture() {
-            return this.$store.getters['lecture/isUserOwnThisLecture']
+            return this.$store.getters['lecture/isUserOwnThisLecture'](this.lectureId)
         },
 
         formattedDate() {
-            const format = 'YYYY-MM-DD'
-            const date = new Date(this.lecture.date_time_start)
-
-            return moment(date).format(format)
+            return moment(new Date(this.lecture.date_time_start)).format('YYYY-MM-DD')
         },
         startFormattedTime() {
-            const format = 'HH:mm'
-            const date = new Date(this.lecture.date_time_start)
-
-            return moment(date).format(format)
+            return moment(new Date(this.lecture.date_time_start)).format('HH:mm')
         },
         endFormattedTime() {
-            const format = 'HH:mm'
-            const date = new Date(this.lecture.date_time_end)
+            return moment(new Date(this.lecture.date_time_end)).format('HH:mm')
+        },
 
-            return moment(date).format(format)
+        getStartLectureTimestamp() {
+            return this.isUserOwnThisLecture ? this.announcerStartLectureTimestamp : this.startLectureTimestamp
+        },
+        announcerStartLectureTimestamp() {
+            return this.startLectureTimestamp - (10 * 60 * 1000)
+        },
+        startLectureTimestamp() {
+            return new Date(this.lecture.date_time_start).getTime()
+        },
+
+        getEndLectureTimestamp() {
+            return new Date(this.lecture.date_time_end).getTime()
         },
     },
 
     methods: {
+        lectureStarted() {
+            this.isLectureWaiting = false
+            this.isLectureStarted = true
+        },
+
+        lectureEnded() {
+            this.isLectureStarted = false
+            this.isLectureEnded = true
+        },
+
         downloadPresentation() {
             this.$store.dispatch('lecture/downloadPresentation', {
                 id: this.lecture.id,
