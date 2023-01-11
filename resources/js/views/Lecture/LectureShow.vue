@@ -219,7 +219,7 @@ export default {
             return this.$store.getters['category/categoryById'](this.lecture.category_id)
         },
         meeting() {
-            return this.$store.getters['meeting/meetings'].find(m => m.lecture_id === this.lecture.id)
+            return this.$store.getters['meeting/meetings'].find(m => m.lecture_id == this.lecture.id)
         },
         meetingUrl() {
             return this.isUserOwnThisLecture ? this.meeting.start_url : this.meeting.join_url

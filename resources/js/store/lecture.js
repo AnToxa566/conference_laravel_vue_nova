@@ -24,7 +24,7 @@ export default {
             return state.lecture
         },
         lectureById: (state) => (id) => {
-            return state.lectures.find(lecture => lecture.id === parseInt(id, 10));
+            return state.lectures.find(lecture => lecture.id == parseInt(id, 10));
         },
 
         lectures(state) {
@@ -63,8 +63,8 @@ export default {
                 value => (!!value && !!value.length) || 'Presentation is required!',
                 value => {
                     if (value && value.length) {
-                        return value[0].type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||
-                        value[0].type === 'application/vnd.ms-powerpoint' ||
+                        return value[0].type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||
+                        value[0].type == 'application/vnd.ms-powerpoint' ||
                         'Presentation file type must be .ppt or .pptx!'
                     }
                     else {
@@ -83,14 +83,14 @@ export default {
         },
 
         isUserOwnThisLecture: (state) => (id) => {
-            return parseInt(store.state.auth.user.id, 10) === parseInt(state.lectures.find(lecture => lecture.id === parseInt(id, 10)).user_id, 10)
+            return parseInt(store.state.auth.user.id, 10) == parseInt(state.lectures.find(lecture => lecture.id == parseInt(id, 10)).user_id, 10)
         },
 
         getFreeStartTime: () => (conference, isEditMode = false) => {
             const format = "HH:mm"
 
             const stepMinutes = 1
-            const minLectureTime = 10
+            const minLectureTime = 1
 
             let startLectureDateTime = new Date(conference.date_time_event)
             let endLectureDateTime = new Date(conference.date_time_event)
@@ -112,12 +112,13 @@ export default {
                 return false
             }
         },
+
         isTimeFree: (state) => (conferenceId, isEditMode, startDateTime, endDateTime = null) => {
             let result = { 'freeTimeAvailable': true }
 
             for (const lecture of state.lectures) {
-                if (lecture.conference_id === conferenceId) {
-                    if (isEditMode && lecture.id === state.lecture.id) {
+                if (parseInt(lecture.conference_id, 10) == parseInt(conferenceId, 10)) {
+                    if (isEditMode && lecture.id == state.lecture.id) {
                         continue
                     }
 
@@ -184,7 +185,7 @@ export default {
         },
 
         COMMENT_INCREMENT (state, id) {
-            const index = state.lectures.findIndex(lec => lec.id === id);
+            const index = state.lectures.findIndex(lec => lec.id == id);
             state.lectures[index].comments_count++
         }
     },
@@ -240,13 +241,14 @@ export default {
                     commit('SET_ERROR', '')
 
                     store.dispatch('user_conferences/joinConference', res.data.lecture.conference_id)
+                    store.commit('conference/LECTURE_COUNT_INCREMENT', res.data.lecture.conference_id)
 
                     if (res.data.lecture.is_online != false) {
                         store.commit('meeting/PUSH_MEETING', res.data.meeting)
                     }
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                     commit('SET_ERROR', err.response.data.message)
                 })
         },
@@ -281,7 +283,7 @@ export default {
 
         updateLectureCategories({ state, dispatch }, categories) {
             categories.forEach(category => {
-                let lectures = state.lectures.filter(lect => lect.category_id === category.id)
+                let lectures = state.lectures.filter(lect => lect.category_id == category.id)
 
                 lectures.forEach(lect => {
                     lect.category_id = null
@@ -294,7 +296,10 @@ export default {
             axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_LECTURE', res.data.id)
+
                     store.commit('user_conferences/REMOVE_JOINED_CONFERENCE_ID', res.data.conference_id)
+                    store.commit('conference/LECTURE_COUNT_DECREMENT', res.data.conference_id)
+
                     router.push({ name: 'conferences' })
                 })
                 .catch(err => {

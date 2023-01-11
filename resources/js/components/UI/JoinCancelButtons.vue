@@ -72,7 +72,7 @@ export default {
         },
 
         isAnnouncer() {
-            return this.$store.getters['auth/user'].type === userTypes.ANNOUNCER
+            return this.$store.getters['auth/user'].type == userTypes.ANNOUNCER
         },
     },
 

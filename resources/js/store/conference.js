@@ -22,7 +22,7 @@ export default {
             return state.conference
         },
         conferenceById: (state) => (id) => {
-            return state.conferences.find(conference => conference.id === parseInt(id, 10));
+            return state.conferences.find(conference => conference.id == parseInt(id, 10));
         },
 
         conferences(state) {
@@ -116,6 +116,16 @@ export default {
                 lecture.category_id = null
                 store.dispatch('lecture/updateLecture', lecture)
             })
+        },
+
+        LECTURE_COUNT_INCREMENT (state, id) {
+            const index = state.conferences.findIndex(c => c.id == parseInt(id, 10));
+            state.conferences[index].lectures_count++
+        },
+
+        LECTURE_COUNT_DECREMENT (state, id) {
+            const index = state.conferences.findIndex(c => c.id == parseInt(id, 10));
+            state.conferences[index].lectures_count--
         },
     },
 
@@ -224,7 +234,7 @@ export default {
 
         updateConferenceCategories({ state, dispatch }, categories) {
             categories.forEach(category => {
-                let conferences = state.conferences.filter(conf => conf.category_id === category.id)
+                let conferences = state.conferences.filter(conf => conf.category_id == category.id)
 
                 conferences.forEach(conference => {
                     conference.category_id = null

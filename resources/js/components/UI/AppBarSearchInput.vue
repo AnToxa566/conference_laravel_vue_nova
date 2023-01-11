@@ -55,7 +55,7 @@
 
                         <!-- Conferences not found -->
                         <div
-                            v-if="this.searchedConferences.length === 0"
+                            v-if="this.searchedConferences.length == 0"
                             class="text-center"
                         >
                             Conferences not found
@@ -92,7 +92,7 @@
 
                         <!-- Lectures not found -->
                         <div
-                            v-if="this.searchedLectures.length === 0"
+                            v-if="this.searchedLectures.length == 0"
                             class="text-center"
                         >
                             Lectures not found

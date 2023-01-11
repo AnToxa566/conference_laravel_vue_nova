@@ -105,7 +105,7 @@ export default {
             return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conference.id, 10))
         },
         isAdmin() {
-            return this.$store.getters['auth/user'].type === this.$store.getters['auth/adminType']
+            return this.$store.getters['auth/user'].type == this.$store.getters['auth/adminType']
         },
 
         formatedDateTime() {

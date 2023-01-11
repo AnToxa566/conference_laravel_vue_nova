@@ -184,7 +184,7 @@ export default {
         },
 
         latLng() {
-            if (this.conference.latitude === '' || this.conference.longitude === '' || this.conference.latitude === null || this.conference.longitude === null) {
+            if (this.conference.latitude == '' || this.conference.longitude == '' || this.conference.latitude == null || this.conference.longitude == null) {
                 return {
                     lat: parseFloat(import.meta.env.VITE_DEFAULT_LATITUDE, 10),
                     lng: parseFloat(import.meta.env.VITE_DEFAULT_LONGITUDE, 10),
@@ -222,7 +222,7 @@ export default {
         async update() {
             const { valid } = await this.$refs.form.validate()
 
-            if (this.conference.date_time_event === '') {
+            if (this.conference.date_time_event == '') {
                 let message = document.getElementById("message__wrapper")
                 message.classList.remove("hidden__message")
             }

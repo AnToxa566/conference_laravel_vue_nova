@@ -24,7 +24,7 @@
             <!-- Timer until the start of the Lecture -->
 
             <v-card-subtitle
-                v-if="this.lectureStatusText === this.waiting"
+                v-if="this.lectureStatusText == this.waiting"
             >
                 Remains:
                 <custom-timer
@@ -37,7 +37,7 @@
             <!-- Invisible timer until the end of the Lecture -->
 
             <custom-timer
-                v-if="this.lectureStatusText === this.started"
+                v-if="this.lectureStatusText == this.started"
                 :visible="false"
                 :toTimestamp="new Date(this.lecture.date_time_end).getTime()"
                 @timerStoped="lectureEnded"

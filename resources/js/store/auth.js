@@ -35,7 +35,7 @@ export default {
             return state.adminType
         },
         isAdmin(state) {
-            return state.user.type === state.adminType
+            return state.user.type == state.adminType
         },
 
         authErrors(state) {

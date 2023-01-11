@@ -21,7 +21,7 @@ export default {
         },
 
         categoryById: (state) => (id) => {
-            return state.categories.find(category => category.id === parseInt(id, 10));
+            return state.categories.find(category => category.id == parseInt(id, 10));
         },
 
         roots(state) {
@@ -41,14 +41,14 @@ export default {
         },
 
         getPathByLeafId: (state) => (leafId) => {
-            let leaf = state.categories.find(category => category.id === parseInt(leafId, 10))
+            let leaf = state.categories.find(category => category.id == parseInt(leafId, 10))
             let path = []
 
             if (leaf) {
                 path.unshift(leaf)
 
                 while (leaf.parent_id) {
-                    leaf = state.categories.find(category => category.id === parseInt(leaf.parent_id, 10))
+                    leaf = state.categories.find(category => category.id == parseInt(leaf.parent_id, 10))
                     if (leaf) path.unshift(leaf)
                 }
             }
@@ -96,13 +96,13 @@ export default {
             const categories = []
             const nodes = {}
 
-            let category = state.categories.find(cat => cat.id === parentId)
+            let category = state.categories.find(cat => cat.id == parentId)
             categories.push(category)
 
             for (let i = 0; i < categories.length; i++) {
                 if (categories[i].children.length) {
                     categories[i].children.forEach(child => {
-                        category = state.categories.find(cat => cat.id === child.id)
+                        category = state.categories.find(cat => cat.id == child.id)
                         categories.push(category)
                     })
                 }

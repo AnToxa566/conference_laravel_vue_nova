@@ -67,7 +67,7 @@ export default {
         },
 
         async submitOn() {
-            if (this.quill.getText().trim() !== '') {
+            if (this.quill.getText().trim() != '') {
                 this.comment.description = this.content
                 this.$emit('submit', this.comment)
 

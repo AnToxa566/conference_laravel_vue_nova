@@ -126,11 +126,11 @@ export default {
             let beforeTimeHours = this.filter.startTimeBefore ? this.filter.startTimeBefore.hours : null
             let beforeTimeMinutes = this.filter.startTimeBefore ? this.filter.startTimeBefore.minutes : null
 
-            afterTimeHours = afterTimeHours !== null && afterTimeHours < 10 ? '0' + afterTimeHours : afterTimeHours
-            afterTimeMinutes = afterTimeMinutes !== null && afterTimeMinutes < 10 ? '0' + afterTimeMinutes : afterTimeMinutes
+            afterTimeHours = afterTimeHours != null && afterTimeHours < 10 ? '0' + afterTimeHours : afterTimeHours
+            afterTimeMinutes = afterTimeMinutes != null && afterTimeMinutes < 10 ? '0' + afterTimeMinutes : afterTimeMinutes
 
-            beforeTimeHours = beforeTimeHours !== null && beforeTimeHours < 10 ? '0' + beforeTimeHours : beforeTimeHours
-            beforeTimeMinutes = beforeTimeMinutes !== null && beforeTimeMinutes < 10 ? '0' + beforeTimeMinutes : beforeTimeMinutes
+            beforeTimeHours = beforeTimeHours != null && beforeTimeHours < 10 ? '0' + beforeTimeHours : beforeTimeHours
+            beforeTimeMinutes = beforeTimeMinutes != null && beforeTimeMinutes < 10 ? '0' + beforeTimeMinutes : beforeTimeMinutes
 
             this.$store.dispatch('lecture/fetchFilteredLectures', {
                 conferenceId: this.conferenceId,

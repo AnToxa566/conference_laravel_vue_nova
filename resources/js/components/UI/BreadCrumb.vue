@@ -33,10 +33,10 @@ export default {
     computed: {
         breadCrumbs() {
             if (this.$route.meta.breadCrumb) {
-                if (this.$route.meta.breadCrumb === 'conferences') {
+                if (this.$route.meta.breadCrumb == 'conferences') {
                     return [{ text: 'Conferences', disabled: true, to: {} }]
                 }
-                else if (this.$route.meta.breadCrumb === 'conference') {
+                else if (this.$route.meta.breadCrumb == 'conference') {
                     const conference = this.$store.getters['conference/conferenceById'](this.$route.params.id)
 
                     let text = conference.category_id ? conference.title + ' (' + this.getCategoriesPath(conference.category_id) + ')' : conference.title
@@ -46,7 +46,7 @@ export default {
                         { text: text, disabled: true, to: {} },
                     ]
                 }
-                else if (this.$route.meta.breadCrumb === 'lecture') {
+                else if (this.$route.meta.breadCrumb == 'lecture') {
                     const conference = this.$store.getters['conference/conferenceById'](this.$route.params.conference_id)
                     const lecture = this.$store.getters['lecture/lectureById'](this.$route.params.lecture_id)
 

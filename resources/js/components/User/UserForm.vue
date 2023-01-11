@@ -159,7 +159,7 @@ export default {
         },
 
         matchingPasswords () {
-            return this.user.password === this.user.password_confirmation || 'Passwords does not match!'
+            return this.user.password == this.user.password_confirmation || 'Passwords does not match!'
         },
 
         phoneUpdated(event) {
