@@ -18,13 +18,6 @@ class ZoomMeeting extends Model
         'id',
         'lecture_id',
 
-        'uuid',
-        'host_id',
-        'topic',
-        'type',
-        'timezone',
-        'start_time',
-
         'start_url',
         'join_url',
     ];

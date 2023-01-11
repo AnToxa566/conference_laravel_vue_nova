@@ -50,7 +50,7 @@ trait ZoomMeetingTrait
     }
 
 
-    public function createMeeting(Lecture $lecture): JsonResponse
+    public function createMeeting(Lecture $lecture): array
     {
         $path = 'users/me/meetings';
         $url = config('app.zoom_api_url');
@@ -87,7 +87,36 @@ trait ZoomMeetingTrait
             ]),
         ];
 
-        $response = $this->client->post($url.$path, $body);
-        return response()->json($response->getBody()->getContents());
+        return json_decode($this->client->post($url.$path, $body)->getBody()->getContents(), true);
+    }
+
+
+    public function getMeetingsPage(string $nextPageToken = ''): array
+    {
+        $path = 'users/me/meetings?page_size=300&next_page_token='.$nextPageToken;
+        $url = config('app.zoom_api_url');
+
+        $body = [
+            'headers' => $this->headers,
+            'body'    => json_encode([]),
+        ];
+
+        return json_decode($this->client->get($url.$path, $body)->getBody()->getContents(), true);
+    }
+
+
+    public function getMeetings(): array
+    {
+        $meetings = [];
+        $nextPageToken = "";
+
+        do {
+            $response = $this->getMeetingsPage($nextPageToken);
+            $nextPageToken = $response['next_page_token'];
+
+            $meetings = array_merge($meetings, $response['meetings']);
+        } while ($nextPageToken);
+
+        return $meetings;
     }
 }

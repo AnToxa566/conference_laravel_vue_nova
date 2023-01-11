@@ -141,6 +141,7 @@ Route::controller(StorageController::class)->group(function () {
 
 Route::controller(MeetingController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/meetings', 'fetchAll')->name('meetings.fetchAll');
+        Route::get('/meetings/api', 'fetchAllFromAPI')->name('meetings.fetchAllFromAPI');
+        Route::get('/meetings/db', 'fetchAllFromDB')->name('meetings.fetchAllFromDB');
     });
 });

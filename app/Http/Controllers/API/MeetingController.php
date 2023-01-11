@@ -9,16 +9,26 @@ use App\Traits\ZoomMeetingTrait;
 use App\Models\ZoomMeeting;
 use App\Models\Lecture;
 
-use DateTime;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class MeetingController extends Controller
 {
     use ZoomMeetingTrait;
 
 
-    public function fetchAll(): JsonResponse
+    public function fetchAllFromAPI(): JsonResponse
+    {
+        return response()->json(
+            Cache::rememberForever('meetings', function () {
+                return $this->getMeetings();
+            })
+        );
+    }
+
+
+    public function fetchAllFromDB(): JsonResponse
     {
         return response()->json(ZoomMeeting::all());
     }
@@ -32,9 +42,8 @@ class MeetingController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $response = json_decode($this->createMeeting($lecture)->getData(), true);
+        $response = $this->createMeeting($lecture);
         $response['lecture_id'] = $lectureId;
-        $response['start_time'] = (new DateTime($response['start_time']))->format('Y-m-d H:i:s');
 
         $zoomMeeting = ZoomMeeting::create($response);
 

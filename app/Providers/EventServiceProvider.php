@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Events\LectureCreated;
 use App\Events\LectureDeleted;
+use App\Listeners\ClearMeetingsCache;
+use App\Listeners\SendAnnouncerJoinedNotification;
 use App\Listeners\SendLectureDeletionNotification;
 
 use Illuminate\Auth\Events\Registered;
@@ -25,6 +28,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         LectureDeleted::class => [
             SendLectureDeletionNotification::class,
+        ],
+        LectureCreated::class => [
+            ClearMeetingsCache::class,
+            SendAnnouncerJoinedNotification::class,
         ],
     ];
 

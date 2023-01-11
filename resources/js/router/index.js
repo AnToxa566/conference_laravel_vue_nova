@@ -12,6 +12,7 @@ const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
 const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
 
 const Categories = () => import('../views/Category/Categories.vue')
+const Meetings = () => import('../views/Meeting/Meetings.vue')
 /* Admin Components */
 
 
@@ -185,6 +186,19 @@ const router = createRouter({
             }
         },
         /* Category Components */
+
+
+        /* Meeting Components */
+        {
+            path: '/meetings',
+            name: 'meetings',
+            component: Meetings,
+            meta: {
+                middleware: "admin",
+                title: `Meetings`
+            }
+        },
+        /* Meeting Components */
     ]
 })
 

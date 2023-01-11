@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
+use App\Events\LectureCreated;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Lecture\LectureStoreRequest;
@@ -120,19 +121,14 @@ class LectureController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        LectureCreated::dispatch($lecture);
+
         $meeting = $lecture->is_online ? (new MeetingController)->store($lecture->id) : null;
-
-        $listeners = Conference::find($lecture->conference_id)->users()->where('type', User::LISTENER)->get();
-
-        if (count($listeners)) {
-            Mail::to($listeners)->send(new AnnouncerJoined($lecture));
-        }
-
         $lecture->{'comments_count'} = 0;
 
         return response()->json([
             'lecture' => $lecture,
-            'meeting' => $meeting ? $meeting->original : $meeting,
+            'meeting' => $meeting ? $meeting->original : null,
         ]);
     }
 

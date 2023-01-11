@@ -28,7 +28,6 @@ export default {
             this.$store.dispatch('auth/fetchUserData')
 
             this.$store.dispatch('lecture/fetchAllLectures')
-            this.$store.dispatch('meeting/fetchAllMeetings')
         }
 
         this.$store.dispatch('conference/fetchAllConferences')
