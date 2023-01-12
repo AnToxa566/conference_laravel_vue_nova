@@ -14,7 +14,6 @@ use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 use App\Jobs\ExportFile;
 use App\Events\LectureDeleted;
 
-use App\Mail\AnnouncerJoined;
 use App\Mail\LectureTimeChanged;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -135,26 +134,13 @@ class LectureController extends Controller
 
     public function update(LectureUpdateRequest $request, int $id): JsonResponse
     {
-        $request->validated();
-
-        $lecture = Lecture::find($id);
-
-        if (!$lecture) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
-
-        $lecture->date_time_start = $request->date_time_start;
-        $lecture->date_time_end = $request->date_time_end;
-
-        $timeChanged = $lecture->isDirty('date_time_start') || $lecture->isDirty('date_time_end');
-
-        $response = tap($lecture)->update($request->toArray());
+        $response = tap(Lecture::find($id))->update($request->validated());
 
         if (!$response) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if ($timeChanged) {
+        if ($response->wasChanged(['date_time_start', 'date_time_end'])) {
             $listeners = Conference::find($response->conference_id)->users()->where('type', User::LISTENER)->get();
 
             if (count($listeners)) {

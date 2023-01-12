@@ -113,8 +113,7 @@ export default {
 
         UPDATE_LECTURES_CATEGORIES (state, lectures) {
             lectures.forEach(lecture => {
-                lecture.category_id = null
-                store.dispatch('lecture/updateLecture', lecture)
+                store.commit('lecture/UPDATE_LECTURE', lecture)
             })
         },
 
@@ -216,9 +215,9 @@ export default {
         updateConference({ commit }, conference) {
             axios.post(`/api/conferences/${conference.id}/update`, conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('UPDATE_CONFERENCE', res.data)
+                    commit('UPDATE_CONFERENCE', res.data.conference)
 
-                    if (res.data.lectures.length) {
+                    if (res.data.is_category_changed) {
                         commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
                     }
 

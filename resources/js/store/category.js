@@ -187,17 +187,10 @@ export default {
             commit('SET_LECTURE_NODES', parentId)
         },
 
-        storeCategory({ commit }, request) {
+        storeCategory({ commit, dispatch }, request) {
             axios.post('/api/categories/add', request, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('PUSH_CATEGORY', (res.data))
-                    commit('PUSH_NODE', (res.data))
-
-                    if (!res.data.parent_id) {
-                        commit('PUSH_ROOT', (res.data))
-                    }
-
-                    router.go(0)
+                    dispatch('fetchAllCategories')
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -211,8 +204,6 @@ export default {
 
                     store.dispatch('conference/updateConferenceCategories', res.data)
                     store.dispatch('lecture/updateLectureCategories', res.data)
-
-                    router.go(0)
                 })
                 .catch(err => {
                     console.log(err.response)

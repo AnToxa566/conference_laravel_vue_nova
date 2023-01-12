@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="this.filteredConferences.length"
+        v-if="this.conferences.length"
     >
         <conference-item
             v-for="conference in conferencesPaginatedData.paginatedConferences"
@@ -43,8 +43,16 @@ export default {
     },
 
     computed: {
+        conferences() {
+            return this.isAuthenticated ? this.filteredConferences : this.allConferences
+        },
+
         isAuthenticated() {
             return this.$store.getters['auth/authenticated']
+        },
+
+        allConferences() {
+            return this.$store.getters['conference/conferences']
         },
 
         filteredConferences() {

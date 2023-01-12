@@ -58,9 +58,9 @@ export default {
                 this.leftTime.seconds = this.leftTime.timestamp % 60
                 this.leftTime.minutes = Math.floor((this.leftTime.timestamp / 60) % 60)
                 this.leftTime.hours = Math.floor((this.leftTime.timestamp / (60 * 60)) % 24)
-                this.leftTime.days = Math.floor((this.leftTime.timestamp / (60 * 60 * 24)) % 24)
-                this.leftTime.months = Math.floor((this.leftTime.timestamp / (60 * 60 * 24 * 30)) % 30)
-                this.leftTime.years = Math.floor((this.leftTime.timestamp / (60 * 60 * 24 * 30 * 365)) % 365)
+                this.leftTime.days = Math.floor((this.leftTime.timestamp / (60 * 60 * 24)) % 30)
+                this.leftTime.months = Math.floor((this.leftTime.timestamp / (60 * 60 * 24 * 30)) % 12)
+                this.leftTime.years = Math.floor((this.leftTime.timestamp / (60 * 60 * 24 * 30 * 365)))
             }, 1000)
         },
 

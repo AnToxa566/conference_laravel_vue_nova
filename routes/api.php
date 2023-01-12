@@ -86,7 +86,7 @@ Route::controller(LectureController::class)->group(function () {
         Route::get('/lectures/{id}/presentation/download', 'downloadPresentation')->name('lectures.downloadPresentation');
 
         Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
-        Route::middleware(['user.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
+        Route::middleware(['can.update.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
         Route::middleware(['can.delete.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
 
         Route::middleware(['admin'])->group(function () {
