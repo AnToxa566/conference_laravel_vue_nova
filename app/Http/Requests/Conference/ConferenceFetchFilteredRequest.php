@@ -26,13 +26,13 @@ class ConferenceFetchFilteredRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'minLectureCount' => ['nullable', 'numeric', 'min:0', 'lte:maxLectureCount'],
-            'maxLectureCount' => ['nullable', 'numeric', 'gte:minLectureCount'],
+            'minLectureCount'   => ['nullable', 'numeric', 'min:0', 'lte:maxLectureCount'],
+            'maxLectureCount'   => ['nullable', 'numeric', 'gte:minLectureCount'],
 
-            'dateAfter' => ['nullable', 'date_format:Y-m-d', 'before_or_equal:dateBefore'],
-            'dateBefore' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:dateAfter'],
+            'dateAfter'         => ['nullable', 'date_format:Y-m-d', 'before_or_equal:dateBefore'],
+            'dateBefore'        => ['nullable', 'date_format:Y-m-d', 'after_or_equal:dateAfter'],
 
-            'categoriesId' => ['nullable', 'array'],
+            'categoriesId'      => ['nullable', 'array'],
         ];
     }
 

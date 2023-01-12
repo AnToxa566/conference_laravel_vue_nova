@@ -26,12 +26,15 @@ class ConferenceStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'min:2', 'max:255'],
-            'date_time_event' => ['required', 'date', 'after_or_equal:today'],
-            'latitude' => ['nullable', 'required_with:longitude', 'numeric', 'between:-90.0,90.0'],
-            'longitude' => ['nullable', 'required_with:latitude', 'numeric', 'between:-180.0,180.0'],
-            'country' => ['required', 'string', 'exists:countries,name'],
-            'category_id' => ['nullable', 'numeric'],
+            'title'             => ['required', 'string', 'min:2', 'max:255'],
+
+            'date_time_event'   => ['required', 'date', 'after_or_equal:today'],
+            'country'           => ['required', 'string', 'exists:countries,name'],
+
+            'latitude'          => ['nullable', 'required_with:longitude', 'numeric', 'between:-90.0,90.0'],
+            'longitude'         => ['nullable', 'required_with:latitude', 'numeric', 'between:-180.0,180.0'],
+
+            'category_id'       => ['nullable', 'numeric', 'exists:categories,id'],
         ];
     }
 }
