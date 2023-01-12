@@ -76,4 +76,14 @@ class Lecture extends Model
             $q->whereDate('date_time_event', '>=', date('Y-m-d'));
         });
     }
+
+    public function scopeWhereTimeBetween(Builder $query, string $fieldName, string $fromTime, string $toTime): Builder
+    {
+        return $query->whereTime($fieldName, '>=', $fromTime)->whereTime($fieldName, '<=', $toTime);
+    }
+
+    public function scopeWhereBetweenTimes(Builder $query, string $fromTime, string $toTime): Builder
+    {
+        return $query->whereTime('date_time_start', '<=', $fromTime)->whereTime('date_time_end', '>=', $toTime);
+    }
 }

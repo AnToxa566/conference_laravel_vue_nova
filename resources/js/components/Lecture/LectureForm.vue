@@ -5,7 +5,6 @@
         ref="form"
         v-model="valid"
     >
-
         <!-- Title field -->
 
         <v-text-field
@@ -189,6 +188,10 @@ export default {
             userId,
         }
     },
+
+    emits: [
+        'submit',
+    ],
 
     data: () => ({
         valid: false,
