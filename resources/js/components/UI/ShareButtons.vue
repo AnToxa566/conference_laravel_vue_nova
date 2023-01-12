@@ -1,9 +1,9 @@
 <template>
     <ShareNetwork
         network="facebook"
-        v-bind:url="this.share_url"
+        :url="this.share_url"
         title="Confy"
-        v-bind:description="this.share_text"
+        :description="this.share_text"
         hashtags="bwt,quest"
         class="text-decoration-none"
     >
@@ -12,8 +12,8 @@
 
     <ShareNetwork
         network="twitter"
-        v-bind:url="this.share_url"
-        v-bind:title="this.share_text"
+        :url="this.share_url"
+        :title="this.share_text"
         hashtags="bwt,quest"
         class="text-decoration-none"
     >
@@ -32,8 +32,3 @@ export default {
     })
 }
 </script>
-
-
-<style scoped>
-
-</style>

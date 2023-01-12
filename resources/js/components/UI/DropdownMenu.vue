@@ -37,7 +37,7 @@
             <v-list-item
                 v-if="this.isAdmin"
                 value="true"
-                prepend-icon="mdi-monitor-account"
+                prepend-icon="mdi-calendar-plus-outline"
                 @click="this.$router.push('/conferences/add')"
             >
                 Add conference
@@ -52,6 +52,17 @@
                 @click="this.$router.push('/categories')"
             >
                 Categories
+            </v-list-item>
+
+            <!-- Meetings Page -->
+
+            <v-list-item
+                v-if="this.isAdmin"
+                value="true"
+                prepend-icon="mdi-laptop-account"
+                @click="this.$router.push('/meetings')"
+            >
+                Meetings
             </v-list-item>
 
             <!-- User's Profile Page -->

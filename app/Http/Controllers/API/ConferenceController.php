@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Conference\ConferenceStoreRequest;
 use App\Http\Requests\Conference\ConferenceUpdateRequest;
@@ -24,7 +26,7 @@ use Illuminate\Http\JsonResponse;
 
 class ConferenceController extends Controller
 {
-    public function getConferenceAddressById($id): string
+    private function getConferenceAddressById($id): string
     {
         $conference = Conference::find($id);
 
@@ -46,7 +48,12 @@ class ConferenceController extends Controller
 
     public function fetchAll(): JsonResponse
     {
-        return response()->json(Conference::withCount('lectures')->get());
+        return response()->json(
+            Conference::withCount('lectures')
+            ->beforeEvent()
+            ->oldest('date_time_event')
+            ->get()
+        );
     }
 
 
@@ -66,7 +73,7 @@ class ConferenceController extends Controller
 
     public function fetchSearchedConferences(string $search, int $limit): JsonResponse
     {
-        return response()->json(Conference::search($search, $limit)->get());
+        return response()->json(Conference::beforeEvent()->search($search, $limit)->get());
     }
 
 
@@ -74,7 +81,7 @@ class ConferenceController extends Controller
     {
         $request->validated();
 
-        $query = Conference::withCount('lectures');
+        $query = Conference::withCount('lectures')->beforeEvent();
 
         if ($request->filled('minLectureCount')) {
             $query->having('lectures_count', '>=', $request->get('minLectureCount'));
@@ -96,7 +103,7 @@ class ConferenceController extends Controller
             $query->whereIn('category_id', $request->get('categoriesId'));
         }
 
-        return response()->json($query->get());
+        return response()->json($query->oldest('date_time_event')->get());
     }
 
 
@@ -122,10 +129,35 @@ class ConferenceController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
         }
 
-        $response->{'lectures'} = $response->lectures;
+        if ($response->wasChanged('category_id')) {
+            foreach ($response->lectures as $lecture) {
+                $lecture->category_id = $response->category_id;
+                $lecture->save();
+            }
+        }
+
+        if ($response->wasChanged('date_time_event')) {
+            $conferenceParseDate = Carbon::parse($response->date_time_event);
+
+            $conferenceDate = $conferenceParseDate->format('d');
+            $conferenceMonth = $conferenceParseDate->format('m');
+            $conferenceYear = $conferenceParseDate->format('Y');
+
+            foreach ($response->lectures as $lecture) {
+                $lecture->date_time_start = (new Carbon($lecture->date_time_start))->day($conferenceDate)->month($conferenceMonth)->year($conferenceYear);
+                $lecture->date_time_end = (new Carbon($lecture->date_time_end))->day($conferenceDate)->month($conferenceMonth)->year($conferenceYear);
+
+                $lecture->save();
+            }
+        }
+
         $response->{'lectures_count'} = count($response->lectures);
 
-        return response()->json($response);
+        return response()->json([
+            'is_category_changed'   => $response->wasChanged('category_id'),
+            'conference'            => $response,
+            'lectures'              => $response->lectures,
+        ]);
     }
 
 
@@ -159,18 +191,12 @@ class ConferenceController extends Controller
 
     public function exportAll(): void
     {
-        $fileName = 'conferences.csv';
-        $export = new AllConferencesExport();
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('conferences.csv', new AllConferencesExport());
     }
 
 
     public function exportListeners(int $conferenceId): void
     {
-        $fileName = 'c' . $conferenceId . '_listeners.csv';
-        $export = new ListenersByConferenceExport($conferenceId);
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('c'.$conferenceId.'_listeners.csv', new ListenersByConferenceExport($conferenceId));
     }
 }

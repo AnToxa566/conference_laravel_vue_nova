@@ -36,14 +36,11 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $validated = $request->validated();
+
         $response = User::where('email', $validated['email'])->first();
 
         if (!$response) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        if (!Hash::check($validated['password'], $response->password)) {
-            return response()->json(['message' => 'Password doesn\'t match.'], Response::HTTP_BAD_REQUEST);
         }
 
         $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;

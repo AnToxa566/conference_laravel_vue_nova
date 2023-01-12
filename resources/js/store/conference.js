@@ -22,7 +22,7 @@ export default {
             return state.conference
         },
         conferenceById: (state) => (id) => {
-            return state.conferences.find(conference => conference.id === parseInt(id, 10));
+            return state.conferences.find(conference => conference.id == parseInt(id, 10));
         },
 
         conferences(state) {
@@ -95,12 +95,14 @@ export default {
         },
 
         ADD_CONFERENCE (state, value) {
-            state.conferences.push(value)
+            state.conferences.unshift(value)
         },
+
         UPDATE_CONFERENCE (state, value) {
             const index = state.conferences.map(conference => conference.id).indexOf(value.id);
             state.conferences.splice(index, 1, value);
         },
+
         DELETE_CONFERENCE (state, id) {
             let index = state.conferences.map(conference => conference.id).indexOf(id);
             state.conferences.splice(index, 1);
@@ -111,9 +113,18 @@ export default {
 
         UPDATE_LECTURES_CATEGORIES (state, lectures) {
             lectures.forEach(lecture => {
-                lecture.category_id = null
-                store.dispatch('lecture/updateLecture', lecture)
+                store.commit('lecture/UPDATE_LECTURE', lecture)
             })
+        },
+
+        LECTURE_COUNT_INCREMENT (state, id) {
+            const index = state.conferences.findIndex(c => c.id == parseInt(id, 10));
+            state.conferences[index].lectures_count++
+        },
+
+        LECTURE_COUNT_DECREMENT (state, id) {
+            const index = state.conferences.findIndex(c => c.id == parseInt(id, 10));
+            state.conferences[index].lectures_count--
         },
     },
 
@@ -130,14 +141,16 @@ export default {
         },
 
 
-        fetchPaginatedConferences({ commit }, query) {
+        fetchPaginatedConferences({ commit, state }, query) {
+            const conferences = store.state.auth.authenticated ? state.filteredConferences : state.conferences
+
             const pagination = {
                 currentPage: query.page,
                 perPage: query.perPage,
-                totalConferences: query.conferences.length,
-                totalPages: Math.ceil(query.conferences.length / query.perPage),
+                totalConferences: conferences.length,
+                totalPages: Math.ceil(conferences.length / query.perPage),
 
-                paginatedConferences: query.conferences.slice((query.page - 1) * query.perPage, query.page * query.perPage)
+                paginatedConferences: conferences.slice((query.page - 1) * query.perPage, query.page * query.perPage)
             }
 
             commit('SET_CONFERENCES_PAGINATED_DATA', pagination)
@@ -150,9 +163,8 @@ export default {
                     commit('SET_FILTERED_CONFERENCES', res.data)
 
                     dispatch('fetchPaginatedConferences', {
-                        page: 1,
+                        page: state.conferencesPaginatedData.currentPage,
                         perPage: state.conferencesPaginatedData.perPage,
-                        conferences: res.data,
                     })
 
                     commit('SET_ERROR', '')
@@ -203,9 +215,9 @@ export default {
         updateConference({ commit }, conference) {
             axios.post(`/api/conferences/${conference.id}/update`, conference, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('UPDATE_CONFERENCE', res.data)
+                    commit('UPDATE_CONFERENCE', res.data.conference)
 
-                    if (res.data.lectures.length) {
+                    if (res.data.is_category_changed) {
                         commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
                     }
 
@@ -221,7 +233,7 @@ export default {
 
         updateConferenceCategories({ state, dispatch }, categories) {
             categories.forEach(category => {
-                let conferences = state.conferences.filter(conf => conf.category_id === category.id)
+                let conferences = state.conferences.filter(conf => conf.category_id == category.id)
 
                 conferences.forEach(conference => {
                     conference.category_id = null

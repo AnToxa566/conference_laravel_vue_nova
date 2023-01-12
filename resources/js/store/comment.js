@@ -15,7 +15,7 @@ export default {
         },
 
         canBeUpdated: (state) => (id) => {
-            const updated_at = state.commentsOfLecture.find(comment => comment.id === parseInt(id, 10)).updated_at;
+            const updated_at = state.commentsOfLecture.find(comment => comment.id == parseInt(id, 10)).updated_at;
             const passedTime = Date.now() - (new Date(updated_at))
 
             return (passedTime / 60000) < 10
@@ -44,7 +44,7 @@ export default {
         fetchMoreCommentsOfLecture({ commit }, query) {
             axios.get(`/api/comments/${query.lecture_id}/limit/${query.limit}/page/${query.page}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    if (query.page === 1) {
+                    if (query.page == 1) {
                         commit('SET_COMMENTS_OF_LECTURE', res.data)
                     }
                     else {

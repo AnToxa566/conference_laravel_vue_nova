@@ -1,59 +1,111 @@
 <template>
-    <v-card
-        class="pa-4 mb-4"
-    >
-        <v-card-title
-            style="cursor: pointer;"
-            @click="$router.push(`/conferences/${lecture.conference_id}/lectures/${lecture.id}`)"
+    <div class="d-flex mb-4">
+        <v-card
+            class="pa-4 w-100"
         >
-            <span class="font-weight-bold text-h5">{{ lecture.title }}</span>
-        </v-card-title>
 
-        <v-card-subtitle>
-            Time:
-            from <span class="font-weight-bold">{{ this.startFormattedTime }}</span>
-            to <span class="font-weight-bold">{{ this.endFormattedTime }}</span>
-        </v-card-subtitle>
+            <!-- Lecture's Title -->
 
-        <v-card-text>
-            <span class="text-body-2">Description: {{ !this.isTextOverlay || show ? lecture.description : this.slicedDescription }}</span>
-        </v-card-text>
-
-        <v-card-actions
-            v-if="this.isTextOverlay"
-        >
-            <v-spacer></v-spacer>
-
-            <v-btn
-                variant="text" color="white"
-                @click="show = !show"
+            <v-card-title
+                style="cursor: pointer;"
+                @click="$router.push(`/conferences/${lecture.conference_id}/lectures/${lecture.id}`)"
             >
-                {{ !show ? 'More' : 'Less' }}
-            </v-btn>
-        </v-card-actions>
+                <span class="font-weight-bold text-h5">{{ lecture.title }}</span>
+            </v-card-title>
 
-        <div class="d-flex justify-space-between align-center">
+            <!-- Lecture's Time -->
+
             <v-card-subtitle>
-                <span class="text-caption">{{ this.lecture.comments_count + ' comments' }}</span>
+                Time:
+                from <span class="font-weight-bold">{{ this.startFormattedTime }}</span>
+                to <span class="font-weight-bold">{{ this.endFormattedTime }}</span>
             </v-card-subtitle>
 
-            <favorite-btn
-                :isFavourite="this.isFavourite"
-                @add="addLectureToFavorites"
-                @remove="removeLectureFromFavorites"
+            <!-- Timer until the start of the Lecture -->
+
+            <v-card-subtitle
+                v-if="this.lectureStatusText == this.waiting"
             >
-            </favorite-btn>
-        </div>
-    </v-card>
+                Remains:
+                <custom-timer
+                    class="font-weight-bold"
+                    :toTimestamp="new Date(this.lecture.date_time_start).getTime()"
+                    @timerStoped="lectureStarted"
+                ></custom-timer>
+            </v-card-subtitle>
+
+            <!-- Invisible timer until the end of the Lecture -->
+
+            <custom-timer
+                v-if="this.lectureStatusText == this.started"
+                :visible="false"
+                :toTimestamp="new Date(this.lecture.date_time_end).getTime()"
+                @timerStoped="lectureEnded"
+            ></custom-timer>
+
+            <!-- Lecture's Description -->
+
+            <v-card-text>
+                <span class="text-body-2">Description: {{ !this.isTextOverlay || show ? lecture.description : this.slicedDescription }}</span>
+            </v-card-text>
+
+            <!-- More / Less Buttons -->
+
+            <v-card-actions
+                v-if="this.isTextOverlay"
+            >
+                <v-spacer></v-spacer>
+
+                <v-btn
+                    variant="text" color="white"
+                    @click="show = !show"
+                >
+                    {{ !show ? 'More' : 'Less' }}
+                </v-btn>
+            </v-card-actions>
+
+            <div class="d-flex justify-space-between align-center">
+                <!-- Comments Count -->
+                <v-card-subtitle>
+                    <span class="text-caption">{{ this.lecture.comments_count + ' comments' }}</span>
+                </v-card-subtitle>
+
+                <!-- Add / Remove Favorite Button -->
+                <favorite-btn
+                    :isFavourite="this.isFavourite"
+                    @add="addLectureToFavorites"
+                    @remove="removeLectureFromFavorites"
+                >
+                </favorite-btn>
+            </div>
+        </v-card>
+
+        <!-- Lecture Card's Badge -->
+
+        <v-badge
+            :content="lectureStatusText"
+            :color="lectureStatusColor"
+            text-color="white"
+            location="bottom"
+        ></v-badge>
+    </div>
 </template>
 
 
 <script>
+import lectureConsts from '../../config/lecture'
 import moment from 'moment'
 
 export default {
     data: () => ({
         show: false,
+
+        lectureStatusText: '',
+        lectureStatusColor: '',
+
+        waiting: lectureConsts.WAITING,
+        started: lectureConsts.STARTED,
+        ended: lectureConsts.ENDED,
     }),
 
     props: {
@@ -63,18 +115,39 @@ export default {
         },
     },
 
+    mounted() {
+        if (this.isLectureEnded) {
+            this.lectureStatusText = lectureConsts.ENDED
+            this.lectureStatusColor = lectureConsts.ENDED_COLOR
+        }
+
+        if (this.isLectureStarted) {
+            this.lectureStatusText = lectureConsts.STARTED
+            this.lectureStatusColor = lectureConsts.STARTED_COLOR
+        }
+
+        if (this.isLectureWaiting) {
+            this.lectureStatusText = lectureConsts.WAITING
+            this.lectureStatusColor = lectureConsts.WAITING_COLOR
+        }
+    },
+
     computed: {
         startFormattedTime() {
-            const format = 'HH:mm'
-            const date = new Date(this.lecture.date_time_start)
-
-            return moment(date).format(format)
+            return moment(new Date(this.lecture.date_time_start)).format('HH:mm')
         },
         endFormattedTime() {
-            const format = 'HH:mm'
-            const date = new Date(this.lecture.date_time_end)
+            return moment(new Date(this.lecture.date_time_end)).format('HH:mm')
+        },
 
-            return moment(date).format(format)
+        isLectureWaiting() {
+            return Date.now() < new Date(this.lecture.date_time_start).getTime()
+        },
+        isLectureStarted() {
+            return Date.now() > new Date(this.lecture.date_time_start).getTime() && Date.now() < new Date(this.lecture.date_time_end).getTime()
+        },
+        isLectureEnded() {
+            return Date.now() > new Date(this.lecture.date_time_end).getTime()
         },
 
         isTextOverlay() {
@@ -96,6 +169,16 @@ export default {
 
         removeLectureFromFavorites() {
             this.$store.dispatch('favorite/removeLectureFromFavorite', this.lecture.id)
+        },
+
+        lectureStarted() {
+            this.lectureStatusText = lectureConsts.STARTED
+            this.lectureStatusColor = lectureConsts.STARTED_COLOR
+        },
+
+        lectureEnded() {
+            this.lectureStatusText = lectureConsts.ENDED
+            this.lectureStatusColor = lectureConsts.ENDED_COLOR
         },
     },
 }

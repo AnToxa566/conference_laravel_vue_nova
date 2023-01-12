@@ -1,23 +1,22 @@
 <template>
-    <Datepicker
-        dark
-        timePicker
-        model-type="HH:mm:ss"
+    <div>
+        <Datepicker
+            dark
+            timePicker
+            teleportCenter
+            model-type="HH:mm:ss"
 
-        :placeholder=this.placeholder
-        :minTime=this.min
-        :maxTime=this.max
+            :placeholder=this.placeholder
+            :minTime=this.min
+            :maxTime=this.max
 
-        :modelValue="modelValue"
-        @update:modelValue="updateInput"
-    />
+            :modelValue="modelValue"
+            @update:modelValue="updateInput"
+        />
 
-    <div
-        v-if="!hideDetails"
-        id="message__wrapper"
-        class="hidden__message"
-    >
-        <p class="message">Field is required!</p>
+        <div>
+            <p class="message"> {{ this.hint }} </p>
+        </div>
     </div>
 </template>
 
@@ -47,21 +46,16 @@ export default {
             default: {},
         },
 
-        hideDetails: {
-            type: Boolean,
+        hint: {
+            type: String,
             required: false,
-            default: false,
+            default: '',
         },
     },
 
     methods: {
         updateInput(event) {
             this.$emit('update:modelValue', event)
-
-            if (!this.hideDetails) {
-                const messageWrapper = document.getElementById("message__wrapper")
-                this.modelValue ? messageWrapper.classList.remove("hidden__message") : messageWrapper.classList.add("hidden__message")
-            }
         },
     },
 }
@@ -76,13 +70,11 @@ export default {
         padding-left: 35px;
     }
 
-    .hidden__message {
-        visibility: hidden;
-    }
     .message {
         color: #cf6679;
         font-size: 12px;
         padding: 6px 16px 0 16px;
+        min-height: 22px;
         margin-bottom: 0px;
     }
 </style>

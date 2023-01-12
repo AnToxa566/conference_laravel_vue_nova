@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Models\Conference;
 use Illuminate\Http\JsonResponse;
 
-use App\UserConsts;
 use App\Mail\ListenerJoined;
 use Illuminate\Support\Facades\Mail;
 
@@ -27,8 +26,8 @@ class UserConferenceController extends Controller
         $user = User::find($userId);
         $user->conferences()->attach($conferenceId);
 
-        if ($user->type === UserConsts::LISTENER) {
-            $announcers = Conference::find($conferenceId)->users()->where('type', '=', UserConsts::ANNOUNCER)->get();
+        if ($user->type === User::LISTENER) {
+            $announcers = Conference::find($conferenceId)->users()->where('type', User::ANNOUNCER)->get();
 
             if (count($announcers)) {
                 Mail::to($announcers)->send(new ListenerJoined($user, Conference::find($conferenceId)));

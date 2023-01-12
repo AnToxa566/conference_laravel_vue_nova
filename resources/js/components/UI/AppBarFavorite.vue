@@ -6,6 +6,7 @@
         <v-badge
             v-if="hasFavoritedLectures"
             :content="badgeContent"
+            :max="99"
             color="error"
         >
             <v-icon size="x-large" color="white">
@@ -33,7 +34,7 @@ export default {
 
     computed: {
         badgeContent() {
-            return this.$store.getters['favorite/favoritedLecturesId'].length > 99 ? '99+' : this.$store.getters['favorite/favoritedLecturesId'].length
+            return this.$store.getters['favorite/favoritedLecturesId'].length
         },
 
         hasFavoritedLectures() {

@@ -10,11 +10,17 @@ use Illuminate\Http\JsonResponse;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
 
 use App\Models\Lecture;
 
-class LecturesByConferenceExport extends BaseCsvExport implements WithHeadings
+class LecturesByConferenceExport extends BaseCsvExport implements WithHeadings, FromCollection
 {
+    /*
+    * The conference's id
+    *
+    * @var int
+    */
     protected int $conferenceId;
 
     public function headings(): array
@@ -43,7 +49,10 @@ class LecturesByConferenceExport extends BaseCsvExport implements WithHeadings
     */
     public function collection(): Collection
     {
-        $lectures = Lecture::where('conference_id', $this->conferenceId)->select('title', 'date_time_start', 'date_time_end', 'description')->withCount('comments')->get();
+        $lectures = Lecture::where('conference_id', $this->conferenceId)
+                                ->select('title', 'date_time_start', 'date_time_end', 'description')
+                                ->withCount('comments')
+                                ->get();
 
         foreach ($lectures as $lecture) {
             $lecture->date_time_start = Carbon::parse($lecture->date_time_start)->format('H:i:s');

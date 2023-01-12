@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
+use App\Events\LectureCreated;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Lecture\LectureStoreRequest;
@@ -13,7 +14,6 @@ use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 use App\Jobs\ExportFile;
 use App\Events\LectureDeleted;
 
-use App\Mail\AnnouncerJoined;
 use App\Mail\LectureTimeChanged;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -29,19 +29,21 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use App\UserConsts;
-
 class LectureController extends Controller
 {
-    public function fetchAll(): JsonResponse|string
+    public function fetchAll(): JsonResponse
     {
-        return response()->json(Lecture::withCount('comments')->get());
+        return response()->json(
+            Lecture::withCount('comments')
+            ->oldest('date_time_start')
+            ->get()
+        );
     }
 
 
     public function fetchSearchedLectures(string $search, int $limit): JsonResponse
     {
-        return response()->json(Lecture::search($search, $limit)->get());
+        return response()->json(Lecture::beforeConferenceEvent()->search($search, $limit)->get());
     }
 
 
@@ -72,7 +74,7 @@ class LectureController extends Controller
             $query->whereIn('category_id', $request->get('categoriesId'));
         }
 
-        return response()->json($query->get());
+        return response()->json($query->oldest('date_time_start')->get());
     }
 
 
@@ -118,40 +120,28 @@ class LectureController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $listeners = Conference::find($lecture->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
+        LectureCreated::dispatch($lecture);
 
-        if (count($listeners)) {
-            Mail::to($listeners)->send(new AnnouncerJoined($lecture));
-        }
-
+        $meeting = $lecture->is_online ? (new MeetingController)->store($lecture->id) : null;
         $lecture->{'comments_count'} = 0;
-        return response()->json($lecture);
+
+        return response()->json([
+            'lecture' => $lecture,
+            'meeting' => $meeting ? $meeting->original : null,
+        ]);
     }
 
 
     public function update(LectureUpdateRequest $request, int $id): JsonResponse
     {
-        $request->validated();
-
-        $lecture = Lecture::find($id);
-
-        if (!$lecture) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
-
-        $lecture->date_time_start = $request->date_time_start;
-        $lecture->date_time_end = $request->date_time_end;
-
-        $timeChanged = $lecture->isDirty('date_time_start') || $lecture->isDirty('date_time_end');
-
-        $response = tap($lecture)->update($request->toArray());
+        $response = tap(Lecture::find($id))->update($request->validated());
 
         if (!$response) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if ($timeChanged) {
-            $listeners = Conference::find($response->conference_id)->users()->where('type', '=', UserConsts::LISTENER)->get();
+        if ($response->wasChanged(['date_time_start', 'date_time_end'])) {
+            $listeners = Conference::find($response->conference_id)->users()->where('type', User::LISTENER)->get();
 
             if (count($listeners)) {
                 Mail::to($listeners)->send(new LectureTimeChanged($response));
@@ -173,7 +163,7 @@ class LectureController extends Controller
 
         User::find($response->user_id)->conferences()->detach($response->conference_id);
 
-        if (auth('sanctum')->user()->type === UserConsts::ADMIN) {
+        if (auth('sanctum')->user()->type === User::ADMIN) {
             $emails = [];
             array_push($emails, User::find($response->user_id)->email);
 
@@ -186,18 +176,12 @@ class LectureController extends Controller
 
     public function exportByConferenceId(int $conferenceId): void
     {
-        $fileName = 'c' . $conferenceId . '_lectures.csv';
-        $export = new LecturesByConferenceExport($conferenceId);
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('c'.$conferenceId.'_lectures.csv', new LecturesByConferenceExport($conferenceId));
     }
 
 
     public function exportComments(int $lectureId): void
     {
-        $fileName = 'l' . $lectureId . '_comments.csv';
-        $export = new CommentsByLectureExport($lectureId);
-
-        ExportFile::dispatch($fileName, $export);
+        ExportFile::dispatch('l'.$lectureId.'_comments.csv', new CommentsByLectureExport($lectureId));
     }
 }

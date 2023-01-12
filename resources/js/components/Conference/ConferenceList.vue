@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="this.filteredConferences.length"
+        v-if="this.conferences.length"
     >
         <conference-item
             v-for="conference in conferencesPaginatedData.paginatedConferences"
@@ -23,25 +23,38 @@
 
 <script>
 import ConferenceItem from './ConferenceItem.vue'
+import pagination from '../../config/pagination'
 
 export default {
-    data: () => ({
-        page: 1,
-        perPage: 15,
-    }),
-
     components: {
         ConferenceItem,
     },
 
+    data: () => ({
+        page: 1,
+        perPage: pagination.PER_PAGE,
+    }),
+
+    created() {
+        this.$store.dispatch('conference/fetchPaginatedConferences', {
+            page: this.page,
+            perPage: this.perPage,
+        })
+    },
+
     computed: {
+        conferences() {
+            return this.isAuthenticated ? this.filteredConferences : this.allConferences
+        },
+
         isAuthenticated() {
             return this.$store.getters['auth/authenticated']
         },
 
-        conferences() {
+        allConferences() {
             return this.$store.getters['conference/conferences']
         },
+
         filteredConferences() {
             return this.$store.getters['conference/filteredConferences']
         },
@@ -51,14 +64,6 @@ export default {
         },
     },
 
-    created() {
-        this.$store.dispatch('conference/fetchPaginatedConferences', {
-            page: this.page,
-            perPage: this.perPage,
-            conferences: this.isAuthenticated ? this.filteredConferences : this.conferences,
-        })
-    },
-
     methods: {
         getResults(event) {
             this.page = event
@@ -66,7 +71,6 @@ export default {
             this.$store.dispatch('conference/fetchPaginatedConferences', {
                 page: this.page,
                 perPage: this.perPage,
-                conferences: this.isAuthenticated ? this.filteredConferences : this.conferences,
             })
         },
     },

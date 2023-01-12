@@ -68,6 +68,7 @@ import ExportButton from './components/UI/ExportButton.vue'
 import FavoriteBtn from './components/UI/FavoriteBtn.vue'
 import AppBar from './components/UI/AppBar.vue'
 import CustomHeader from './components/UI/CustomHeader.vue'
+import CustomTimer from './components/UI/CustomTimer.vue'
 import InfoCard from './components/UI/InfoCard.vue'
 import JoinCancelButtons from './components/UI/JoinCancelButtons.vue'
 import ShareButtons from './components/UI/ShareButtons.vue'
@@ -112,6 +113,7 @@ app
 
     .component('FavoriteBtn', FavoriteBtn)
     .component('CustomInput', CustomInput)
+    .component('CustomTimer', CustomTimer)
     .component('CustomErrorAlert', CustomErrorAlert)
     .component('CustomDatepicker', CustomDatepicker)
     .component('CustomTimepicker', CustomTimepicker)

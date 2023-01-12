@@ -14,14 +14,14 @@
     </custom-error-alert>
 
     <lecture-form
-        :conference="this.conferenceById"
+        :conferenceId="this.conferenceId"
         :lectureToEdit="this.lecture"
         @submit="updateLecture"
     >
         <template v-slot:extraButtons>
             <join-cancel-buttons
                 :isJoined="true"
-                :conferenceId="this.conferenceId"
+                :conference="this.conferenceById"
             ></join-cancel-buttons>
         </template>
     </lecture-form>
@@ -62,7 +62,7 @@ export default {
         },
 
         isUserOwnThisLecture() {
-            return this.$store.getters['lecture/isUserOwnThisLecture']
+            return this.$store.getters['lecture/isUserOwnThisLecture'](this.lectureId)
         },
 
         error() {

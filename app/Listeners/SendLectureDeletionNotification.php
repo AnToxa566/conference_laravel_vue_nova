@@ -14,22 +14,12 @@ use App\Events\LectureDeleted;
 class SendLectureDeletionNotification
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
      * @param  \App\Events\LectureDeleted  $event
      * @return void
      */
-    public function handle(LectureDeleted $event)
+    public function handle(LectureDeleted $event): void
     {
         Mail::to($event->emails)->send(new LectureDeletedByAdmin($event->conferenceId, $event->conferenceTitle));
     }

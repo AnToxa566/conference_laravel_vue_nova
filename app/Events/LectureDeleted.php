@@ -21,21 +21,21 @@ class LectureDeleted
      *
      * @var array
      */
-    public $emails;
+    public array $emails;
 
     /**
      * The conference's id.
      *
      * @var int
      */
-    public $conferenceId;
+    public int $conferenceId;
 
     /**
      * The conference's title.
      *
      * @var string
      */
-    public $conferenceTitle;
+    public string $conferenceTitle;
 
     /**
      * Create a new event instance.
@@ -47,15 +47,5 @@ class LectureDeleted
         $this->emails = $emails;
         $this->conferenceId = $conferenceId;
         $this->conferenceTitle = $conferenceTitle;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
     }
 }

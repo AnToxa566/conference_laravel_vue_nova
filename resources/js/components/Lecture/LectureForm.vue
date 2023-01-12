@@ -5,136 +5,146 @@
         ref="form"
         v-model="valid"
     >
-        <v-row>
+        <!-- Title field -->
 
-            <!-- Title -->
+        <v-text-field
+            v-model="lecture.title"
 
-            <v-col
-                cols="12"
+            label="Lecture's title*"
+            variant="solo"
+            class="mb-4"
+
+            :counter="255"
+            :rules="titleRules"
+        ></v-text-field>
+
+
+        <!-- Lecture start time picker -->
+
+        <custom-timepicker
+            v-model="lecture.date_time_start"
+
+            :min="this.minLectureTime"
+            :max="this.maxLectureTime"
+            :hint="this.startTimeErrorMessage"
+
+            placeholder="When the lecture start*"
+            class="mb-4"
+        >
+        </custom-timepicker>
+
+
+        <!-- Lecture end time picker -->
+
+        <custom-timepicker
+            v-model="lecture.date_time_end"
+
+            :min="this.minLectureTime"
+            :max="this.maxLectureTime"
+            :hint="this.endTimeErrorMessage"
+
+            placeholder="When the lecture end*"
+            class="mb-4"
+        >
+        </custom-timepicker>
+
+
+        <!-- Description textarea -->
+
+        <v-textarea
+            v-model="lecture.description"
+
+            label="Lecture's description*"
+            variant="solo"
+            class="mb-4"
+
+            :rules="descriptionRules"
+        ></v-textarea>
+
+
+        <!-- Category Selected -->
+
+        <category-selected
+            v-if="this.conference.category_id"
+
+            :roots="this.roots"
+            :nodes="this.nodes"
+
+            :defaultSelect="{
+                text: this.category ? this.category.title : '',
+                id: this.category ? this.category.id : '',
+            }"
+
+            @select="categorySelected"
+            @clear="categoryClear"
+        >
+        </category-selected>
+
+
+        <!-- Presentation file input -->
+
+        <v-file-input
+            v-if="!this.isEditMode"
+            v-on:change="onFileChange"
+            :rules="fileRules"
+
+            label="Lecture's presentation*"
+            accept=".ppt, .pptx"
+            variant="solo"
+
+            show-size
+        ></v-file-input>
+
+
+        <!-- Presentation download link -->
+
+        <div
+            v-else
+            class="d-flex mb-8"
+        >
+            <v-icon icon="mdi-monitor-arrow-down-variant" class="mx-2"></v-icon>
+            <span
+                class="text-decoration-underline mx-2"
+                style="cursor: pointer;"
+                @click="downloadPresentation"
             >
-                <v-text-field
-                    v-model="lecture.title"
+                {{ this.lectureToEdit.presentation_name }}
+            </span>
+        </div>
 
-                    label="Lecture's title*"
-                    variant="solo"
 
-                    :counter="255"
-                    :rules="titleRules"
-                ></v-text-field>
-            </v-col>
+        <!-- Online checkbox -->
 
-            <!-- Start date/time -->
+        <v-checkbox
+            v-if="!this.isEditMode"
+            v-model="lecture.isOnline"
+            color="white"
+            label="Online"
+            class="mb-4"
 
-            <v-col
-                cols="12"
-            >
-                <Datepicker
-                    dark
-                    timePicker
-                    teleportCenter
-                    class="w-100"
-                    placeholder="When the lecture start*"
-                    v-model="lecture.date_time_start"
-                    :minTime="this.minLectureTime"
-                    :maxTime="this.maxLectureTime"
-                />
+            hide-details
+        ></v-checkbox>
 
-                <div class="message w-100">
-                    <p class="mb-0" v-if="startTimeErrorMessage"> {{ this.startTimeErrorMessage }} </p>
-                </div>
-            </v-col>
+        <v-alert
+            v-if="lecture.isOnline"
 
-            <!-- End date/time -->
+            title="Zoom start link"
+            variant="tonal"
+            icon="mdi-link"
+            class="mb-4"
 
-            <v-col
-                cols="12"
-            >
-                <Datepicker
-                    dark
-                    timePicker
-                    teleportCenter
-                    class="w-100"
-                    placeholder="When the lecture end*"
-                    v-model="lecture.date_time_end"
-                    :minTime="this.minLectureTime"
-                    :maxTime="this.maxLectureTime"
-                />
+            prominent
+        >
+            <span class="text-subtitle-2">10 minutes before the start of the lecture, the page of lecture's details will contain a link to the start of the zoom meeting.</span>
+        </v-alert>
 
-                <div class="message w-100">
-                    <p class="mb-0" v-if="endTimeErrorMessage"> {{ this.endTimeErrorMessage }} </p>
-                </div>
-            </v-col>
 
-            <!-- Description -->
-
-            <v-col
-                cols="12"
-            >
-                <v-textarea
-                    v-model="lecture.description"
-
-                    label="Lecture's description*"
-                    variant="solo"
-
-                    :rules="descriptionRules"
-                ></v-textarea>
-            </v-col>
-
-            <!-- Category -->
-
-            <v-col
-                v-if="this.conference.category_id"
-                cols="12"
-            >
-                <category-selected
-                    :roots="this.roots"
-                    :nodes="this.nodes"
-
-                    :defaultSelect="{
-                        text: this.category ? this.category.title : '',
-                        id: this.category ? this.category.id : '',
-                    }"
-
-                    @select="categorySelected"
-                    @clear="categoryClear"
-                >
-                </category-selected>
-            </v-col>
-
-            <!-- Presentation -->
-
-            <v-col
-                cols="12"
-            >
-                <v-file-input
-                    v-if="!this.lectureToEdit"
-                    v-on:change="onFileChange"
-                    :rules="fileRules"
-
-                    label="Lecture's presentation*"
-                    accept=".ppt, .pptx"
-                    variant="solo"
-
-                    show-size
-                ></v-file-input>
-
-                <div
-                    v-else
-                    class="d-flex mb-8"
-                >
-                    <v-icon icon="mdi-monitor-arrow-down-variant" class="mx-2"></v-icon>
-                    <span
-                        class="text-decoration-underline mx-2"
-                        style="cursor: pointer;"
-                        @click="downloadPresentation"
-                    >
-                        {{ this.lectureToEdit.presentation_name }}
-                    </span>
-                </div>
-            </v-col>
-        </v-row>
+        <!-- User Hints -->
 
         <small>*indicates required field</small>
+
+
+        <!-- Buttons -->
 
         <div class="d-flex justify-content-end">
             <slot name="extraButtons"></slot>
@@ -179,25 +189,31 @@ export default {
         }
     },
 
+    emits: [
+        'submit',
+    ],
+
     data: () => ({
         valid: false,
         isEditMode: false,
 
         lecture: {
             title: '',
-            date_time_start: '',
-            date_time_end: '',
-
             description: '',
-            presentation: null,
 
+            date_time_start: null,
+            date_time_end: null,
+
+            presentation: null,
             category_id: null,
+
+            isOnline: false,
         },
     }),
 
     props: {
-        conference: {
-            type: Object,
+        conferenceId: {
+            type: Number,
             required: true,
         },
         lectureToEdit: {
@@ -207,9 +223,7 @@ export default {
     },
 
     created() {
-        if (this.conference.category_id) {
-            this.$store.dispatch('category/fetchBranche', this.conference.category_id)
-        }
+        this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
 
         if (this.lectureToEdit) {
             this.lecture = this.lectureToEdit
@@ -231,7 +245,16 @@ export default {
         }
     },
 
+    mounted() {
+        if (this.conference.category_id) {
+            this.$store.dispatch('category/fetchBranche', this.conference.category_id)
+        }
+    },
+
     computed: {
+        conference() {
+            return this.$store.getters['conference/conference']
+        },
         category() {
             return this.$store.getters['category/categoryById'](this.lecture.category_id)
         },
@@ -369,6 +392,8 @@ export default {
             data.append('title', lecture.title)
             data.append('description', lecture.description)
             data.append('presentation', lecture.presentation)
+
+            data.append('is_online', lecture.isOnline ? '1' : '0')
 
             return data
         },

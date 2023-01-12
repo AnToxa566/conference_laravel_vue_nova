@@ -21,7 +21,7 @@ export default {
         },
 
         categoryById: (state) => (id) => {
-            return state.categories.find(category => category.id === parseInt(id, 10));
+            return state.categories.find(category => category.id == parseInt(id, 10));
         },
 
         roots(state) {
@@ -41,14 +41,14 @@ export default {
         },
 
         getPathByLeafId: (state) => (leafId) => {
-            let leaf = state.categories.find(category => category.id === parseInt(leafId, 10))
+            let leaf = state.categories.find(category => category.id == parseInt(leafId, 10))
             let path = []
 
             if (leaf) {
                 path.unshift(leaf)
 
                 while (leaf.parent_id) {
-                    leaf = state.categories.find(category => category.id === parseInt(leaf.parent_id, 10))
+                    leaf = state.categories.find(category => category.id == parseInt(leaf.parent_id, 10))
                     if (leaf) path.unshift(leaf)
                 }
             }
@@ -96,13 +96,13 @@ export default {
             const categories = []
             const nodes = {}
 
-            let category = state.categories.find(cat => cat.id === parentId)
+            let category = state.categories.find(cat => cat.id == parentId)
             categories.push(category)
 
             for (let i = 0; i < categories.length; i++) {
                 if (categories[i].children.length) {
                     categories[i].children.forEach(child => {
-                        category = state.categories.find(cat => cat.id === child.id)
+                        category = state.categories.find(cat => cat.id == child.id)
                         categories.push(category)
                     })
                 }
@@ -170,7 +170,7 @@ export default {
 
     actions: {
         fetchAllCategories({ commit }) {
-            axios.get('/api/category')
+            axios.get('/api/categories')
                 .then(res => {
                     commit('SET_CATEGORIES', res.data)
 
@@ -187,17 +187,10 @@ export default {
             commit('SET_LECTURE_NODES', parentId)
         },
 
-        storeCategory({ commit }, request) {
-            axios.post('/api/category/add', request, JSON.parse(localStorage.getItem('config')))
+        storeCategory({ commit, dispatch }, request) {
+            axios.post('/api/categories/add', request, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('PUSH_CATEGORY', (res.data))
-                    commit('PUSH_NODE', (res.data))
-
-                    if (!res.data.parent_id) {
-                        commit('PUSH_ROOT', (res.data))
-                    }
-
-                    router.go(0)
+                    dispatch('fetchAllCategories')
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -205,14 +198,12 @@ export default {
         },
 
         deleteCategory({ commit }, categoryId) {
-            axios.get(`/api/category/${categoryId}/delete`, JSON.parse(localStorage.getItem('config')))
+            axios.get(`/api/categories/${categoryId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_CATEGORY', res.data)
 
                     store.dispatch('conference/updateConferenceCategories', res.data)
                     store.dispatch('lecture/updateLectureCategories', res.data)
-
-                    router.go(0)
                 })
                 .catch(err => {
                     console.log(err.response)

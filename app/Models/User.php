@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -12,6 +14,27 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * User Type - Admin.
+     *
+     * @var string
+     */
+    const ADMIN = 'Admin';
+
+    /**
+     * User Type - Listener.
+     *
+     * @var string
+     */
+    const LISTENER = 'Listener';
+
+    /**
+     * User Type - Announcer.
+     *
+     * @var string
+     */
+    const ANNOUNCER = 'Announcer';
 
     protected $table = 'users';
 
@@ -50,19 +73,23 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function conferences() {
+    public function conferences(): BelongsToMany
+    {
         return $this->belongsToMany(Conference::class);
     }
 
-    public function favoriteLectures() {
+    public function favoriteLectures(): BelongsToMany
+    {
       return $this->belongsToMany(Lecture::class);
     }
 
-    public function lectures() {
+    public function lectures(): HasMany
+    {
       return $this->hasMany(Lecture::class);
     }
 
-    public function comments() {
+    public function comments(): HasMany
+    {
       return $this->hasMany(Comment::class);
     }
 }

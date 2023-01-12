@@ -1,0 +1,1165 @@
+{
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http:\/\/127.0.0.1:8000"
+        }
+    ],
+    "info": {
+        "name": "2023_01_12_164957_laravel_collection.json",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "api\/user",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/user",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "user"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/register",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/register",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "register"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/login",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/login",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "login"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/profile\/update",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/profile\/update",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "profile",
+                        "update"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/logout",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/logout",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "logout"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/{id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/:id",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        ":id"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/filtered",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/filtered",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "filtered"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/search\/{search}\/limit\/{limit}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/search\/:search\/limit\/:limit",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "search",
+                        ":search",
+                        "limit",
+                        ":limit"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/add",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/add",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "add"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/{id}\/update",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/:id\/update",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        ":id",
+                        "update"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/{id}\/delete",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/:id\/delete",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        ":id",
+                        "delete"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/export\/all",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/export\/all",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "export",
+                        "all"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/export\/listeners\/{conferenceId}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/export\/listeners\/:conferenceId",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "export",
+                        "listeners",
+                        ":conferenceId"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/joined\/{user_id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/joined\/{user_id}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "joined",
+                        "{user_id}"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/join\/{user_id}\/{conference_id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/join\/{user_id}\/{conference_id}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "join",
+                        "{user_id}",
+                        "{conference_id}"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/conferences\/cancel\/{user_id}\/{conference_id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/conferences\/cancel\/{user_id}\/{conference_id}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "conferences",
+                        "cancel",
+                        "{user_id}",
+                        "{conference_id}"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/{id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/:id",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        ":id"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/filtered",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/filtered",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "filtered"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/search\/{search}\/limit\/{limit}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/search\/:search\/limit\/:limit",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "search",
+                        ":search",
+                        "limit",
+                        ":limit"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/{id}\/presentation\/download",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/:id\/presentation\/download",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        ":id",
+                        "presentation",
+                        "download"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/add",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/add",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "add"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/{id}\/update",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/:id\/update",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        ":id",
+                        "update"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/{id}\/delete",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/:id\/delete",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        ":id",
+                        "delete"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/export\/{conferenceId}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/export\/:conferenceId",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "export",
+                        ":conferenceId"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/export\/comments\/{lectureId}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/export\/comments\/:lectureId",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "export",
+                        "comments",
+                        ":lectureId"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/favorited\/{user_id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/favorited\/{user_id}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "favorited",
+                        "{user_id}"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/favorite\/add\/{user_id}\/{lecture_id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/favorite\/add\/{user_id}\/{lecture_id}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "favorite",
+                        "add",
+                        "{user_id}",
+                        "{lecture_id}"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/lectures\/favorite\/remove\/{user_id}\/{lecture_id}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/lectures\/favorite\/remove\/{user_id}\/{lecture_id}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "lectures",
+                        "favorite",
+                        "remove",
+                        "{user_id}",
+                        "{lecture_id}"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/comments\/{lecture_id}\/limit\/{limit}\/page\/{page}",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/comments\/{lecture_id}\/limit\/:limit\/page\/:page",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "comments",
+                        "{lecture_id}",
+                        "limit",
+                        ":limit",
+                        "page",
+                        ":page"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/comments\/add",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/comments\/add",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "comments",
+                        "add"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/comments\/{id}\/update",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/comments\/:id\/update",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "comments",
+                        ":id",
+                        "update"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/categories",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/categories",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "categories"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/categories\/add",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/categories\/add",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "categories",
+                        "add"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/categories\/{id}\/delete",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/categories\/:id\/delete",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "categories",
+                        ":id",
+                        "delete"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/countries",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/countries",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "countries"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/storages\/export\/{fileName}\/download",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/storages\/export\/:fileName\/download",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "storages",
+                        "export",
+                        ":fileName",
+                        "download"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/meetings\/api",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/meetings\/api",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "meetings",
+                        "api"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/meetings\/db",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/meetings\/db",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "meetings",
+                        "db"
+                    ],
+                    "variable": []
+                }
+            }
+        }
+    ],
+    "event": []
+}

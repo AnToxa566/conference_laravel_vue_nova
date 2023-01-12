@@ -21,7 +21,7 @@ class FileExportCompleted implements ShouldBroadcast
     *
     * @var string
     */
-    public $fileName;
+    public string $fileName;
 
     /**
      * Create a new event instance.

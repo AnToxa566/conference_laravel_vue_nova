@@ -1,5 +1,6 @@
 <template>
     <v-expansion-panels
+        v-model="panel"
         variant="accordion"
         multiple
     >
@@ -86,6 +87,8 @@ export default {
         minLectureDuration: lecture.MIN_LECTURE_DURATION,
         maxLectureDuration: lecture.MAX_LECTURE_DURATION,
 
+        panel: [],
+
         timeout: null,
     }),
 
@@ -123,11 +126,11 @@ export default {
             let beforeTimeHours = this.filter.startTimeBefore ? this.filter.startTimeBefore.hours : null
             let beforeTimeMinutes = this.filter.startTimeBefore ? this.filter.startTimeBefore.minutes : null
 
-            afterTimeHours = afterTimeHours !== null && afterTimeHours < 10 ? '0' + afterTimeHours : afterTimeHours
-            afterTimeMinutes = afterTimeMinutes !== null && afterTimeMinutes < 10 ? '0' + afterTimeMinutes : afterTimeMinutes
+            afterTimeHours = afterTimeHours != null && afterTimeHours < 10 ? '0' + afterTimeHours : afterTimeHours
+            afterTimeMinutes = afterTimeMinutes != null && afterTimeMinutes < 10 ? '0' + afterTimeMinutes : afterTimeMinutes
 
-            beforeTimeHours = beforeTimeHours !== null && beforeTimeHours < 10 ? '0' + beforeTimeHours : beforeTimeHours
-            beforeTimeMinutes = beforeTimeMinutes !== null && beforeTimeMinutes < 10 ? '0' + beforeTimeMinutes : beforeTimeMinutes
+            beforeTimeHours = beforeTimeHours != null && beforeTimeHours < 10 ? '0' + beforeTimeHours : beforeTimeHours
+            beforeTimeMinutes = beforeTimeMinutes != null && beforeTimeMinutes < 10 ? '0' + beforeTimeMinutes : beforeTimeMinutes
 
             this.$store.dispatch('lecture/fetchFilteredLectures', {
                 conferenceId: this.conferenceId,
@@ -147,6 +150,8 @@ export default {
             this.filter.startTimeBefore = null
             this.filter.lectureDurationRange = [lecture.MIN_LECTURE_DURATION, lecture.MAX_LECTURE_DURATION]
             this.filter.selectedCategoriesId = []
+
+            this.panel = []
 
             this.updateFilters()
         },

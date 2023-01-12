@@ -9,10 +9,11 @@ use Illuminate\Http\JsonResponse;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
 
 use App\Models\Conference;
 
-class AllConferencesExport extends BaseCsvExport implements WithHeadings
+class AllConferencesExport extends BaseCsvExport implements WithHeadings, FromCollection
 {
     public function headings(): array
     {
@@ -37,6 +38,10 @@ class AllConferencesExport extends BaseCsvExport implements WithHeadings
     */
     public function collection(): Collection
     {
-        return Conference::select('title', 'date_time_event', 'latitude', 'longitude', 'country')->withCount('lectures', 'listeners')->get();
+        return Conference::beforeEvent()
+                            ->oldest('date_time_event')
+                            ->select('title', 'date_time_event', 'latitude', 'longitude', 'country')
+                            ->withCount('lectures', 'listeners')
+                            ->get();
     }
 }

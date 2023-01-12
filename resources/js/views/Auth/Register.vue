@@ -219,7 +219,7 @@ export default {
 
     methods: {
         matchingPasswords: function() {
-            if (this.user.password === this.user.password_confirmation) {
+            if (this.user.password == this.user.password_confirmation) {
                 return true;
             } else {
                 return 'Passwords does not match!';
@@ -235,7 +235,7 @@ export default {
         },
 
         hiddenMessage() {
-            if (this.user.birthdate === null || this.user.birthdate === '') {
+            if (this.user.birthdate == null || this.user.birthdate == '') {
                 let message = document.getElementById("message__wrapper")
                 message.classList.remove("hidden__message")
             }
@@ -250,7 +250,7 @@ export default {
         },
 
         async register(user) {
-            if (this.user.birthdate === '' || this.user.birthdate === null) {
+            if (this.user.birthdate == '' || this.user.birthdate == null) {
                 let message = document.getElementById("message__wrapper")
                 message.classList.remove("hidden__message")
             }

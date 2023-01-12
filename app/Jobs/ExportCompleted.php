@@ -22,7 +22,7 @@ class ExportCompleted implements ShouldQueue
     *
     * @var string
     */
-    public $fileName;
+    public string $fileName;
 
     /**
      * Create a new job instance.

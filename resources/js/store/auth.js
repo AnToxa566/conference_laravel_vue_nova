@@ -2,6 +2,7 @@ import axios from 'axios'
 import store from '../store'
 import router from '../router'
 import userTypes from '../config/user_types'
+import pagination from '../config/pagination'
 
 export default {
     namespaced: true,
@@ -34,7 +35,7 @@ export default {
             return state.adminType
         },
         isAdmin(state) {
-            return state.user.type === state.adminType
+            return state.user.type == state.adminType
         },
 
         authErrors(state) {
@@ -58,6 +59,7 @@ export default {
             }
 
             localStorage.setItem('config', JSON.stringify(state.config))
+            localStorage.setItem('auth_token', JSON.stringify(user.auth_token))
         },
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -157,7 +159,11 @@ export default {
                     commit('SET_USER', {})
                     commit('SET_AUTHENTICATED', false)
 
-                    store.dispatch('user_conferences/removeJoinedConferences')
+                    store.dispatch('conference/fetchPaginatedConferences', {
+                        page: 1,
+                        perPage: pagination.PER_PAGE,
+                    })
+                    store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
 
                     localStorage.removeItem('config')
 

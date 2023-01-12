@@ -23,17 +23,22 @@ export default {
     },
 
     mounted() {
-        this.$store.dispatch('auth/initData')
-        this.$store.dispatch('auth/fetchUserData')
+        if (this.authenticated) {
+            this.$store.dispatch('auth/initData')
+            this.$store.dispatch('auth/fetchUserData')
 
-        this.$store.dispatch('lecture/fetchAllLectures')
+            this.$store.dispatch('lecture/fetchAllLectures')
+        }
+
         this.$store.dispatch('conference/fetchAllConferences')
         this.$store.dispatch('country/fetchAllCountries')
         this.$store.dispatch('category/fetchAllCategories')
     },
+
+    computed: {
+        authenticated() {
+            return this.$store.getters['auth/authenticated']
+        }
+    }
 }
 </script>
-
-<style>
-
-</style>

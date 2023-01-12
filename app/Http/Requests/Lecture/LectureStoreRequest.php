@@ -4,10 +4,38 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Lecture;
 
+use App\Models\Lecture;
+use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LectureStoreRequest extends FormRequest
 {
+    /**
+    * @param  \Illuminate\Validation\Validator  $validator
+    * @return void
+    */
+    public function withValidator(Validator $validator): void
+    {
+        $conferenceId = $validator->getData()['conference_id'];
+        $from = date('H:i:s', strtotime($validator->getData()['date_time_start']));
+        $to = date('H:i:s', strtotime($validator->getData()['date_time_end']));
+
+        $timedBusiedLectures = Lecture::where(function ($query) use ($conferenceId, $from, $to) {
+            $query->where('conference_id', '=', $conferenceId)->whereTimeBetween('date_time_start', $from, $to);
+        })->orWhere(function ($query) use ($conferenceId, $from, $to) {
+            $query->where('conference_id', '=', $conferenceId)->whereTimeBetween('date_time_end', $from, $to);
+        })->orWhere(function ($query) use ($conferenceId, $from, $to) {
+            $query->where('conference_id', '=', $conferenceId)->whereBetweenTimes($from, $to);
+        })->get();
+
+        $validator->after(function ($validator) use ($timedBusiedLectures) {
+                if ($timedBusiedLectures->count()) {
+                    $validator->errors()->add('time', 'Lecture time overlapped with another lecture');
+                }
+            }
+        );
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,16 +54,18 @@ class LectureStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'numeric'],
-            'conference_id' => ['required', 'numeric'],
-            'category_id' => ['nullable', 'string'],
+            'user_id'           => ['required', 'numeric', 'exists:users,id'],
+            'conference_id'     => ['required', 'numeric', 'exists:conferences,id'],
+            'category_id'       => ['nullable', 'numeric', 'exists:categories,id'],
 
-            'title' => ['required', 'string', 'min:2', 'max:255'],
-            'date_time_start' => ['required', 'date'],
-            'date_time_end' => ['required', 'date'],
-            'description' => ['required', 'string'],
+            'title'             => ['required', 'string', 'min:2', 'max:255'],
+            'description'       => ['required', 'string'],
 
-            'presentation' => ['required', 'file', 'max:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
+            'date_time_start'   => ['required', 'date', 'before:date_time_end'],
+            'date_time_end'     => ['required', 'date', 'after:date_time_start'],
+
+            'presentation'      => ['required', 'file', 'max:10240', 'mimetypes:application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint'],
+            'is_online'         => ['required', 'boolean'],
         ];
     }
 }

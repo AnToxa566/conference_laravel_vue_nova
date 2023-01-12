@@ -12,6 +12,7 @@ const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
 const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
 
 const Categories = () => import('../views/Category/Categories.vue')
+const Meetings = () => import('../views/Meeting/Meetings.vue')
 /* Admin Components */
 
 
@@ -185,6 +186,19 @@ const router = createRouter({
             }
         },
         /* Category Components */
+
+
+        /* Meeting Components */
+        {
+            path: '/meetings',
+            name: 'meetings',
+            component: Meetings,
+            meta: {
+                middleware: "admin",
+                title: `Meetings`
+            }
+        },
+        /* Meeting Components */
     ]
 })
 
@@ -192,7 +206,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title
 
-    if (to.meta.middleware === "auth") {
+    if (to.meta.middleware == "auth") {
         if (store.state.auth.authenticated) {
             next()
         }
@@ -200,7 +214,7 @@ router.beforeEach((to, from, next) => {
             next({ name: "login" })
         }
     }
-    else if (to.meta.middleware === "admin") {
+    else if (to.meta.middleware == "admin") {
         if (store.getters['auth/isAdmin']) {
             next()
         }
@@ -208,8 +222,8 @@ router.beforeEach((to, from, next) => {
             next({ name: "404" })
         }
     }
-    else if (to.meta.middleware === "guest") {
-        if (store.state.auth.authenticated && (to.name === 'login' || to.name === 'register')) {
+    else if (to.meta.middleware == "guest") {
+        if (store.state.auth.authenticated && (to.name == 'login' || to.name == 'register')) {
             next({ name: "conferences" })
         }
         else {

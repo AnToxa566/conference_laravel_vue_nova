@@ -58,7 +58,7 @@ export default {
 
     computed: {
         commentsCount() {
-            return this.$store.getters['lecture/lectures'].find(lec => lec.id === this.lecture_id).comments_count
+            return this.$store.getters['lecture/lectures'].find(lec => lec.id == this.lecture_id).comments_count
         },
 
         comments() {
@@ -75,7 +75,7 @@ export default {
                 )
 
                 if (result.data.length) {
-                    if (this.page === 1) {
+                    if (this.page == 1) {
                         this.$store.commit('comment/SET_COMMENTS_OF_LECTURE', result.data)
                     }
                     else {

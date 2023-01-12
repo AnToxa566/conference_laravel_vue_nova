@@ -1,5 +1,6 @@
 <template>
     <v-expansion-panels
+        v-model="panel"
         variant="accordion"
         multiple
     >
@@ -75,17 +76,22 @@
 export default {
     data: () => ({
         filter: {
-            lecturesCountRange: [0, 0],
+            lecturesCountRange: [null, null],
             dateAfter: null,
             dateBefore: null,
             selectedCategoriesId: [],
         },
 
+        panel: [],
+
         timeout: null,
     }),
 
     created() {
-        this.filter.lecturesCountRange = [this.minLecturesCount, this.maxLecturesCount]
+        this.$store.dispatch('conference/fetchAllConferences')
+    },
+
+    mounted() {
         this.updateFilters()
     },
 
@@ -132,10 +138,12 @@ export default {
         },
 
         reserFilters() {
-            this.filter.lecturesCountRange = [this.minLecturesCount, this.maxLecturesCount]
+            this.filter.lecturesCountRange = [null, null]
             this.filter.dateAfter = null
             this.filter.dateBefore = null
             this.filter.selectedCategoriesId = []
+
+            this.panel = []
 
             this.updateFilters()
         },

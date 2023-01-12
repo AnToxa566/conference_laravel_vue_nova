@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
-use App\UserConsts;
 
 class AdminSeeder extends Seeder
 {
@@ -24,7 +23,7 @@ class AdminSeeder extends Seeder
             'first_name' => 'Admin',
             'last_name' => 'Admin',
             'birthdate' => '2003-03-16',
-            'type' => UserConsts::ADMIN,
+            'type' => User::ADMIN,
             'country' => 'Ukraine',
             'email' => 'admin@groupbwt.com',
             'phone_number' => '+380991124364',

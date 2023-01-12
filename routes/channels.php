@@ -1,6 +1,6 @@
 <?php
 
-use App\UserConsts;
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -19,5 +19,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('export', function ($user) {
-    return $user->type === UserConsts::ADMIN;
+    return $user->type === User::ADMIN;
 });

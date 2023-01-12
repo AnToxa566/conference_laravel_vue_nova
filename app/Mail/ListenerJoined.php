@@ -23,14 +23,14 @@ class ListenerJoined extends Mailable implements ShouldQueue
      *
      * @var \App\Models\Conference
      */
-    public $conference;
+    public Conference $conference;
 
     /**
      * A new listener.
      *
      * @var \App\Models\User
      */
-    public $listener;
+    public User $listener;
 
     /**
      * Create a new message instance.
@@ -72,15 +72,5 @@ class ListenerJoined extends Mailable implements ShouldQueue
                 'conferenceTitle' => $this->conference->title,
             ],
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }
