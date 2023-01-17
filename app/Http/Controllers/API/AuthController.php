@@ -65,14 +65,15 @@ class AuthController extends Controller
 
     public function logout(): JsonResponse
     {
-        $response = User::find(auth('sanctum')->id());
+        // $response = User::find(auth('sanctum')->id());
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        // if (!$response) {
+        //     return response()->json(Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR], Response::HTTP_INTERNAL_SERVER_ERROR);
+        // }
 
-        $response->tokens()->delete();
+        // $response->tokens()->delete();
 
-        return response()->json($response);
+        // return response()->json($response);
+        return response()->json();
     }
 }

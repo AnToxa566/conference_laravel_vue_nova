@@ -59,7 +59,7 @@ export default {
             }
 
             localStorage.setItem('config', JSON.stringify(state.config))
-            localStorage.setItem('auth_token', JSON.stringify(user.auth_token))
+            localStorage.setItem('authToken', JSON.stringify(user.auth_token))
         },
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -91,7 +91,7 @@ export default {
             store.dispatch('user_conferences/fetchJoinedConferences')
         },
 
-        login({ commit, dispatch }, user) {
+        login({ commit, dispatch, state }, user) {
             axios.post('/api/login', user)
                 .then(res => {
                     commit('SET_USER', res.data)
@@ -166,6 +166,7 @@ export default {
                     store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
 
                     localStorage.removeItem('config')
+                    localStorage.removeItem('authToken')
 
                     router.push({ name: 'conferences' })
                 })
