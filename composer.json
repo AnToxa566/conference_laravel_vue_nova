@@ -2,7 +2,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
@@ -21,7 +24,9 @@
         "paragonie/sodium_compat": "^1.19",
         "profclems/postman-collection-generator": "^1.2",
         "psr/simple-cache": "2.0",
-        "pusher/pusher-php-server": "^7.2"
+        "pusher/pusher-php-server": "^7.2",
+        "whitecube/nova-google-maps": "^0.0.1",
+        "custom-nova-components/google-maps": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -36,6 +41,10 @@
         {
             "type": "composer",
             "url": "https://nova.laravel.com"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/GoogleMaps"
         }
     ],
     "autoload": {

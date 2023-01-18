@@ -26,6 +26,10 @@ class Conference extends Model
         'category_id',
     ];
 
+    protected $casts = [
+        'date_time_event' => 'datetime'
+    ];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);

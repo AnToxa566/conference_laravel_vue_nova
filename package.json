@@ -2,7 +2,9 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "build-google-maps": "cd nova-components/GoogleMaps && npm run dev",
+        "build-google-maps-prod": "cd nova-components/GoogleMaps && npm run prod"
     },
     "devDependencies": {
         "@mdi/font": "^7.0.96",

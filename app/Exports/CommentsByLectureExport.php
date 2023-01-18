@@ -47,7 +47,7 @@ class CommentsByLectureExport extends BaseCsvExport implements WithHeadings, Fro
     */
     public function collection(): Collection
     {
-        return Lecture::find($this->lectureId)->comments()
+        return Lecture::findOrFail($this->lectureId)->comments()
                         ->leftJoin('users', 'users.id', '=', 'comments.user_id')
                         ->select('users.first_name', 'users.last_name', 'comments.created_at', 'comments.description')
                         ->get();

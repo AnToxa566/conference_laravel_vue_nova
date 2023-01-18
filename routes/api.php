@@ -39,10 +39,10 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('/login', 'login')->name('auth.login');
     });
 
-    // Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/profile/update', 'update')->name('auth.update');
         Route::get('/logout', 'logout')->name('auth.logout');
-    // });
+    });
 });
 
 

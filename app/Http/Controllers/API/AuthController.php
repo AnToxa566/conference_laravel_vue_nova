@@ -21,15 +21,14 @@ class AuthController extends Controller
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
 
-        $response = User::create($validated);
+        $createdUser = User::create($validated);
 
-        if (!$response) {
+        if (!$createdUser) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
-
-        return response()->json($response);
+        $createdUser->{'auth_token'} = $createdUser->createToken('auth_token')->plainTextToken;
+        return response()->json($createdUser);
     }
 
 
@@ -37,14 +36,10 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
-        $response = User::where('email', $validated['email'])->first();
+        $authorizedUser = User::where('email', $validated['email'])->firstOrFail();
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $response->{'auth_token'} = $response->createToken('auth_token')->plainTextToken;
-        return response()->json($response);
+        $authorizedUser->{'auth_token'} = $authorizedUser->createToken('auth_token')->plainTextToken;
+        return response()->json($authorizedUser);
     }
 
 
@@ -53,27 +48,14 @@ class AuthController extends Controller
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
 
-        $response = tap(User::find($validated['id']))->update($validated);
-
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
-
-        return response()->json($response);
+        return response()->json(
+            tap(User::findOrFail($validated['id']))->update($validated)
+        );
     }
 
 
-    public function logout(): JsonResponse
+    public function logout(): void
     {
-        // $response = User::find(auth('sanctum')->id());
-
-        // if (!$response) {
-        //     return response()->json(Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR], Response::HTTP_INTERNAL_SERVER_ERROR);
-        // }
-
-        // $response->tokens()->delete();
-
-        // return response()->json($response);
-        return response()->json();
+        User::findOrFail(auth('sanctum')->id())->tokens()->delete();
     }
 }

@@ -24,7 +24,7 @@ class SendAnnouncerJoinedNotification
      */
     public function handle(LectureCreated $event): void
     {
-        $listeners = Conference::find($event->lecture->conference_id)->users()->where('type', User::LISTENER)->get();
+        $listeners = Conference::findOrFail($event->lecture->conference_id)->users()->where('type', User::LISTENER)->get();
 
         if (count($listeners)) {
             Mail::to($listeners)->send(new AnnouncerJoined($event->lecture));

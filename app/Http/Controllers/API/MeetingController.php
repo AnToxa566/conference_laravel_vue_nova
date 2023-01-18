@@ -36,11 +36,7 @@ class MeetingController extends Controller
 
     public function store(int $lectureId): JsonResponse
     {
-        $lecture = Lecture::find($lectureId);
-
-        if (!$lecture) {
-            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $lecture = Lecture::findOrFail($lectureId);
 
         $response = $this->createMeeting($lecture);
         $response['lecture_id'] = $lectureId;

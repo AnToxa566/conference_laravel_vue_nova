@@ -19,11 +19,7 @@ class CommentController extends Controller
 {
     public function fetchByLectureId(int $lectureId, int $limit, int $page): JsonResponse
     {
-        $lecture = Lecture::find($lectureId);
-
-        if (!$lecture) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
+        $lecture = Lecture::findOrFail($lectureId);
 
         $offset = $limit * ($page - 1);
         $comments = $lecture->comments()->latest()->skip($offset)->take($limit)->get();
@@ -38,30 +34,26 @@ class CommentController extends Controller
 
     public function store(CommentRequest $request): JsonResponse
     {
-        $response = Comment::create($request->validated());
+        $createdComment = Comment::create($request->validated());
 
-        if (!$response) {
+        if (!$createdComment) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $response->{'user_name'} = $response->user_name;
+        $createdComment->{'user_name'} = $createdComment->user_name;
 
-        Mail::to($response->lecture->user)->send(new CommentAdded($response));
+        Mail::to($createdComment->lecture->user)->send(new CommentAdded($createdComment));
 
-        return response()->json($response);
+        return response()->json($createdComment);
     }
 
 
     public function update(CommentRequest $request, int $id): JsonResponse
     {
-        $response = tap(Comment::find($id))->update($request->validated());
+        $updatedComment = tap(Comment::findOrFail($id))->update($request->validated());
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
+        $updatedComment->{'user_name'} = $updatedComment->user_name;
 
-        $response->{'user_name'} = $response->user_name;
-
-        return response()->json($response);
+        return response()->json($updatedComment);
     }
 }

@@ -49,7 +49,7 @@ class ListenersByConferenceExport extends BaseCsvExport implements WithHeadings,
     */
     public function collection(): Collection
     {
-        return Conference::find($this->conferenceId)
+        return Conference::findOrFail($this->conferenceId)
                             ->listeners()
                             ->select('first_name', 'last_name', 'birthdate', 'country', 'phone_number', 'email')
                             ->get();

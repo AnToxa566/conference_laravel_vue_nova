@@ -24,11 +24,12 @@ use App\Models\Conference;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
+
 class ConferenceController extends Controller
 {
     private function getConferenceAddressById($id): string
     {
-        $conference = Conference::find($id);
+        $conference = Conference::findOrFail($id);
 
         if (!$conference->latitude || !$conference->longitude) {
             return 'Address not set';
@@ -50,24 +51,19 @@ class ConferenceController extends Controller
     {
         return response()->json(
             Conference::withCount('lectures')
-            ->beforeEvent()
-            ->oldest('date_time_event')
-            ->get()
+                    ->beforeEvent()
+                    ->oldest('date_time_event')
+                    ->get()
         );
     }
 
 
     public function fetchDetail(int $id): JsonResponse
     {
-        $response = Conference::find($id);
+        $conference = Conference::findOrFail($id);
+        $conference->{'address'} = $this->getConferenceAddressById($id);
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
-
-        $response->{'address'} = $this->getConferenceAddressById($id);
-
-        return response()->json($response);
+        return response()->json($conference);
     }
 
 
@@ -109,41 +105,36 @@ class ConferenceController extends Controller
 
     public function store(ConferenceStoreRequest $request): JsonResponse
     {
-        $response = Conference::create($request->validated());
+        $createdConference = Conference::create($request->validated());
 
-        if (!$response) {
+        if (!$createdConference) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $response->{'lectures_count'} = 0;
-
-        return response()->json($response);
+        $createdConference->{'lectures_count'} = 0;
+        return response()->json($createdConference);
     }
 
 
     public function update(ConferenceUpdateRequest $request, int $id): JsonResponse
     {
-        $response = tap(Conference::find($id))->update($request->validated());
+        $updatedConference = tap(Conference::findOrFail($id))->update($request->validated());
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
-
-        if ($response->wasChanged('category_id')) {
-            foreach ($response->lectures as $lecture) {
-                $lecture->category_id = $response->category_id;
+        if ($updatedConference->wasChanged('category_id')) {
+            foreach ($updatedConference->lectures as $lecture) {
+                $lecture->category_id = $updatedConference->category_id;
                 $lecture->save();
             }
         }
 
-        if ($response->wasChanged('date_time_event')) {
-            $conferenceParseDate = Carbon::parse($response->date_time_event);
+        if ($updatedConference->wasChanged('date_time_event')) {
+            $conferenceParseDate = Carbon::parse($updatedConference->date_time_event);
 
             $conferenceDate = $conferenceParseDate->format('d');
             $conferenceMonth = $conferenceParseDate->format('m');
             $conferenceYear = $conferenceParseDate->format('Y');
 
-            foreach ($response->lectures as $lecture) {
+            foreach ($updatedConference->lectures as $lecture) {
                 $lecture->date_time_start = (new Carbon($lecture->date_time_start))->day($conferenceDate)->month($conferenceMonth)->year($conferenceYear);
                 $lecture->date_time_end = (new Carbon($lecture->date_time_end))->day($conferenceDate)->month($conferenceMonth)->year($conferenceYear);
 
@@ -151,28 +142,27 @@ class ConferenceController extends Controller
             }
         }
 
-        $response->{'lectures_count'} = count($response->lectures);
+        $updatedConference->{'lectures_count'} = count($updatedConference->lectures);
 
         return response()->json([
-            'is_category_changed'   => $response->wasChanged('category_id'),
-            'conference'            => $response,
-            'lectures'              => $response->lectures,
+            'is_category_changed'   => $updatedConference->wasChanged('category_id'),
+            'conference'            => $updatedConference,
+            'lectures'              => $updatedConference->lectures,
         ]);
     }
 
 
     public function destroy(int $id): JsonResponse
     {
-        $users = Conference::find($id)->users;
-        $lectures = Conference::find($id)->lectures;
-        $response = tap(Conference::find($id))->delete();
+        $deletedConference = Conference::findOrFail($id);
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
+        $users = $deletedConference->users;
+        $lectures = $deletedConference->lectures;
+
+        $deletedConference->delete();
 
         if (count($users)) {
-            Mail::to($users)->send(new ConferenceDeleted($response->title));
+            Mail::to($users)->send(new ConferenceDeleted($deletedConference->title));
         }
 
         if (count($lectures)) {
@@ -182,10 +172,10 @@ class ConferenceController extends Controller
                 array_push($emails, $lecture->user->email);
             }
 
-            LectureDeleted::dispatch($emails, $response->id, $response->title);
+            LectureDeleted::dispatch($emails, $deletedConference->id, $deletedConference->title);
         }
 
-        return response()->json($response);
+        return response()->json($deletedConference);
     }
 
 
