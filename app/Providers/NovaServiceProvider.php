@@ -6,9 +6,22 @@ namespace App\Providers;
 
 use App\Models\User;
 
+use App\Nova\Announcer;
+use App\Nova\Category;
+use App\Nova\Conference;
+use App\Nova\Lecture;
+use App\Nova\Listener;
+
+use App\Nova\Dashboards\Main;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Menu\MenuSection;
+
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -22,6 +35,23 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         parent::boot();
 
         Nova::withBreadcrumbs();
+
+        Nova::mainMenu(function (Request $request) {
+            return [
+                MenuSection::dashboard(Main::class)->icon('chart-bar'),
+
+                MenuSection::make('Customers', [
+                    MenuItem::resource(Announcer::class),
+                    MenuItem::resource(Listener::class),
+                ])->icon('user')->collapsable(),
+
+                MenuSection::make('Content', [
+                    MenuItem::resource(Category::class),
+                    MenuItem::resource(Conference::class),
+                    MenuItem::resource(Lecture::class),
+                ])->icon('document-text')->collapsable(),
+            ];
+        });
     }
 
     /**
@@ -61,27 +91,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function dashboards(): array
     {
         return [
-            new \App\Nova\Dashboards\Main,
+            new Main,
         ];
-    }
-
-    /**
-     * Get the tools that should be listed in the Nova sidebar.
-     *
-     * @return array
-     */
-    public function tools(): array
-    {
-        return [];
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register(): void
-    {
-        //
     }
 }

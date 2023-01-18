@@ -11,12 +11,8 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Country;
 use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use CustomNovaComponents\GoogleMaps\GoogleMaps;
-
-use App\Models\Category;
 
 class Conference extends Resource
 {
@@ -74,8 +70,6 @@ class Conference extends Resource
                 ->nullable()
                 ->min(-180)->max(180)->step('any')
                 ->rules('required_with:latitude', 'between:-180.0,180.0'),
-
-            // GoogleMaps::make('Map'),
 
             Country::make('Country')
                 ->searchable()

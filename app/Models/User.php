@@ -70,6 +70,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'birthdate' => 'date',
         'email_verified_at' => 'datetime',
     ];
 
