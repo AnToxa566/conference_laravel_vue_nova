@@ -15,6 +15,13 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class Announcer extends User
 {
     /**
+     * Type of user being created.
+     *
+     * @var string
+     */
+    public static $type = UserModel::ANNOUNCER;
+
+    /**
      * Indicates if the resource should be displayed in the sidebar.
      *
      * @var bool

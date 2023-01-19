@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\File;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -51,7 +50,7 @@ class Lecture extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Annoncer', 'user', 'App\Nova\User')
+            BelongsTo::make('Annoncer', 'user', 'App\Nova\Announcer')
                 ->rules('required', 'exists:users,id'),
 
             Text::make('Title')
@@ -59,7 +58,9 @@ class Lecture extends Resource
                 ->maxlength(255)->enforceMaxlength()
                 ->rules('required', 'min:2', 'max:255'),
 
-            Textarea::make('Description')->rules('required'),
+            Textarea::make('Description')
+                ->alwaysShow()
+                ->rules('required'),
 
             File::make('Presentation', 'presentation_path')
                 ->prunable()

@@ -8,9 +8,11 @@ use App\Models\User;
 
 use App\Nova\Announcer;
 use App\Nova\Category;
+use App\Nova\Comment;
 use App\Nova\Conference;
 use App\Nova\Lecture;
 use App\Nova\Listener;
+use App\Nova\ZoomMeeting;
 
 use App\Nova\Dashboards\Main;
 
@@ -38,17 +40,22 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
         Nova::mainMenu(function (Request $request) {
             return [
-                MenuSection::dashboard(Main::class)->icon('chart-bar'),
+                MenuSection::dashboard(Main::class)->icon('collection'),
+
+                MenuSection::make('Content', [
+                    MenuItem::resource(Conference::class),
+                    MenuItem::resource(Lecture::class),
+                ])->icon('desktop-computer')->collapsable(),
 
                 MenuSection::make('Customers', [
                     MenuItem::resource(Announcer::class),
                     MenuItem::resource(Listener::class),
                 ])->icon('user')->collapsable(),
 
-                MenuSection::make('Content', [
+                MenuSection::make('Resources', [
                     MenuItem::resource(Category::class),
-                    MenuItem::resource(Conference::class),
-                    MenuItem::resource(Lecture::class),
+                    MenuItem::resource(Comment::class),
+                    MenuItem::resource(ZoomMeeting::class),
                 ])->icon('document-text')->collapsable(),
             ];
         });
