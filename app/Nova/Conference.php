@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use Carbon\CarbonInterval;
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Country;
 use Laravel\Nova\Fields\DateTime;
+
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
+
+use Carbon\CarbonInterval;
+use Illuminate\Http\Request;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 
@@ -65,12 +68,12 @@ class Conference extends Resource
             Number::make('Latitude')
                 ->nullable()
                 ->min(-90)->max(90)->step('any')
-                ->rules('required_with:longitude', 'between:-90.0,90.0'),
+                ->rules('nullable', 'required_with:longitude', 'between:-90.0,90.0'),
 
             Number::make('Longitude')
                 ->nullable()
                 ->min(-180)->max(180)->step('any')
-                ->rules('required_with:latitude', 'between:-180.0,180.0'),
+                ->rules('nullable', 'required_with:latitude', 'between:-180.0,180.0'),
 
             Country::make('Country')
                 ->searchable()
@@ -78,7 +81,9 @@ class Conference extends Resource
 
             BelongsTo::make('Category')
                 ->nullable()
-                ->rules('exists:categories,id'),
+                ->rules('nullable', 'exists:categories,id'),
+
+            HasMany::make('Lectures')
         ];
     }
 }

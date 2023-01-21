@@ -29,6 +29,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+
 class LectureController extends Controller
 {
     public function fetchAll(): JsonResponse

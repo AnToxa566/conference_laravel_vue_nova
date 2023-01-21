@@ -18,12 +18,15 @@ class Conference extends Model
     protected $table = 'conferences';
 
     protected $fillable = [
+        'category_id',
+
         'title',
         'date_time_event',
+
         'latitude',
         'longitude',
+
         'country',
-        'category_id',
     ];
 
     protected $casts = [

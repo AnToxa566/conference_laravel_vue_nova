@@ -35,6 +35,11 @@ class Lecture extends Model
         'is_online',
     ];
 
+    protected $casts = [
+        'date_time_start' => 'datetime',
+        'date_time_end' => 'datetime',
+    ];
+
     public function followingUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class);

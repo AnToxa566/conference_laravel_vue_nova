@@ -36,17 +36,32 @@ class MeetingController extends Controller
 
     public function store(int $lectureId): JsonResponse
     {
-        $lecture = Lecture::findOrFail($lectureId);
+        $zoomMeeting = $this->createMeeting(Lecture::findOrFail($lectureId));
+        $zoomMeeting['lecture_id'] = $lectureId;
 
-        $response = $this->createMeeting($lecture);
-        $response['lecture_id'] = $lectureId;
+        $createdZoomMeeting = ZoomMeeting::create($zoomMeeting);
 
-        $zoomMeeting = ZoomMeeting::create($response);
-
-        if (!$zoomMeeting) {
+        if (!$createdZoomMeeting) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response()->json($zoomMeeting);
+        return response()->json($createdZoomMeeting);
+    }
+
+
+    public function update(int $meetingId): JsonResponse
+    {
+        $lectureId = ZoomMeeting::findOrFail($meetingId)->lecture_id;
+
+        $zoomMeeting = $this->updateMeeting($meetingId, Lecture::findOrFail($lectureId));
+        $zoomMeeting['lecture_id'] = $lectureId;
+
+        $updatedZoomMeeting = tap(ZoomMeeting::findOrFail($meetingId))->update($zoomMeeting);
+
+        if (!$updatedZoomMeeting) {
+            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return response()->json($updatedZoomMeeting);
     }
 }
