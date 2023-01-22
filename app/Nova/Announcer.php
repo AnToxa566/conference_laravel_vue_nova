@@ -7,20 +7,12 @@ namespace App\Nova;
 use App\Models\User as UserModel;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Text;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 
 class Announcer extends User
 {
-    /**
-     * Type of user being created.
-     *
-     * @var string
-     */
-    public static $type = UserModel::ANNOUNCER;
-
     /**
      * Indicates if the resource should be displayed in the sidebar.
      *

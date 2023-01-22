@@ -14,13 +14,6 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class Listener extends User
 {
     /**
-     * Type of user being created.
-     *
-     * @var string
-     */
-    public static $type = UserModel::LISTENER;
-
-    /**
      * Indicates if the resource should be displayed in the sidebar.
      *
      * @var bool

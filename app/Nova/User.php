@@ -6,27 +6,25 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Email;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Country;
-use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\PasswordConfirmation;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
+use Custom\PhoneNumber\PhoneNumber;
+
 use App\Models\User as UserModel;
+use App\Rules\PhoneNumberRule;
+
 
 class User extends Resource
 {
-    /**
-     * Type of user being created.
-     *
-     * @var string
-     */
-    public static $type = UserModel::LISTENER;
-
     /**
      * The model the resource corresponds to.
      *
@@ -79,14 +77,26 @@ class User extends Resource
                 ->sortable()
                 ->rules('required'),
 
+            Select::make('Type')->options([
+                    UserModel::ANNOUNCER => UserModel::ANNOUNCER,
+                    UserModel::LISTENER => UserModel::LISTENER,
+                ])
+                ->onlyOnForms()
+                ->hideWhenUpdating()
+                ->rules('required'),
+
             Date::make('Birthdate')
                 ->sortable()
-                ->min('today')
+                ->max('today')
                 ->rules('required'),
 
             Country::make('Country')
                 ->searchable()
                 ->rules('required'),
+
+            PhoneNumber::make('Phone Number')
+                ->storeCountryPhoneCode('country_phone_code')
+                ->rules('required', new PhoneNumberRule()),
 
             Email::make()
                 ->rules('required'),
@@ -97,8 +107,6 @@ class User extends Resource
                 ->updateRules('nullable', Rules\Password::defaults(), 'confirmed'),
 
             PasswordConfirmation::make('Password Confirmation'),
-
-            Hidden::make('Type')->default($this->type),
         ];
     }
 }

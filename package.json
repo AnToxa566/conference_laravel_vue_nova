@@ -6,7 +6,9 @@
         "build-google-maps": "cd nova-components/GoogleMaps && npm run dev",
         "build-google-maps-prod": "cd nova-components/GoogleMaps && npm run prod",
         "build-zoom-meeting": "cd nova-components/ZoomMeeting && npm run dev",
-        "build-zoom-meeting-prod": "cd nova-components/ZoomMeeting && npm run prod"
+        "build-zoom-meeting-prod": "cd nova-components/ZoomMeeting && npm run prod",
+        "build-phone-number": "cd nova-components/PhoneNumber && npm run dev",
+        "build-phone-number-prod": "cd nova-components/PhoneNumber && npm run prod"
     },
     "devDependencies": {
         "@mdi/font": "^7.0.96",

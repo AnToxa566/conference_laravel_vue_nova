@@ -11,6 +11,8 @@
         "php": "^8.0.2",
         "andreaselia/laravel-api-to-postman": "^1.13",
         "beyondcode/laravel-websockets": "^1.13",
+        "bissolli/nova-phone-field": "^0.0.4",
+        "custom/zoom-meeting": "*",
         "doctrine/dbal": "^3.5",
         "firebase/php-jwt": "^6.3",
         "guzzlehttp/guzzle": "^7.5",
@@ -25,7 +27,7 @@
         "profclems/postman-collection-generator": "^1.2",
         "psr/simple-cache": "2.0",
         "pusher/pusher-php-server": "^7.2",
-        "custom/zoom-meeting": "*"
+        "custom/phone-number": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -48,6 +50,10 @@
         {
             "type": "path",
             "url": "./nova-components/ZoomMeeting"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/PhoneNumber"
         }
     ],
     "autoload": {
