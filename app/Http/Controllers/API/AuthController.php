@@ -11,11 +11,18 @@ use App\Http\Requests\Auth\UpdateRequest;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
+    public function checkAuth(Request $request): JsonResponse
+    {
+        return response()->json(auth('sanctum')->check());
+    }
+
+
     public function register(RegisterRequest $request): JsonResponse
     {
         $validated = $request->validated();

@@ -80,6 +80,27 @@ export default {
             store.dispatch('user_conferences/fetchJoinedConferences')
         },
 
+        checkAuth({ state }) {
+            axios.get('/api/auth/check', state.config)
+                .then(res => {
+                    //
+                })
+                .catch(err => {
+                    if (state.authenticated && err.response.status === 401) {
+                        commit('SET_USER', {})
+                        commit('SET_AUTHENTICATED', false)
+
+                        store.dispatch('conference/fetchPaginatedConferences', {
+                            page: 1,
+                            perPage: pagination.PER_PAGE,
+                        })
+                        store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
+
+                        router.push({ name: 'login' })
+                    }
+                })
+        },
+
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
@@ -93,7 +114,7 @@ export default {
                         router.push({ name: 'conferences' })
                     }
                     else {
-                        dispatch('loginToNova', res.data)
+                        dispatch('loginToNova', user)
                     }
                 })
                 .catch(err => {
@@ -110,7 +131,7 @@ export default {
         loginToNova({ }, user) {
             axios.post('/nova/login', user)
                 .then(res => {
-                    //
+                    window.location.href = '/nova'
                 })
                 .catch(err => {
                     console.log(err.response)

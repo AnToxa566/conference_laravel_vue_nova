@@ -33,6 +33,8 @@ export default {
             this.$store.dispatch('meeting/fetchMeetingsFromDB')
         }
 
+        this.$store.dispatch('auth/checkAuth')
+
         this.$store.dispatch('conference/fetchAllConferences')
         this.$store.dispatch('country/fetchAllCountries')
         this.$store.dispatch('category/fetchAllCategories')
