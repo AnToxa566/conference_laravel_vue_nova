@@ -53,15 +53,6 @@ Route::controller(ConferenceController::class)->group(function () {
         Route::get('/conferences/{id}', 'fetchDetail')->name('conferences.fetchDetail');
         Route::post('/conferences/filtered', 'fetchFiltered')->name('conferences.fetchFiltered');
         Route::get('/conferences/search/{search}/limit/{limit}', 'fetchSearchedConferences')->name('conferences.fetchSearchedConferences');
-
-        Route::middleware(['admin'])->group(function () {
-            Route::post('/conferences/add', 'store')->name('conferences.store');
-            Route::post('/conferences/{id}/update', 'update')->name('conferences.update');
-            Route::get('/conferences/{id}/delete', 'destroy')->name('conferences.destroy');
-
-            Route::get('/conferences/export/all', 'exportAll')->name('conferences.exportAll');
-            Route::get('/conferences/export/listeners/{conferenceId}', 'exportListeners')->name('conferences.exportListeners');
-        });
     });
 });
 

@@ -15,9 +15,14 @@ use Laravel\Nova\Fields\BelongsTo;
 
 use Custom\GoogleMaps\GoogleMaps;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Http\Requests\NovaRequest;
+
+use App\Events\LectureDeleted;
+use App\Mail\ConferenceDeleted;
+use Illuminate\Support\Facades\Mail;
 
 
 class Conference extends Resource
@@ -117,6 +122,65 @@ class Conference extends Resource
             if ($lng < -180 || $lng > 180) {
                 $validator->errors()->add('longitude', 'The longitude value must be between -180 and 180!');
             }
+        }
+    }
+
+    /**
+     * Register a callback to be called after the resource is updated.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    public static function afterUpdate(NovaRequest $request, Model $model): void
+    {
+        if ($model->wasChanged('category_id')) {
+            foreach ($model->lectures as $lecture) {
+                $lecture->category_id = $model->category_id;
+                $lecture->save();
+            }
+        }
+
+        if ($model->wasChanged('date_time_event')) {
+            $conferenceParseDate = Carbon::parse($model->date_time_event);
+
+            $conferenceDate = $conferenceParseDate->format('d');
+            $conferenceMonth = $conferenceParseDate->format('m');
+            $conferenceYear = $conferenceParseDate->format('Y');
+
+            foreach ($model->lectures as $lecture) {
+                $lecture->date_time_start = (new Carbon($lecture->date_time_start))->day($conferenceDate)->month($conferenceMonth)->year($conferenceYear);
+                $lecture->date_time_end = (new Carbon($lecture->date_time_end))->day($conferenceDate)->month($conferenceMonth)->year($conferenceYear);
+
+                $lecture->save();
+            }
+        }
+    }
+
+    /**
+     * Register a callback to be called after the resource is deleted.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    public static function afterDelete(NovaRequest $request, Model $model): void
+    {
+        $users = $model->users;
+        $lectures = $model->lectures;
+
+        if ($users->isNotEmpty()) {
+            Mail::to($users)->send(new ConferenceDeleted($model->title));
+        }
+
+        if ($lectures->isNotEmpty()) {
+            $emails = [];
+
+            foreach ($lectures as $lecture) {
+                array_push($emails, $lecture->user->email);
+            }
+
+            LectureDeleted::dispatch($emails, $model->id, $model->title);
         }
     }
 }
