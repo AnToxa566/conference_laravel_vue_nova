@@ -9,11 +9,10 @@ use App\Http\Requests\Comment\CommentRequest;
 
 use App\Models\Comment;
 use App\Models\Lecture;
-use Illuminate\Http\JsonResponse;
+use App\Events\CommentCreated;
 
-use App\Mail\CommentAdded;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
@@ -42,7 +41,7 @@ class CommentController extends Controller
 
         $createdComment->{'user_name'} = $createdComment->user_name;
 
-        Mail::to($createdComment->lecture->user)->send(new CommentAdded($createdComment));
+        CommentCreated::dispatch($createdComment);
 
         return response()->json($createdComment);
     }

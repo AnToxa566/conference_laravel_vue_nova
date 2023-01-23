@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use App\Mail\ListenerJoined;
 use Illuminate\Support\Facades\Mail;
 
+
 class UserConferenceController extends Controller
 {
     public function fetchJoinedConferences(int $userId): JsonResponse
