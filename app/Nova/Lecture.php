@@ -19,11 +19,17 @@ use Laravel\Nova\Fields\FormData;
 
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 use Custom\ZoomMeeting\ZoomMeeting;
 use App\Models\Lecture as LectureModel;
 use App\Models\ZoomMeeting as ZoomMeetingModel;
+
+use App\Events\LectureCreated;
+use App\Events\LectureUpdated;
+use App\Events\LectureDeleted;
+use App\Http\Controllers\API\MeetingController;
 
 
 class Lecture extends Resource
@@ -150,5 +156,45 @@ class Lecture extends Resource
                 }
             }
         );
+    }
+
+    /**
+     * Register a callback to be called after the resource is created.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    public static function afterCreate(NovaRequest $request, Model $model)
+    {
+        LectureCreated::dispatch($model);
+
+        if ($model->is_online) (new MeetingController)->store($model->id);
+    }
+
+    /**
+     * Register a callback to be called after the resource is updated.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    public static function afterUpdate(NovaRequest $request, Model $model): void
+    {
+        LectureUpdated::dispatch($model);
+    }
+
+    /**
+     * Register a callback to be called after the resource is deleted.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    public static function afterDelete(NovaRequest $request, Model $model): void
+    {
+        $model->user->conferences()->detach($model->conference_id);
+
+        LectureDeleted::dispatch([$model->user->email], $model->conference->id, $model->conference->title);
     }
 }

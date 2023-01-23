@@ -4,30 +4,22 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use App\Events\LectureCreated;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
+use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
 use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 
-use App\Jobs\ExportFile;
-use App\Events\LectureDeleted;
+use App\Events\LectureCreated;
+use App\Events\LectureUpdated;
 
-use App\Mail\LectureTimeChanged;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-
-use App\Exports\CommentsByLectureExport;
-use App\Exports\LecturesByConferenceExport;
-
-use App\Models\User;
 use App\Models\Lecture;
 use App\Models\Conference;
-
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 class LectureController extends Controller
@@ -129,13 +121,7 @@ class LectureController extends Controller
     {
         $updatedLecture = tap(Lecture::findOrFail($id))->update($request->validated());
 
-        if ($updatedLecture->wasChanged(['date_time_start', 'date_time_end'])) {
-            $listeners = Conference::findOrFail($updatedLecture->conference_id)->users()->where('type', User::LISTENER)->get();
-
-            if (count($listeners)) {
-                Mail::to($listeners)->send(new LectureTimeChanged($updatedLecture));
-            }
-        }
+        LectureUpdated::dispatch($updatedLecture);
 
         $updatedLecture->{'comments_count'} = count($updatedLecture->comments);
         return response()->json($updatedLecture);
@@ -145,26 +131,9 @@ class LectureController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $deletedLecture = tap(Lecture::findOrFail($id))->delete();
-        $userOfLecture = User::findOrFail($deletedLecture->user_id);
 
-        $userOfLecture->conferences()->detach($deletedLecture->conference_id);
-
-        if (auth('sanctum')->user()->type === User::ADMIN) {
-            LectureDeleted::dispatch([$userOfLecture->email], $deletedLecture->conference->id, $deletedLecture->conference->title);
-        }
+        $deletedLecture->user->conferences()->detach($deletedLecture->conference_id);
 
         return response()->json($deletedLecture);
-    }
-
-
-    public function exportByConferenceId(int $conferenceId): void
-    {
-        ExportFile::dispatch('c'.$conferenceId.'_lectures.csv', new LecturesByConferenceExport($conferenceId));
-    }
-
-
-    public function exportComments(int $lectureId): void
-    {
-        ExportFile::dispatch('l'.$lectureId.'_comments.csv', new CommentsByLectureExport($lectureId));
     }
 }

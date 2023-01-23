@@ -23,9 +23,7 @@ class CanUpdateLecture
      */
     public function handle(Request $request, Closure $next): JsonResponse|RedirectResponse
     {
-        $lecture = Lecture::findOrFail($request->route()->parameter('id'));
-
-        if (auth('sanctum')->user()->type !== User::ADMIN && auth('sanctum')->id() !== $lecture->user_id) {
+        if (auth('sanctum')->id() !== Lecture::findOrFail($request->route()->parameter('id'))->user_id) {
             abort(403);
         }
 

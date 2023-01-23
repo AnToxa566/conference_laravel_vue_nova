@@ -79,11 +79,6 @@ Route::controller(LectureController::class)->group(function () {
         Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
         Route::middleware(['can.update.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
         Route::middleware(['can.delete.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
-
-        Route::middleware(['admin'])->group(function () {
-            Route::get('/lectures/export/{conferenceId}', 'exportByConferenceId')->name('lectures.exportByConferenceId');
-            Route::get('/lectures/export/comments/{lectureId}', 'exportComments')->name('lectures.exportComments');
-        });
     });
 });
 
