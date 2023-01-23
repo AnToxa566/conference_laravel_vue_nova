@@ -155,7 +155,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'), // '.'.env('SESSION_DOMAIN'), // this commit to nova work
+    'domain' => '.'.env('SESSION_DOMAIN'), // env('SESSION_DOMAIN'),
 
     /*
     |--------------------------------------------------------------------------

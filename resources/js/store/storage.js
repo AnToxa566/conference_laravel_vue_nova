@@ -4,12 +4,6 @@ import moment from 'moment'
 export default {
     namespaced: true,
 
-    state: { },
-
-    getters: { },
-
-    mutations: { },
-
     actions: {
         downloadExportFile({ }, fileName) {
             axios.get(`/api/storages/export/${fileName}/download`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})

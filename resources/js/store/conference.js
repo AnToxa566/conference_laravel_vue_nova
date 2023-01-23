@@ -94,29 +94,6 @@ export default {
             state.error = value
         },
 
-        ADD_CONFERENCE (state, value) {
-            state.conferences.unshift(value)
-        },
-
-        UPDATE_CONFERENCE (state, value) {
-            const index = state.conferences.map(conference => conference.id).indexOf(value.id);
-            state.conferences.splice(index, 1, value);
-        },
-
-        DELETE_CONFERENCE (state, id) {
-            let index = state.conferences.map(conference => conference.id).indexOf(id);
-            state.conferences.splice(index, 1);
-
-            index = state.conferencesPaginatedData.paginatedConferences.map(conference => conference.id).indexOf(id);
-            state.conferencesPaginatedData.paginatedConferences.splice(index, 1);
-        },
-
-        UPDATE_LECTURES_CATEGORIES (state, lectures) {
-            lectures.forEach(lecture => {
-                store.commit('lecture/UPDATE_LECTURE', lecture)
-            })
-        },
-
         LECTURE_COUNT_INCREMENT (state, id) {
             const index = state.conferences.findIndex(c => c.id == parseInt(id, 10));
             state.conferences[index].lectures_count++
@@ -194,87 +171,6 @@ export default {
                 })
                 .catch(err => {
                     console.log(err.response)
-                })
-        },
-
-
-        storeConference({ commit }, conference) {
-            axios.post('/api/conferences/add', conference, JSON.parse(localStorage.getItem('config')))
-                .then(res => {
-                    commit('ADD_CONFERENCE', res.data)
-                    commit('SET_ERROR', '')
-                    router.push({ name: 'conferenceShow', params: { id: res.data.id } })
-                })
-                .catch(err => {
-                    console.log(err.response)
-                    commit('SET_ERROR', err.response.data.message)
-                })
-        },
-
-
-        updateConference({ commit }, conference) {
-            axios.post(`/api/conferences/${conference.id}/update`, conference, JSON.parse(localStorage.getItem('config')))
-                .then(res => {
-                    commit('UPDATE_CONFERENCE', res.data.conference)
-
-                    if (res.data.is_category_changed) {
-                        commit('UPDATE_LECTURES_CATEGORIES', res.data.lectures)
-                    }
-
-                    commit('SET_ERROR', '')
-                    router.go(-1)
-                })
-                .catch(err => {
-                    console.log(err.response)
-                    commit('SET_ERROR', err.response.data.message)
-                })
-        },
-
-
-        updateConferenceCategories({ state, dispatch }, categories) {
-            categories.forEach(category => {
-                let conferences = state.conferences.filter(conf => conf.category_id == category.id)
-
-                conferences.forEach(conference => {
-                    conference.category_id = null
-                    dispatch('updateConference', conference)
-                })
-            })
-        },
-
-
-        deleteConference({ commit }, id) {
-            axios.get(`/api/conferences/${id}/delete`, JSON.parse(localStorage.getItem('config')))
-                .then(res => {
-                    if (res.data) {
-                        commit('DELETE_CONFERENCE', id)
-                        router.push({ name: 'conferences' })
-                    }
-                })
-                .catch(err => {
-                    console.log(err.response)
-                })
-        },
-
-
-        exportConferences({ }) {
-            axios.get(`/api/conferences/export/all`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
-                .then(res => {
-                    //
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        },
-
-
-        exportListeners({ }, conferenceId) {
-            axios.get(`/api/conferences/export/listeners/${conferenceId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
-                .then(res => {
-                    //
-                })
-                .catch(err => {
-                    console.log(err)
                 })
         },
     }

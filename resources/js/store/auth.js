@@ -12,7 +12,6 @@ export default {
         authenticated: false,
 
         userTypes: [],
-        adminType: '',
 
         authErrors: {},
         hasAuthErrors: false,
@@ -30,12 +29,6 @@ export default {
 
         userTypes(state) {
             return state.userTypes
-        },
-        adminType(state) {
-            return state.adminType
-        },
-        isAdmin(state) {
-            return state.user.type == state.adminType
         },
 
         authErrors(state) {
@@ -68,9 +61,6 @@ export default {
         SET_USER_TYPES (state, value) {
             state.userTypes = value
         },
-        SET_ADMIN_TYPE (state, value) {
-            state.adminType = value
-        },
 
         SET_AUTH_ERRORS (state, value) {
             state.authErrors = value
@@ -83,7 +73,6 @@ export default {
     actions: {
         initData({ commit }) {
             commit('SET_USER_TYPES', [ userTypes.LISTENER, userTypes.ANNOUNCER ])
-            commit('SET_ADMIN_TYPE', userTypes.ADMIN)
         },
 
         fetchUserData() {
@@ -91,16 +80,21 @@ export default {
             store.dispatch('user_conferences/fetchJoinedConferences')
         },
 
-        login({ commit, dispatch, state }, user) {
+        login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    commit('SET_USER', res.data)
-                    commit('SET_CONFIG', res.data)
-                    commit('SET_AUTHENTICATED', true)
+                    if (res.data.type !== userTypes.ADMIN) {
+                        commit('SET_USER', res.data)
+                        commit('SET_CONFIG', res.data)
+                        commit('SET_AUTHENTICATED', true)
 
-                    dispatch('fetchUserData')
+                        dispatch('fetchUserData')
 
-                    router.push({ name: 'conferences' })
+                        router.push({ name: 'conferences' })
+                    }
+                    else {
+                        dispatch('loginToNova', res.data)
+                    }
                 })
                 .catch(err => {
                     commit('SET_USER', {})
@@ -109,6 +103,16 @@ export default {
                     commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
 
+                    console.log(err.response)
+                })
+        },
+
+        loginToNova({ }, user) {
+            axios.post('/nova/login', user)
+                .then(res => {
+                    //
+                })
+                .catch(err => {
                     console.log(err.response)
                 })
         },

@@ -73,13 +73,7 @@
         <!-- Preppend buttons -->
 
         <div>
-            <conference-delete-button
-                v-if="isAdmin"
-                :conferenceId="this.id"
-            ></conference-delete-button>
-
             <join-cancel-buttons
-                v-else
                 :isJoined="this.isJoined"
                 :conference="this.conference"
             ></join-cancel-buttons>
@@ -89,29 +83,15 @@
 
         <div>
             <share-buttons v-if="isJoined"></share-buttons>
-
-            <export-button
-                v-if="isAdmin"
-                @startExport="exportMembers"
-            >
-                <template v-slot:title> Export members </template>
-            </export-button>
         </div>
     </div>
 </template>
 
 
 <script>
-import ConferenceDeleteButton from '../../components/Conference/ConferenceDeleteButton.vue';
-
 export default {
-    components: {
-        ConferenceDeleteButton
-    },
-
     data: () => ({
         id: null,
-        confirmationDialog: false,
     }),
 
     created() {
@@ -145,24 +125,9 @@ export default {
         isJoined() {
             return this.joinedConferencesId.includes(this.id)
         },
-        isAdmin() {
-            return this.$store.getters['auth/isAdmin']
-        },
         isHasAddress() {
             return this.addressPosition?.lat !== null && this.addressPosition?.lng !== null
         }
-    },
-
-    methods: {
-        exportMembers() {
-            this.$store.dispatch('conference/exportListeners', this.id)
-        },
-
-        delete(event) {
-            if (event) {
-                this.$store.dispatch('conference/deleteConference', this.id)
-            }
-        },
     },
 }
 </script>

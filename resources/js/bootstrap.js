@@ -42,7 +42,7 @@ window.Echo = new Echo({
     encrypted: true,
     auth: {
         headers: {
-            Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken')),
+            Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken') || '{}'),
             Accept :'application/json',
         }
     },

@@ -1,6 +1,4 @@
 import axios from 'axios'
-import store from '../store'
-import router from '../router'
 
 export default {
     namespaced: true,
@@ -123,49 +121,6 @@ export default {
 
             state.lectureNodes = nodes
         },
-
-        PUSH_CATEGORY (state, category) {
-            state.categories.push(category)
-
-            if (category.parent_id) {
-                const index = state.categories.map(cat => cat.id).indexOf(category.parent_id)
-
-                if (index !== -1) {
-                    state.categories[index].children.push(category)
-                }
-            }
-        },
-
-        PUSH_ROOT (state, category) {
-            state.roots.push(category.id)
-        },
-
-        PUSH_NODE (state, category) {
-            state.nodes[category.id] = {
-                text: category.title,
-                parent: category.parent_id ? String(category.parent_id) : null,
-                children: category.children.map(child => String(child.id)),
-                state: {
-                    opened: false,
-                    disabled: false,
-                    checked: false,
-                },
-            }
-        },
-
-        REMOVE_CATEGORY (state, categories) {
-            categories.forEach(category => {
-                const nodeIndex = state.categories.map(cat => cat.id).indexOf(category.id)
-                state.categories.splice(nodeIndex, 1)
-
-                if (!category.parent_id) {
-                    const rootIndex = state.roots.indexOf(category.id)
-                    state.roots.splice(rootIndex, 1)
-                }
-
-                delete state.nodes[category.id]
-            })
-        },
     },
 
     actions: {
@@ -185,29 +140,6 @@ export default {
         fetchBranche({ commit }, parentId) {
             commit('SET_LECTURE_ROOTS', parentId)
             commit('SET_LECTURE_NODES', parentId)
-        },
-
-        storeCategory({ commit, dispatch }, request) {
-            axios.post('/api/categories/add', request, JSON.parse(localStorage.getItem('config')))
-                .then(res => {
-                    dispatch('fetchAllCategories')
-                })
-                .catch(err => {
-                    console.log(err.response)
-                })
-        },
-
-        deleteCategory({ commit }, categoryId) {
-            axios.get(`/api/categories/${categoryId}/delete`, JSON.parse(localStorage.getItem('config')))
-                .then(res => {
-                    commit('REMOVE_CATEGORY', res.data)
-
-                    store.dispatch('conference/updateConferenceCategories', res.data)
-                    store.dispatch('lecture/updateLectureCategories', res.data)
-                })
-                .catch(err => {
-                    console.log(err.response)
-                })
         },
     }
 }
