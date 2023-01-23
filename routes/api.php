@@ -105,11 +105,6 @@ Route::controller(CommentController::class)->group(function () {
 
 Route::controller(CategoryController::class)->group(function () {
     Route::get('/categories', 'fetchAll')->name('categories.fetchAll');
-
-    Route::middleware(['admin', 'auth:sanctum'])->group(function () {
-        Route::post('/categories/add', 'store')->name('categories.store');
-        Route::get('/categories/{id}/delete', 'destroy')->name('categories.destroy');
-    });
 });
 
 

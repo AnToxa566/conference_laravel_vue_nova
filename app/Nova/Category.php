@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
+
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
+
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 
@@ -69,5 +72,34 @@ class Category extends Resource
 
             HasMany::make('Childs', 'childs', 'App\Nova\Category'),
         ];
+    }
+
+    /**
+     * Removes all children of a category from the database.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $childs
+     * @return void
+     */
+    protected static function deleteCategoryChilds(Collection $childs): void
+    {
+        foreach($childs as $child) {
+            if ($child->childs->isNotEmpty()) {
+                self::deleteCategoryChilds($child->childs);
+            }
+
+            $child->delete();
+        }
+    }
+
+    /**
+     * Register a callback to be called after the resource is deleted.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    public static function afterDelete(NovaRequest $request, Model $model): void
+    {
+        self::deleteCategoryChilds($model->childs);
     }
 }
