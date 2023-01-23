@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomNovaComponents\GoogleMaps;
+namespace Custom\GoogleMaps;
 
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Events\ServingNova;

@@ -20,7 +20,7 @@ class ZoomMeeting extends Field
      */
     public $component = 'zoom-meeting';
 
-    public function zoomMeeting(ZoomMeetingModel $zoomMeeting): ZoomMeeting
+    public function zoomMeeting(ZoomMeetingModel $zoomMeeting): self
     {
         return $this->withMeta([
             'zoomMeeting' => $zoomMeeting,

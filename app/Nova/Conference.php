@@ -13,6 +13,8 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 
+use Custom\GoogleMaps\GoogleMaps;
+
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -68,12 +70,20 @@ class Conference extends Resource
             Number::make('Latitude')
                 ->nullable()
                 ->min(-90)->max(90)->step('any')
+                ->exceptOnForms()
                 ->rules('nullable', 'required_with:longitude', 'between:-90.0,90.0'),
 
             Number::make('Longitude')
                 ->nullable()
                 ->min(-180)->max(180)->step('any')
+                ->exceptOnForms()
                 ->rules('nullable', 'required_with:latitude', 'between:-180.0,180.0'),
+
+            GoogleMaps::make('Address')
+                ->setDefaultLocation(47.83992, 35.12592)
+                ->storeLatitudeField('latitude')
+                ->storeLongitudeField('longitude')
+                ->onlyOnForms(),
 
             Country::make('Country')
                 ->searchable()
@@ -85,5 +95,28 @@ class Conference extends Resource
 
             HasMany::make('Lectures')
         ];
+    }
+
+    /**
+     * Handle any post-validation processing.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
+     */
+    protected static function afterValidation(NovaRequest $request, $validator): void
+    {
+        $lat = $validator->getData()['latitude'];
+        $lng = $validator->getData()['longitude'];
+
+        if ($lat && $lng) {
+            if ($lat < -90 || $lat > 90) {
+                $validator->errors()->add('latitude', 'The latitude value must be between -90 and 90!');
+            }
+
+            if ($lng < -180 || $lng > 180) {
+                $validator->errors()->add('longitude', 'The longitude value must be between -180 and 180!');
+            }
+        }
     }
 }

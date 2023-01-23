@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a1df8a5f2eeb5e40bd8d8e69b47f4ea",
+    "content-hash": "340dbcad79a1d2779c4860d4352aacf6",
     "packages": [
         {
             "name": "andreaselia/laravel-api-to-postman",
@@ -618,6 +618,42 @@
                 }
             ],
             "time": "2022-04-01T19:23:25+00:00"
+        },
+        {
+            "name": "custom/google-maps",
+            "version": "dev-feature/BOH-8",
+            "dist": {
+                "type": "path",
+                "url": "./nova-components/GoogleMaps",
+                "reference": "d258290f75b9cb3c3819c29c927d6f5b31857f04"
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Custom\\GoogleMaps\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Custom\\GoogleMaps\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "custom/phone-number",

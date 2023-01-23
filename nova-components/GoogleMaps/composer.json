@@ -1,5 +1,5 @@
 {
-    "name": "custom-nova-components/google-maps",
+    "name": "custom/google-maps",
     "description": "A Laravel Nova field.",
     "keywords": [
         "laravel",
@@ -11,13 +11,13 @@
     },
     "autoload": {
         "psr-4": {
-            "CustomNovaComponents\\GoogleMaps\\": "src/"
+            "Custom\\GoogleMaps\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "CustomNovaComponents\\GoogleMaps\\FieldServiceProvider"
+                "Custom\\GoogleMaps\\FieldServiceProvider"
             ]
         }
     },
