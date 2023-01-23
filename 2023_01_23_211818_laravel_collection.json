@@ -6,7 +6,7 @@
         }
     ],
     "info": {
-        "name": "2023_01_12_164957_laravel_collection.json",
+        "name": "2023_01_23_211818_laravel_collection.json",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
@@ -255,151 +255,6 @@
                         ":search",
                         "limit",
                         ":limit"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/conferences\/add",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/conferences\/add",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "conferences",
-                        "add"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/conferences\/{id}\/update",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/conferences\/:id\/update",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "conferences",
-                        ":id",
-                        "update"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/conferences\/{id}\/delete",
-            "request": {
-                "method": "GET",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/conferences\/:id\/delete",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "conferences",
-                        ":id",
-                        "delete"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/conferences\/export\/all",
-            "request": {
-                "method": "GET",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/conferences\/export\/all",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "conferences",
-                        "export",
-                        "all"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/conferences\/export\/listeners\/{conferenceId}",
-            "request": {
-                "method": "GET",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/conferences\/export\/listeners\/:conferenceId",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "conferences",
-                        "export",
-                        "listeners",
-                        ":conferenceId"
                     ],
                     "variable": []
                 }
@@ -725,65 +580,6 @@
             }
         },
         {
-            "name": "api\/lectures\/export\/{conferenceId}",
-            "request": {
-                "method": "GET",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/lectures\/export\/:conferenceId",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "lectures",
-                        "export",
-                        ":conferenceId"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/lectures\/export\/comments\/{lectureId}",
-            "request": {
-                "method": "GET",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/lectures\/export\/comments\/:lectureId",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "lectures",
-                        "export",
-                        "comments",
-                        ":lectureId"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
             "name": "api\/lectures\/favorited\/{user_id}",
             "request": {
                 "method": "GET",
@@ -991,63 +787,6 @@
             }
         },
         {
-            "name": "api\/categories\/add",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/categories\/add",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "categories",
-                        "add"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/categories\/{id}\/delete",
-            "request": {
-                "method": "GET",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/categories\/:id\/delete",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "categories",
-                        ":id",
-                        "delete"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
             "name": "api\/countries",
             "request": {
                 "method": "GET",
@@ -1069,36 +808,6 @@
                     "path": [
                         "api",
                         "countries"
-                    ],
-                    "variable": []
-                }
-            }
-        },
-        {
-            "name": "api\/storages\/export\/{fileName}\/download",
-            "request": {
-                "method": "GET",
-                "header": [
-                    {
-                        "key": "Accept",
-                        "value": "application\/json"
-                    },
-                    {
-                        "key": "Content-Type",
-                        "value": "application\/json"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}\/api\/storages\/export\/:fileName\/download",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "storages",
-                        "export",
-                        ":fileName",
-                        "download"
                     ],
                     "variable": []
                 }
@@ -1155,6 +864,35 @@
                         "api",
                         "meetings",
                         "db"
+                    ],
+                    "variable": []
+                }
+            }
+        },
+        {
+            "name": "api\/meetings\/{meetingId}\/update",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application\/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application\/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}\/api\/meetings\/:meetingId\/update",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "meetings",
+                        ":meetingId",
+                        "update"
                     ],
                     "variable": []
                 }
