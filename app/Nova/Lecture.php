@@ -17,6 +17,7 @@ use Laravel\Nova\Fields\BelongsTo;
 
 use Laravel\Nova\Fields\FormData;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 use Custom\ZoomMeeting\ZoomMeeting;
 use App\Models\Lecture as LectureModel;
+use App\Models\Conference as ConferenceModel;
 use App\Models\ZoomMeeting as ZoomMeetingModel;
 
 use App\Events\LectureCreated;
@@ -84,11 +86,34 @@ class Lecture extends Resource
             DateTime::make('Date Time Start')
                 ->sortable()
                 ->step(CarbonInterval::minutes(1))
+                ->dependsOn(
+                    ['conference'],
+                    function (DateTime $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->conference) {
+                            $field->min(ConferenceModel::findOrFail($formData->conference)->date_time_event);
+                            $field->max(ConferenceModel::findOrFail($formData->conference)->date_time_event->hour(23)->minute(59));
+                        }
+                    }
+                )
                 ->rules('required'),
 
             DateTime::make('Date Time End')
                 ->sortable()
                 ->step(CarbonInterval::minutes(1))
+                ->dependsOn(
+                    ['conference', 'date_time_start'],
+                    function (DateTime $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->conference) {
+                            $field->min(ConferenceModel::findOrFail($formData->conference)->date_time_event);
+                            $field->max(ConferenceModel::findOrFail($formData->conference)->date_time_event->hour(23)->minute(59));
+                        }
+
+                        if ($formData->date_time_start) {
+                            $field->min((Carbon::parse($formData->date_time_start))->addMinute(1));
+                            $field->max((Carbon::parse($formData->date_time_start))->addHour(1));
+                        }
+                    }
+                )
                 ->rules('required'),
 
             Textarea::make('Description')
@@ -102,7 +127,8 @@ class Lecture extends Resource
                 ->storeOriginalName('presentation_name')
                 ->acceptedTypes('application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint')
                 ->displayUsing(fn () => $this->presentation_name)
-                ->rules('required', 'max:10240'),
+                ->rules('max:10240')
+                ->creationRules('required'),
 
             Boolean::make('Online', 'is_online'),
 
@@ -130,6 +156,23 @@ class Lecture extends Resource
     }
 
     /**
+    * Fill the given fields for the model.
+    *
+    * @param  @param \Illuminate\Database\Eloquent\Model $model
+    * @param \Illuminate\Support\Collection<int, \Laravel\Nova\Fields\Field> $fields
+    * @return array{\Illuminate\Database\Eloquent\Model:, array:<int, callable>}
+    */
+    protected static function fillFields(NovaRequest $request, $model, $fields): array
+    {
+        $fillFields = parent::fillFields($request, $model, $fields);
+
+        $modelObject = $fillFields[0];
+        unset($modelObject->zoom_meeting);
+
+        return $fillFields;
+    }
+
+    /**
     * Handle any post-creation validation processing.
     *
     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
@@ -150,12 +193,9 @@ class Lecture extends Resource
             $query->where('conference_id', '=', $conferenceId)->whereBetweenTimes($from, $to);
         })->get();
 
-        $validator->after(function ($validator) use ($timedBusiedLectures) {
-                if ($timedBusiedLectures->count()) {
-                    $validator->errors()->add('date_time_start', 'Lecture time overlapped with another lecture');
-                }
-            }
-        );
+        if ($timedBusiedLectures->isNotEmpty()) {
+            $validator->errors()->add('date_time_start', 'Lecture time overlapped with another lecture');
+        }
     }
 
     /**

@@ -100,8 +100,6 @@ class Conference extends Resource
             BelongsTo::make('Category')
                 ->nullable()
                 ->rules('nullable', 'exists:categories,id'),
-
-            HasMany::make('Lectures')
         ];
     }
 
