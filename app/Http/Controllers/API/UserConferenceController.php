@@ -13,24 +13,26 @@ use Illuminate\Http\JsonResponse;
 use App\Mail\ListenerJoined;
 use Illuminate\Support\Facades\Mail;
 
+
 class UserConferenceController extends Controller
 {
     public function fetchJoinedConferences(int $userId): JsonResponse
     {
-        return response()->json(array_column(User::find($userId)->conferences()->get()->toArray(), 'id'));
+        return response()->json(array_column(User::findOrFail($userId)->conferences()->get()->toArray(), 'id'));
     }
 
 
     public function joinConference(int $userId, int $conferenceId): void
     {
-        $user = User::find($userId);
+        $user = User::findOrFail($userId);
         $user->conferences()->attach($conferenceId);
 
         if ($user->type === User::LISTENER) {
-            $announcers = Conference::find($conferenceId)->users()->where('type', User::ANNOUNCER)->get();
+            $conference = Conference::findOrFail($conferenceId);
+            $announcers = $conference->users()->where('type', User::ANNOUNCER)->get();
 
             if (count($announcers)) {
-                Mail::to($announcers)->send(new ListenerJoined($user, Conference::find($conferenceId)));
+                Mail::to($announcers)->send(new ListenerJoined($user, $conference));
             }
         }
     }
@@ -38,6 +40,6 @@ class UserConferenceController extends Controller
 
     public function cancelParticipation($userId, $conferenceId): void
     {
-        User::find($userId)->conferences()->detach($conferenceId);
+        User::findOrFail($userId)->conferences()->detach($conferenceId);
     }
 }

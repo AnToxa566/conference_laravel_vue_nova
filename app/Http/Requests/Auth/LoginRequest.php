@@ -17,7 +17,7 @@ class LoginRequest extends FormRequest
     */
     public function withValidator(Validator $validator): void
     {
-        $user = User::where('email', $validator->getData()['email'])->first();
+        $user = User::where('email', $validator->getData()['email'])->firstOrFail();
 
         $validator->after(function ($validator) use ($user) {
                 if (!Hash::check($validator->getData()['password'], $user->password)) {

@@ -32,38 +32,6 @@
                 {{ this.getUserFullName }}
             </v-list-subheader>
 
-            <!-- Add Conference Page -->
-
-            <v-list-item
-                v-if="this.isAdmin"
-                value="true"
-                prepend-icon="mdi-calendar-plus-outline"
-                @click="this.$router.push('/conferences/add')"
-            >
-                Add conference
-            </v-list-item>
-
-            <!-- Categories Edit Page -->
-
-            <v-list-item
-                v-if="this.isAdmin"
-                value="true"
-                prepend-icon="mdi-tag-outline"
-                @click="this.$router.push('/categories')"
-            >
-                Categories
-            </v-list-item>
-
-            <!-- Meetings Page -->
-
-            <v-list-item
-                v-if="this.isAdmin"
-                value="true"
-                prepend-icon="mdi-laptop-account"
-                @click="this.$router.push('/meetings')"
-            >
-                Meetings
-            </v-list-item>
 
             <!-- User's Profile Page -->
 
@@ -94,10 +62,6 @@ export default {
     name: 'dropdown-menu',
 
     computed: {
-        isAdmin() {
-            return this.$store.getters['auth/isAdmin']
-        },
-
         getUserFullName() {
             return this.$store.getters['auth/user'].first_name + ' ' + this.$store.getters['auth/user'].last_name
         },

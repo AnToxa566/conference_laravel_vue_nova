@@ -2,16 +2,23 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
         "andreaselia/laravel-api-to-postman": "^1.13",
         "beyondcode/laravel-websockets": "^1.13",
+        "bissolli/nova-phone-field": "^0.0.4",
+        "custom/phone-number": "*",
+        "custom/zoom-meeting": "*",
         "doctrine/dbal": "^3.5",
         "firebase/php-jwt": "^6.3",
         "guzzlehttp/guzzle": "^7.5",
         "laravel/framework": "^9.19",
+        "laravel/nova": "~4.0",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.1",
@@ -20,7 +27,8 @@
         "paragonie/sodium_compat": "^1.19",
         "profclems/postman-collection-generator": "^1.2",
         "psr/simple-cache": "2.0",
-        "pusher/pusher-php-server": "^7.2"
+        "pusher/pusher-php-server": "^7.2",
+        "custom/google-maps": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -31,6 +39,28 @@
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.0"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/GoogleMaps"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/ZoomMeeting"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/PhoneNumber"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/GoogleMaps"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "App\\": "app/",

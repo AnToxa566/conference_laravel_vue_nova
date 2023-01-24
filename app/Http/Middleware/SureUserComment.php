@@ -22,7 +22,7 @@ class SureUserComment
      */
     public function handle(Request $request, Closure $next): JsonResponse|RedirectResponse
     {
-        $comment = Comment::find($request->route()->parameter('id'));
+        $comment = Comment::findOrFail($request->route()->parameter('id'));
 
         if (auth('sanctum')->id() !== $comment->user_id) {
             abort(403);
