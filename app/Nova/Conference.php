@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Country;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\FormData;
 
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
@@ -72,22 +73,24 @@ class Conference extends Resource
                 ->step(CarbonInterval::minutes(1))
                 ->rules('required', 'after_or_equal:today'),
 
-            Number::make('Latitude')
-                ->nullable()
-                ->min(-90)->max(90)->step('any')
-                ->exceptOnForms()
-                ->rules('nullable', 'required_with:longitude', 'between:-90.0,90.0'),
+            Number::make('Latitude')->hideWhenCreating()->readonly(),
 
-            Number::make('Longitude')
-                ->nullable()
-                ->min(-180)->max(180)->step('any')
-                ->exceptOnForms()
-                ->rules('nullable', 'required_with:latitude', 'between:-180.0,180.0'),
+            Number::make('Longitude')->hideWhenCreating()->readonly(),
 
             GoogleMaps::make('Address')
-                ->setDefaultLocation(47.83992, 35.12592)
                 ->storeLatitudeField('latitude')
                 ->storeLongitudeField('longitude')
+                ->dependsOn(
+                    ['latitude', 'longitude'],
+                    function (GoogleMaps $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->latitude && $formData->longitude) {
+                            $field->setDefaultLocation((float) $formData->latitude, (float) $formData->longitude);
+                        }
+                        else {
+                            $field->setDefaultLocation(47.83992, 35.12592);
+                        }
+                    }
+                )
                 ->onlyOnForms(),
 
             Country::make('Country')

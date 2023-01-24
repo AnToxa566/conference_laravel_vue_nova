@@ -35,7 +35,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'google-maps',
-  mixins: [laravel_nova__WEBPACK_IMPORTED_MODULE_1__.FormField, laravel_nova__WEBPACK_IMPORTED_MODULE_1__.HandlesValidationErrors],
+  mixins: [laravel_nova__WEBPACK_IMPORTED_MODULE_1__.DependentFormField, laravel_nova__WEBPACK_IMPORTED_MODULE_1__.HandlesValidationErrors],
   components: {
     GoogleMap: vue3_google_map__WEBPACK_IMPORTED_MODULE_0__.GoogleMap,
     Marker: vue3_google_map__WEBPACK_IMPORTED_MODULE_0__.Marker
@@ -53,8 +53,10 @@ __webpack_require__.r(__webpack_exports__);
     var _this$field$lat, _this$field$lng;
     this.defaultCenter.lat = (_this$field$lat = this.field.lat) !== null && _this$field$lat !== void 0 ? _this$field$lat : 47.83992;
     this.defaultCenter.lng = (_this$field$lng = this.field.lng) !== null && _this$field$lng !== void 0 ? _this$field$lng : 35.12592;
-    this.field.lat = '';
-    this.field.lng = '';
+    if (!this.resourceId) {
+      this.field.lat = '';
+      this.field.lng = '';
+    }
   },
   computed: {
     markerPosition: function markerPosition() {
@@ -159,7 +161,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_GoogleMap = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("GoogleMap");
   var _component_DefaultField = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("DefaultField");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_DefaultField, {
-    field: $props.field,
+    field: _ctx.currentField,
     errors: _ctx.errors,
     "show-help-text": _ctx.showHelpText,
     "full-width-content": _ctx.fullWidthContent
@@ -195,9 +197,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         min: -90,
         max: 90,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
-          return $props.field.lat = $event;
+          return _ctx.currentField.lat = $event;
         })
-      }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.field.lat]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+      }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.currentField.lat]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         type: "number",
         "class": "w-full ml-2 form-control form-input form-input-bordered",
         placeholder: "Longitude",
@@ -205,9 +207,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         min: -180,
         max: 180,
         "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-          return $props.field.lng = $event;
+          return _ctx.currentField.lng = $event;
         })
-      }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.field.lng]])])];
+      }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.currentField.lng]])])];
     }),
     _: 1 /* STABLE */
   }, 8 /* PROPS */, ["field", "errors", "show-help-text", "full-width-content"]);

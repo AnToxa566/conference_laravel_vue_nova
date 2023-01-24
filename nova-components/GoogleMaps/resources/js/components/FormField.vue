@@ -1,6 +1,6 @@
 <template>
     <DefaultField
-        :field="field"
+        :field="currentField"
         :errors="errors"
         :show-help-text="showHelpText"
         :full-width-content="fullWidthContent"
@@ -32,7 +32,7 @@
                     step="any"
                     :min="-90"
                     :max="90"
-                    v-model="field.lat"
+                    v-model="currentField.lat"
                 />
 
                 <input
@@ -42,7 +42,7 @@
                     step="any"
                     :min="-180"
                     :max="180"
-                    v-model="field.lng"
+                    v-model="currentField.lng"
                 />
             </div>
         </template>
@@ -52,12 +52,12 @@
 
 <script>
 import { GoogleMap, Marker } from "vue3-google-map";
-import { FormField, HandlesValidationErrors } from 'laravel-nova'
+import { DependentFormField, HandlesValidationErrors } from 'laravel-nova'
 
 export default {
     name: 'google-maps',
 
-    mixins: [FormField, HandlesValidationErrors],
+    mixins: [DependentFormField, HandlesValidationErrors],
 
     components: { GoogleMap, Marker },
 
@@ -71,8 +71,10 @@ export default {
         this.defaultCenter.lat = this.field.lat ?? 47.83992
         this.defaultCenter.lng = this.field.lng ?? 35.12592
 
-        this.field.lat = ''
-        this.field.lng = ''
+        if (!this.resourceId) {
+            this.field.lat = ''
+            this.field.lng = ''
+        }
     },
 
     computed: {
