@@ -12,24 +12,12 @@ use Illuminate\Http\JsonResponse;
 
 class PaymentController extends Controller
 {
-    /**
-     * Creates an intent for payment so we can capture the payment
-     * method for the current user.
-     *
-     * @param Request $request The request data from the user.
-     * @return Illuminate\Http\JsonResponse
-     */
     public function getSetupIntent(Request $request): JsonResponse
     {
         return response()->json($request->user()->createSetupIntent());
     }
 
-    /**
-     * Adds a payment method to the current user.
-     *
-     * @param Request $request The request data from the user.
-     * @return Illuminate\Http\JsonResponse
-    */
+
     public function storePaymentMethods(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -45,12 +33,7 @@ class PaymentController extends Controller
         return response()->json(null, 204);
     }
 
-    /**
-     * Returns the payment methods the user has saved.
-     *
-     * @param Request $request The request data from the user.
-     * @return Illuminate\Http\JsonResponse
-     */
+
     public function getPaymentMethods(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -71,12 +54,7 @@ class PaymentController extends Controller
         return response()->json($methods);
     }
 
-    /**
-     * Removes a payment method for the current user.
-     *
-     * @param Request $request The request data from the user.
-     * @return Illuminate\Http\JsonResponse
-     */
+
     public function removePaymentMethod(Request $request): JsonResponse
     {
         $user = $request->user();

@@ -14,6 +14,7 @@ use App\Events\CommentCreated;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
+
 class CommentController extends Controller
 {
     public function fetchByLectureId(int $lectureId, int $limit, int $page): JsonResponse

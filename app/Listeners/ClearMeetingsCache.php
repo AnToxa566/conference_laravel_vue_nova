@@ -10,14 +10,9 @@ use Illuminate\Support\Facades\Cache;
 
 use App\Events\LectureCreated;
 
+
 class ClearMeetingsCache
 {
-    /**
-     * Handle the event.
-     *
-     * @param  \App\Events\LectureCreated  $event
-     * @return void
-     */
     public function handle(LectureCreated $event): void
     {
         Cache::forget('meetings');

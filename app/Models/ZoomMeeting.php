@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
+
 class ZoomMeeting extends Model
 {
     use HasFactory;
+
 
     protected $table = 'zoom_meetings';
 
@@ -21,6 +23,7 @@ class ZoomMeeting extends Model
         'start_url',
         'join_url',
     ];
+
 
     public function lecture(): BelongsTo
     {

@@ -11,9 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Conference extends Model
 {
     use HasFactory;
+
 
     protected $table = 'conferences';
 
@@ -32,6 +34,7 @@ class Conference extends Model
     protected $casts = [
         'date_time_event' => 'datetime'
     ];
+
 
     public function users(): BelongsToMany
     {
@@ -57,6 +60,7 @@ class Conference extends Model
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
+
 
     public function scopeSearch(Builder $query, string $search, int $limit): Builder
     {

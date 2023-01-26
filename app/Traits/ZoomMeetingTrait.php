@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use DateTime;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Firebase\JWT\JWT;
 
 use App\Models\Lecture;
+
 
 trait ZoomMeetingTrait
 {
@@ -41,12 +41,6 @@ trait ZoomMeetingTrait
     }
 
 
-    protected function toZoomTimeFormat(string $dateTime): string
-    {
-        return (new DateTime($dateTime))->format('Y-m-d\TH:i:s');
-    }
-
-
     protected function getRequestBody(Lecture $lecture): array
     {
         return [
@@ -54,7 +48,7 @@ trait ZoomMeetingTrait
             'body'    => json_encode([
                 'topic'      => $lecture->title,
                 'type'       => 2,
-                'start_time' => $lecture->date_time_start->format('Y-m-d\TH:i:s'), // $this->toZoomTimeFormat($lecture->date_time_start),
+                'start_time' => $lecture->date_time_start->format(Carbon::W3C),
                 'duration'   => Carbon::parse($lecture->date_time_end)->diffInMinutes(Carbon::parse($lecture->date_time_start)),
                 'agenda'     => $lecture->description,
                 'timezone'   => config('app.timezone'),

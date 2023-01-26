@@ -21,12 +21,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * Subscribes the user to the basic plan.
-     *
-     * @param User $user The user who should Subscribe the basic plan.
-     * @return void
-     */
     protected function subscribeBasicPlan(User $user): void
     {
         $user->newSubscription(
@@ -35,12 +29,7 @@ class AuthController extends Controller
         )->create();
     }
 
-    /**
-     * Registers a new user to the application.
-     *
-     * @param RegisterRequest $request The request data from the user.
-     * @return Illuminate\Http\JsonResponse
-     */
+
     public function register(RegisterRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -58,12 +47,7 @@ class AuthController extends Controller
         return response()->json($createdUser);
     }
 
-    /**
-     * Authorizes the user to the application.
-     *
-     * @param LoginRequest $request The request data from the user.
-     * @return Illuminate\Http\JsonResponse
-     */
+
     public function login(LoginRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -74,12 +58,7 @@ class AuthController extends Controller
         return response()->json($authorizedUser);
     }
 
-    /**
-     * Updates user data.
-     *
-     * @param UpdateRequest $request The request data from the user.
-     * @return Illuminate\Http\JsonResponse
-     */
+
     public function update(UpdateRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -90,21 +69,13 @@ class AuthController extends Controller
         );
     }
 
-    /**
-     * Checks if the user is logged into the application.
-     *
-     * @return Illuminate\Http\JsonResponse
-     */
+
     public function checkAuth(): JsonResponse
     {
         return response()->json(auth('sanctum')->check());
     }
 
-    /**
-     * Deletes all tokens of the current user.
-     *
-     * @return Illuminate\Http\JsonResponse
-     */
+
     public function logout(): JsonResponse
     {
         User::findOrFail(auth('sanctum')->id())->tokens()->delete();

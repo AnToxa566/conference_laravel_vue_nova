@@ -36,35 +36,15 @@ use App\Http\Controllers\API\MeetingController;
 
 class Lecture extends Resource
 {
-    /**
-     * The model the resource corresponds to.
-     *
-     * @var class-string<\App\Models\Lecture>
-     */
     public static $model = \App\Models\Lecture::class;
 
-    /**
-     * The single value that should be used to represent the resource when being displayed.
-     *
-     * @var string
-     */
     public static $title = 'title';
 
-    /**
-     * The columns that should be searched.
-     *
-     * @var array
-     */
     public static $search = [
         'title',
     ];
 
-    /**
-     * Get the fields displayed by the resource.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return array
-     */
+
     public function fields(NovaRequest $request): array
     {
         return [
@@ -88,7 +68,8 @@ class Lecture extends Resource
                 ->step(CarbonInterval::minutes(1))
                 ->dependsOn(
                     ['conference'],
-                    function (DateTime $field, NovaRequest $request, FormData $formData) {
+                    static function (DateTime $field, NovaRequest $request, FormData $formData): void
+                    {
                         if ($formData->conference) {
                             $field->min(ConferenceModel::findOrFail($formData->conference)->date_time_event);
                             $field->max(ConferenceModel::findOrFail($formData->conference)->date_time_event->hour(23)->minute(59));
@@ -102,7 +83,8 @@ class Lecture extends Resource
                 ->step(CarbonInterval::minutes(1))
                 ->dependsOn(
                     ['conference', 'date_time_start'],
-                    function (DateTime $field, NovaRequest $request, FormData $formData) {
+                    static function (DateTime $field, NovaRequest $request, FormData $formData): void
+                    {
                         if ($formData->conference) {
                             $field->min(ConferenceModel::findOrFail($formData->conference)->date_time_event);
                             $field->max(ConferenceModel::findOrFail($formData->conference)->date_time_event->hour(23)->minute(59));
@@ -141,7 +123,8 @@ class Lecture extends Resource
                 ->hide()
                 ->dependsOn(
                     ['is_online', 'zoomMeeting'],
-                    function (ZoomMeeting $field, NovaRequest $request, FormData $formData) {
+                    static function (ZoomMeeting $field, NovaRequest $request, FormData $formData): void
+                    {
                         if ($formData->is_online === true && $formData->zoomMeeting) {
                             $field->show()
                             ->zoomMeeting(
@@ -155,13 +138,7 @@ class Lecture extends Resource
         ];
     }
 
-    /**
-    * Fill the given fields for the model.
-    *
-    * @param  @param \Illuminate\Database\Eloquent\Model $model
-    * @param \Illuminate\Support\Collection<int, \Laravel\Nova\Fields\Field> $fields
-    * @return array{\Illuminate\Database\Eloquent\Model:, array:<int, callable>}
-    */
+
     protected static function fillFields(NovaRequest $request, $model, $fields): array
     {
         $fillFields = parent::fillFields($request, $model, $fields);
@@ -172,13 +149,6 @@ class Lecture extends Resource
         return $fillFields;
     }
 
-    /**
-    * Handle any post-creation validation processing.
-    *
-    * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-    * @param  \Illuminate\Validation\Validator  $validator
-    * @return void
-    */
     protected static function afterCreationValidation(NovaRequest $request, $validator): void
     {
         $conferenceId = $validator->getData()['conference'];
@@ -198,39 +168,20 @@ class Lecture extends Resource
         }
     }
 
-    /**
-     * Register a callback to be called after the resource is created.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
     public static function afterCreate(NovaRequest $request, Model $model)
     {
         LectureCreated::dispatch($model);
 
-        if ($model->is_online) (new MeetingController)->store($model->id);
+        if ($model->is_online) {
+            (new MeetingController)->store($model->id);
+        }
     }
 
-    /**
-     * Register a callback to be called after the resource is updated.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
     public static function afterUpdate(NovaRequest $request, Model $model): void
     {
         LectureUpdated::dispatch($model);
     }
 
-    /**
-     * Register a callback to be called after the resource is deleted.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
     public static function afterDelete(NovaRequest $request, Model $model): void
     {
         $model->user->conferences()->detach($model->conference_id);

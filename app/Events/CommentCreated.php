@@ -18,18 +18,8 @@ class CommentCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * The comment's instance.
-     *
-     * @var Lecture
-     */
     public Comment $comment;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(Comment $comment)
     {
         $this->comment = $comment;
