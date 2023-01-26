@@ -121,6 +121,8 @@ Route::controller(PaymentController::class)->group(function () {
 Route::controller(PlanController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/plans', 'fetchPlans')->name('plans.fetchPlans');
+        Route::put('/plans', 'loadPlans')->name('plans.loadPlans');
+
         Route::get('/plans/{plan:slug}', 'fetchDetail')->name('plans.fetchDetail');
 
         Route::put('/plans/subscription', 'updateSubscription')->name('plans.updateSubscription');

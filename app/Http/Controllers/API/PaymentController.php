@@ -54,7 +54,7 @@ class PaymentController extends Controller
     public function getPaymentMethods(Request $request): JsonResponse
     {
         $user = $request->user();
-        $methods = array();
+        $methods = [];
 
         if ($user->hasPaymentMethod()) {
             foreach($user->paymentMethods() as $method) {

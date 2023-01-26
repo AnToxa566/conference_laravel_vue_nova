@@ -7,16 +7,38 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Plan extends Model
 {
     use HasFactory;
 
     /**
-     * User Type - Announcer.
+     * The name of the basic plan.
      *
      * @var string
      */
-    public const STRIPE_PRODUCT = 'Conference Joins';
+    public const BASIC_PLAN = 'basic';
+
+    /**
+     * The name of the beginner plan.
+     *
+     * @var string
+     */
+    public const BEGINNER_PLAN = 'beginner';
+
+    /**
+     * The name of the profession plan.
+     *
+     * @var string
+     */
+    public const PROFESSION_PLAN = 'profession';
+
+    /**
+     * The name of the unlimited plan.
+     *
+     * @var string
+     */
+    public const UNLIMITED_PLAN = 'unlimited';
 
     /**
      * The name of the table in the database.
@@ -31,10 +53,10 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
         'slug',
-        'stripe_plan',
+        'stripe_price',
         'price',
+        'joins',
         'description',
     ];
 

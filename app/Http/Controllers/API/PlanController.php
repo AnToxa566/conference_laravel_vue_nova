@@ -5,12 +5,37 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Laravel\Cashier\Cashier;
 
 use App\Models\Plan;
 
 
 class PlanController extends Controller
 {
+    /**
+     * Loads all plans into the database from the Stripe API.
+     *
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function loadPlans(): JsonResponse
+    {
+        Plan::truncate();
+
+        $allPlans = Cashier::stripe()->products->all(['active' => true]);
+
+        foreach ($allPlans as $plan) {
+            Plan::create([
+                'slug' => $plan->name,
+                'stripe_price' => $plan->default_price,
+                'price' => $plan->metadata->price,
+                'joins' => $plan->metadata->joins,
+                'description' => $plan->description,
+            ]);
+        }
+
+        return response()->json(null, 204);
+    }
+
     /**
      * Gets an all of plans.
      *
@@ -20,7 +45,6 @@ class PlanController extends Controller
     {
         return response()->json(Plan::get());
     }
-
 
     /**
      * Gets a concrete plan's instance.
@@ -41,16 +65,7 @@ class PlanController extends Controller
      */
     public function updateSubscription(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $planID = $request->get('plan');
-        $paymentID = $request->get('payment');
-
-        if ($user->subscribed(Plan::STRIPE_PRODUCT)) {
-            $user->subscription(Plan::STRIPE_PRODUCT)->swap($planID);
-        }
-        else {
-            $user->newSubscription(Plan::STRIPE_PRODUCT, $planID)->create($paymentID);
-        }
+        $request->user()->newSubscription($request->get('plan_slug'), $request->get('stripe_price'))->create($request->get('payment'));
 
         return response()->json([
             'subscription_updated' => true
