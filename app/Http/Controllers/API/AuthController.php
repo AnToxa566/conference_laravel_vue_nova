@@ -11,13 +11,13 @@ use App\Http\Requests\Auth\UpdateRequest;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
+
 class AuthController extends Controller
 {
-    public function checkAuth(Request $request): JsonResponse
+    public function checkAuth(): JsonResponse
     {
         return response()->json(auth('sanctum')->check());
     }
@@ -61,8 +61,10 @@ class AuthController extends Controller
     }
 
 
-    public function logout(): void
+    public function logout(): JsonResponse
     {
         User::findOrFail(auth('sanctum')->id())->tokens()->delete();
+
+        return response()->json(null, 204);
     }
 }

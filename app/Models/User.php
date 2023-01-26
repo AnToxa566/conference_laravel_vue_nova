@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use Billable, HasApiTokens, HasFactory, Notifiable;
 
     /**
      * User Type - Admin.
@@ -36,6 +37,11 @@ class User extends Authenticatable
      */
     public const ANNOUNCER = 'Announcer';
 
+    /**
+     * The name of the table in the database.
+     *
+     * @var string
+     */
     protected $table = 'users';
 
     /**

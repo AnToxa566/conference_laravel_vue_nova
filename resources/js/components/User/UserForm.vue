@@ -97,15 +97,18 @@
 
         <!-- Submit button -->
 
-        <v-btn
-            type="submit"
-            variant="tonal"
-            color="white"
-            class=""
-            @click.prevent="onSubmit(user)"
-        >
-            Save
-        </v-btn>
+        <div class="d-flex justify-content-end">
+            <v-btn
+                type="submit"
+                variant="tonal"
+                color="white"
+                class=""
+                @click.prevent="onSubmit(user)"
+            >
+                Save
+            </v-btn>
+        </div>
+
     </v-form>
 </template>
 

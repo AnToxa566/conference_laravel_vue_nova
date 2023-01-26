@@ -22,7 +22,7 @@ class UserConferenceController extends Controller
     }
 
 
-    public function joinConference(int $userId, int $conferenceId): void
+    public function joinConference(int $userId, int $conferenceId): JsonResponse
     {
         $user = User::findOrFail($userId);
         $user->conferences()->attach($conferenceId);
@@ -31,15 +31,19 @@ class UserConferenceController extends Controller
             $conference = Conference::findOrFail($conferenceId);
             $announcers = $conference->users()->where('type', User::ANNOUNCER)->get();
 
-            if (count($announcers)) {
+            if ($announcers->isNotEmpty()) {
                 Mail::to($announcers)->send(new ListenerJoined($user, $conference));
             }
         }
+
+        return response()->json(null, 204);
     }
 
 
-    public function cancelParticipation($userId, $conferenceId): void
+    public function cancelParticipation(int $userId, int $conferenceId): JsonResponse
     {
         User::findOrFail($userId)->conferences()->detach($conferenceId);
+
+        return response()->json(null, 204);
     }
 }
