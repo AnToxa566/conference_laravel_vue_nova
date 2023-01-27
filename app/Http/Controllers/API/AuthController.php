@@ -21,15 +21,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    protected function subscribeBasicPlan(User $user): void
-    {
-        $user->newSubscription(
-            Plan::BASIC_PLAN,
-            Plan::where('slug', Plan::BASIC_PLAN)->firstOrFail()->stripe_price
-        )->create();
-    }
-
-
     public function register(RegisterRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -41,7 +32,7 @@ class AuthController extends Controller
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $this->subscribeBasicPlan($createdUser);
+        (new PlanController())->subscribeBasicPlan($createdUser);
 
         $createdUser->{'auth_token'} = $createdUser->createToken('auth_token')->plainTextToken;
         return response()->json($createdUser);

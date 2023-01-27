@@ -10,27 +10,25 @@ use Illuminate\Database\Seeder;
 
 use App\Models\User;
 
+
 class AdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
         $user = [
             'first_name' => 'Admin',
             'last_name' => 'Admin',
             'birthdate' => '2003-03-16',
             'type' => User::ADMIN,
-            'country' => 'Ukraine',
+            'country' => 'UA',
             'email' => 'admin@groupbwt.com',
             'phone_number' => '+380991124364',
             'country_phone_code' => 'UA',
             'password' => Hash::make('12345678'),
         ];
 
-        User::insert($user);
+        if (!User::where('email', '=', $user['email'])) {
+            User::insert($user);
+        }
     }
 }
