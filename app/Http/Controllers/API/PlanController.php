@@ -47,6 +47,14 @@ class PlanController extends Controller
     }
 
 
+    public function fetchCurrentPlan(): JsonResponse
+    {
+        $subscription = auth('sanctum')->user()->subscriptions()->active()->firstOrFail();
+
+        return response()->json(Plan::where('slug', $subscription->name)->firstOrFail());
+    }
+
+
     public function subscribeBasicPlan(User $user): JsonResponse
     {
         $plan = Plan::where('slug', Plan::BASIC_PLAN)->firstOrFail();

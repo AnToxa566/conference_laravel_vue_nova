@@ -1,4 +1,7 @@
 import axios from 'axios'
+import planSlugs from '../config/plan_slugs'
+import loadStatus from '../config/load_status'
+
 
 export default {
     namespaced: true,
@@ -6,10 +9,18 @@ export default {
     state: {
         plans: [],
         plan: null,
+
+        loadUserPlanStatus: loadStatus.NOT_STARTED,
     },
 
     getters: {
+        planSlugs: () => planSlugs,
+
         plans: state => state.plans,
+
+        plan: state => state.plan,
+
+        loadUserPlanStatus: state => state.loadUserPlanStatus,
     },
 
     mutations: {
@@ -19,6 +30,10 @@ export default {
 
         storePlan(state, data) {
             state.plan = data
+        },
+
+        storeLoadUserPlanStatus(state, data) {
+            state.loadUserPlanStatus = data
         },
     },
 
@@ -40,6 +55,20 @@ export default {
                 })
                 .catch(err => {
                     console.log(err.response)
+                })
+        },
+
+        fetchUserPlan({ commit }) {
+            commit('storeLoadUserPlanStatus', loadStatus.STARTED)
+
+            axios.get(`/api/user/current-plan`, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('storePlan', res.data)
+                    commit('storeLoadUserPlanStatus', loadStatus.LOADED)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                    commit('storeLoadUserPlanStatus', loadStatus.FAILED)
                 })
         },
     }

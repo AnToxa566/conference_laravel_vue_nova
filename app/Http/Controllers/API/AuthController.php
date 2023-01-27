@@ -69,7 +69,7 @@ class AuthController extends Controller
 
     public function logout(): JsonResponse
     {
-        User::findOrFail(auth('sanctum')->id())->tokens()->delete();
+        auth('sanctum')->user()->tokens()->delete();
 
         return response()->json(null, 204);
     }

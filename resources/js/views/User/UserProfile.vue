@@ -12,15 +12,21 @@
     <user-form
         @submit="updateUser"
     ></user-form>
+
+    <user-subscription
+        class="mt-4"
+    ></user-subscription>
 </template>
 
 
 <script>
 import UserForm from '../../components/User/UserForm.vue';
+import UserSubscription from '../../components/User/UserSubscription.vue';
 
 export default {
     components: {
         UserForm,
+        UserSubscription,
     },
 
     created() {

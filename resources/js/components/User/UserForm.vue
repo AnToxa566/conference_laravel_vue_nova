@@ -102,7 +102,6 @@
                 type="submit"
                 variant="tonal"
                 color="white"
-                class=""
                 @click.prevent="onSubmit(user)"
             >
                 Save

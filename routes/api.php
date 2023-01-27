@@ -124,6 +124,7 @@ Route::controller(PlanController::class)->group(function () {
         Route::put('/plans', 'loadPlans')->name('plans.loadPlans');
 
         Route::get('/plans/{plan:slug}', 'fetchDetail')->name('plans.fetchDetail');
+        Route::get('/user/current-plan', 'fetchCurrentPlan')->name('plans.fetchCurrentPlan');
 
         Route::put('/plans/subscription', 'updateSubscription')->name('plans.updateSubscription');
     });
