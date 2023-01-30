@@ -99,7 +99,7 @@ export default {
         selectedPlan: '',
     }),
 
-    mounted() {
+    created() {
         this.includeStripe('js.stripe.com/v3/', function() {
             this.configureStripe();
         }.bind(this))

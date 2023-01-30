@@ -5,12 +5,12 @@
         </custom-header>
 
         <div
-            v-if="this.loadUserPlanStatus === this.loadStatus.STARTED"
+            v-if="this.loadUserPlanStatus === this.loadStatuses.STARTED"
             class="d-flex justify-content-center">
             <v-progress-circular indeterminate></v-progress-circular>
         </div>
 
-        <div v-else-if="this.loadUserPlanStatus === this.loadStatus.LOADED">
+        <div v-else-if="this.loadUserPlanStatus === this.loadStatuses.LOADED">
             <user-subscription-info></user-subscription-info>
 
             <div class="d-flex justify-content-end">
@@ -25,8 +25,6 @@
 import UserSubscriptionButton from './UserSubscriptionButton.vue'
 import UserSubscriptionInfo from './UserSubscriptionInfo.vue'
 
-import load_status from '../../config/load_status'
-
 import { mapActions } from 'vuex'
 import { mapGetters } from 'vuex'
 
@@ -38,16 +36,13 @@ export default {
         UserSubscriptionInfo,
     },
 
-    data: () => ({
-        loadStatus: load_status,
-    }),
-
-    mounted() {
+    created() {
         this.loadUserPlan()
     },
 
     computed: {
         ...mapGetters({
+            loadStatuses: 'plan/loadStatuses',
             loadUserPlanStatus: 'plan/loadUserPlanStatus',
         }),
     },

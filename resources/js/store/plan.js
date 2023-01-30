@@ -1,6 +1,6 @@
 import axios from 'axios'
 import planSlugs from '../config/plan_slugs'
-import loadStatus from '../config/load_status'
+import loadStatuses from '../config/load_statuses'
 
 
 export default {
@@ -10,7 +10,8 @@ export default {
         plans: [],
         plan: null,
 
-        loadUserPlanStatus: loadStatus.NOT_STARTED,
+        loadPlansStatus: loadStatuses.NOT_STARTED,
+        loadUserPlanStatus: loadStatuses.NOT_STARTED,
     },
 
     getters: {
@@ -19,6 +20,10 @@ export default {
         plans: state => state.plans,
 
         plan: state => state.plan,
+
+        loadStatuses: () => loadStatuses,
+
+        loadPlansStatus: state => state.loadPlansStatus,
 
         loadUserPlanStatus: state => state.loadUserPlanStatus,
     },
@@ -32,6 +37,10 @@ export default {
             state.plan = data
         },
 
+        storeLoadPlansStatus(state, data) {
+            state.loadPlansStatus = data
+        },
+
         storeLoadUserPlanStatus(state, data) {
             state.loadUserPlanStatus = data
         },
@@ -39,36 +48,30 @@ export default {
 
     actions: {
         fetchPlans({ commit }) {
+            commit('storeLoadPlansStatus', loadStatuses.STARTED)
+
             axios.get(`/api/plans`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('storePlans', res.data)
+                    commit('storeLoadPlansStatus', loadStatuses.LOADED)
                 })
                 .catch(err => {
                     console.log(err.response)
-                })
-        },
-
-        fetchPlanDetail({ commit }, slug) {
-            axios.get(`/api/plans/${slug}`, JSON.parse(localStorage.getItem('config')))
-                .then(res => {
-                    commit('storePlan', res.data)
-                })
-                .catch(err => {
-                    console.log(err.response)
+                    commit('storeLoadPlansStatus', loadStatuses.FAILED)
                 })
         },
 
         fetchUserPlan({ commit }) {
-            commit('storeLoadUserPlanStatus', loadStatus.STARTED)
+            commit('storeLoadUserPlanStatus', loadStatuses.STARTED)
 
             axios.get(`/api/user/current-plan`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('storePlan', res.data)
-                    commit('storeLoadUserPlanStatus', loadStatus.LOADED)
+                    commit('storeLoadUserPlanStatus', loadStatuses.LOADED)
                 })
                 .catch(err => {
                     console.log(err.response)
-                    commit('storeLoadUserPlanStatus', loadStatus.FAILED)
+                    commit('storeLoadUserPlanStatus', loadStatuses.FAILED)
                 })
         },
     }
