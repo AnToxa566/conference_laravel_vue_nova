@@ -18,30 +18,24 @@ export default {
         loadUserPlanStatus: loadStatuses.NOT_STARTED,
 
         updateSubscriptionStatus: loadStatuses.NOT_STARTED,
+        cancelSubscriptionStatus: loadStatuses.NOT_STARTED,
     },
 
     getters: {
         planSlugs: () => planSlugs,
-
         loadStatuses: () => loadStatuses,
-
 
         plans: state => state.plans,
 
-
         currentPlan: state => state.currentPlan,
-
         plan: state => state.plan,
 
-
         loadPlanStatus: state => state.loadPlansStatus,
-
         loadPlansStatus: state => state.loadPlansStatus,
-
         loadUserPlanStatus: state => state.loadUserPlanStatus,
 
-
         updateSubscriptionStatus: state => state.updateSubscriptionStatus,
+        cancelSubscriptionStatus: state => state.cancelSubscriptionStatus,
     },
 
     mutations: {
@@ -74,6 +68,10 @@ export default {
 
         storeUpdateSubscriptionStatus(state, data) {
             state.updateSubscriptionStatus = data
+        },
+
+        storeCancelSubscriptionStatus(state, data) {
+            state.cancelSubscriptionStatus = data
         },
     },
 
@@ -133,6 +131,22 @@ export default {
                 .catch(err => {
                     console.log(err.response)
                     commit('storeUpdateSubscriptionStatus', loadStatuses.FAILED)
+                })
+        },
+
+        cancelSubscription({ commit, dispatch }) {
+            commit('storeCancelSubscriptionStatus', loadStatuses.STARTED)
+
+            axios.put('/api/plans/subscription/cancel', null, JSON.parse(localStorage.getItem('config')))
+                .then(res => {
+                    commit('storeCancelSubscriptionStatus', loadStatuses.COMPLETED)
+
+                    dispatch('fetchUserPlan')
+                    store.dispatch('auth/fetchUser')
+                })
+                .catch(err => {
+                    console.log(err.response)
+                    commit('storeCancelSubscriptionStatus', loadStatuses.FAILED)
                 })
         },
     }

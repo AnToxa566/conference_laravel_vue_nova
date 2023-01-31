@@ -127,6 +127,7 @@ Route::controller(PlanController::class)->group(function () {
         Route::get('/user/current-plan', 'fetchCurrentPlan')->name('plans.fetchCurrentPlan');
 
         Route::put('/plans/subscription', 'updateSubscription')->name('plans.updateSubscription');
+        Route::put('/plans/subscription/cancel', 'cancelSubscription')->name('plans.cancelSubscription');
     });
 });
 

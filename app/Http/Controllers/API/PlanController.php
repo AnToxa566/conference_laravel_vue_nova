@@ -47,9 +47,9 @@ class PlanController extends Controller
     }
 
 
-    public function fetchCurrentPlan(): JsonResponse
+    public function fetchCurrentPlan(Request $request): JsonResponse
     {
-        $subscription = auth('sanctum')->user()->subscriptions()->active()->firstOrFail();
+        $subscription = $request->user()->subscriptions()->active()->firstOrFail();
 
         return response()->json(Plan::where('slug', $subscription->name)->firstOrFail());
     }
@@ -62,6 +62,7 @@ class PlanController extends Controller
         $user->newSubscription($plan->slug, $plan->stripe_price)->create();
 
         $user->joins_left = $plan->joins;
+        $user->save();
 
         return response()->json(null, 204);
     }
@@ -76,11 +77,20 @@ class PlanController extends Controller
         $request->user()->joins_left = $plan->joins;
         $request->user()->save();
 
-        $subscription = auth('sanctum')->user()->subscriptions()->active()->where('stripe_price', '!=', $plan->stripe_price)->firstOrFail();
+        $subscription = $request->user()->subscriptions()->active()->where('stripe_price', '!=', $plan->stripe_price)->firstOrFail();
         $subscription->cancelNow();
 
-        return response()->json([
-            'subscription_updated' => true
-        ]);
+        return response()->json(null, 204);
+    }
+
+
+    public function cancelSubscription(Request $request): JsonResponse
+    {
+        $subscription = $request->user()->subscriptions()->active()->firstOrFail();
+        $subscription->cancelNow();
+
+        $this->subscribeBasicPlan($request->user());
+
+        return response()->json(null, 204);
     }
 }
