@@ -68,6 +68,10 @@ export default {
         SET_HAS_AUTH_ERRORS (state, value) {
             state.hasAuthErrors = value
         },
+
+        DECREMENT_JOINS (state) {
+            state.user.joins_left--
+        },
     },
 
     actions: {

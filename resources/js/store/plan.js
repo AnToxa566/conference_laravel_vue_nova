@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store'
 import planSlugs from '../config/plan_slugs'
 import loadStatuses from '../config/load_statuses'
 
@@ -125,7 +126,9 @@ export default {
             axios.put('/api/plans/subscription', query, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('storeUpdateSubscriptionStatus', loadStatuses.COMPLETED)
+
                     dispatch('fetchUserPlan')
+                    store.dispatch('auth/fetchUser')
                 })
                 .catch(err => {
                     console.log(err.response)

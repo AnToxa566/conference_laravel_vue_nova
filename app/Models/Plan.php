@@ -21,6 +21,8 @@ class Plan extends Model
 
     public const UNLIMITED_PLAN = 'unlimited';
 
+    public const UNLIMITED_JOINS = -1;
+
 
     protected $table = 'plans';
 

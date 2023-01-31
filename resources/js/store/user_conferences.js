@@ -40,9 +40,10 @@ export default {
         },
 
         joinConference({ commit }, conferenceId) {
-            axios.get(`/api/conferences/join/${store.state.auth.user.id}/${conferenceId}`, JSON.parse(localStorage.getItem('config')))
+            axios.post(`/api/conferences/join`, { conferenceId: conferenceId }, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('ADD_JOINED_CONFERENCE_ID', conferenceId)
+                    store.commit('auth/DECREMENT_JOINS')
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -50,7 +51,7 @@ export default {
         },
 
         cancelParticipation({ commit }, conferenceId) {
-            axios.get(`/api/conferences/cancel/${store.state.auth.user.id}/${conferenceId}`, JSON.parse(localStorage.getItem('config')))
+            axios.post(`/api/conferences/cancel`, { conferenceId: conferenceId }, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
                     commit('REMOVE_JOINED_CONFERENCE_ID', conferenceId)
                 })

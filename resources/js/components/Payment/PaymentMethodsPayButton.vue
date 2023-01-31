@@ -4,7 +4,7 @@
         color="white"
 
         :loading="this.isLoading"
-        :disabled="this.isFailed"
+        :disabled="this.isFailed || this.isPlanSubscribed"
 
         @click="submitPayment"
     >
@@ -27,12 +27,15 @@ export default {
     },
 
     created() {
+        this.loadUserPlan()
         this.loadPlan(this.$route.params.planSlug)
     },
 
     computed: {
         ...mapGetters({
             plan: 'plan/plan',
+            userPlan: 'plan/currentPlan',
+
             loadStatuses: 'plan/loadStatuses',
             loadPlanStatus: 'plan/loadPlanStatus',
             updateSubscriptionStatus: 'plan/updateSubscriptionStatus',
@@ -48,11 +51,17 @@ export default {
         isSubscriptionUpdating() { return this.updateSubscriptionStatus === this.loadStatuses.STARTED },
         isSubscriptionUpdated() { return this.updateSubscriptionStatus === this.loadStatuses.COMPLETED },
         isSubscriptionUpdatingFailed() { return this.updateSubscriptionStatus === this.loadStatuses.FAILED },
+
+        isPlanSubscribed() {
+            return this.plan.slug === this.userPlan.slug
+        },
     },
 
     methods: {
         ...mapActions({
             loadPlan: 'plan/fetchPlan',
+            loadUserPlan: 'plan/fetchUserPlan',
+
             updateSubscription: 'plan/updateSubscription',
         }),
 

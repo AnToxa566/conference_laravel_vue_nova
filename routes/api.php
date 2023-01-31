@@ -135,8 +135,8 @@ Route::controller(UserConferenceController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/conferences/joined/{user_id}', 'fetchJoinedConferences')->name('conferences.fetchJoinedConferences');
 
-        Route::get('/conferences/join/{user_id}/{conference_id}', 'joinConference')->name('conferences.joinConference');
-        Route::get('/conferences/cancel/{user_id}/{conference_id}', 'cancelParticipation')->name('conferences.cancelParticipation');
+        Route::post('/conferences/join', 'joinConference')->name('conferences.joinConference');
+        Route::post('/conferences/cancel', 'cancelParticipation')->name('conferences.cancelParticipation');
     });
 });
 

@@ -1,28 +1,9 @@
 <template>
     <v-dialog
-        v-model="dialog"
+        :model-value="modelValue"
         fullscreen
         :scrim="false"
     >
-        <template
-            v-slot:activator="{ props }"
-        >
-            <v-btn
-                v-if="this.getFreeStartTime"
-                variant="tonal" color="white" class="mx-1"
-                v-bind="props"
-            >
-                Join
-            </v-btn>
-
-            <div
-                v-else
-                class="d-flex align-center mx-1"
-            >
-                <p class="mb-0">Registration is impossible</p>
-            </div>
-        </template>
-
         <v-card class="pa-8">
             <v-card-title class="mb-6">
                 <span class="text-h4 font-weight-bold">Add Lecture</span>
@@ -41,7 +22,7 @@
                 <template v-slot:extraButtons>
                     <v-btn
                         variant="tonal" color="white" class="mx-2"
-                        @click="dialog = false"
+                        @click="this.$emit('update:modelValue', false)"
                     >
                         Close
                     </v-btn>
@@ -60,11 +41,15 @@ export default {
         LectureForm,
     },
 
+    emits: ['update:modelValue'],
+
     data: () => ({
         dialog: false,
     }),
 
     props: {
+        modelValue: [Boolean],
+
         conference: {
             type: Object,
             required: true,
@@ -88,7 +73,7 @@ export default {
     methods: {
         async createLecture(lecture) {
             this.$store.dispatch('lecture/storeLecture', lecture)
-            this.dialog = false
+            this.$emit('update:modelValue', false)
         },
     },
 }
