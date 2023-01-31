@@ -10,7 +10,7 @@
             <v-progress-circular indeterminate></v-progress-circular>
         </div>
 
-        <div v-else-if="this.loadUserPlanStatus === this.loadStatuses.LOADED">
+        <div v-else-if="this.loadUserPlanStatus === this.loadStatuses.COMPLETED">
             <user-subscription-info></user-subscription-info>
 
             <div class="d-flex justify-content-end">
@@ -25,8 +25,7 @@
 import UserSubscriptionButton from './UserSubscriptionButton.vue'
 import UserSubscriptionInfo from './UserSubscriptionInfo.vue'
 
-import { mapActions } from 'vuex'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'user-subscription',

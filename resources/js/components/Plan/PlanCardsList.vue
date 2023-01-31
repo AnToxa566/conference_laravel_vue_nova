@@ -7,7 +7,7 @@
         </div>
 
         <div
-            v-else-if="this.loadPlansStatus === this.loadStatuses.LOADED"
+            v-else-if="this.loadPlansStatus === this.loadStatuses.COMPLETED"
             class="d-flex justify-content-between"
         >
             <plan-card
@@ -23,9 +23,7 @@
 
 <script>
 import PlanCard from "../../components/Plan/PlanCard.vue"
-
-import { mapActions } from 'vuex'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'plan-cards-list',

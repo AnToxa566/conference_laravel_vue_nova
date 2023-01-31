@@ -10,7 +10,6 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
 
-use App\Models\Plan;
 use App\Models\User;
 
 use Illuminate\Http\Request;

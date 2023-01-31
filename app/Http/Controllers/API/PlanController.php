@@ -69,9 +69,15 @@ class PlanController extends Controller
 
     public function updateSubscription(Request $request): JsonResponse
     {
-        $request->user()->newSubscription($request->get('plan_slug'), $request->get('stripe_price'))->create($request->get('payment'));
+        $plan = Plan::where('slug', $request->get('plan_slug'))->firstOrFail();
 
-        // $request->user()->joins_left = $plan->joins;
+        $request->user()->newSubscription($plan->slug, $plan->stripe_price)->create($request->get('payment'));
+
+        $request->user()->joins_left = $plan->joins;
+        $request->user()->save();
+
+        $subscription = auth('sanctum')->user()->subscriptions()->active()->where('stripe_price', '!=', $plan->stripe_price)->firstOrFail();
+        $subscription->cancelNow();
 
         return response()->json([
             'subscription_updated' => true

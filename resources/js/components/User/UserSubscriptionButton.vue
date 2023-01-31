@@ -1,13 +1,11 @@
 <template>
-    <div>
-        <v-btn
-            variant="tonal"
-            color="white"
-            @click="this.isPlanBasic ? this.upgradeSubscription() : this.cancelSubscription()"
-        >
-            {{ this.isPlanBasic ? this.buttonsText.UPGRADE_SUB : this.buttonsText.CANCEL_SUB }}
-        </v-btn>
-    </div>
+    <v-btn
+        variant="tonal"
+        color="white"
+        @click="this.isPlanBasic ? this.upgradeSubscription() : this.cancelSubscription()"
+    >
+        {{ this.isPlanBasic ? this.buttonsText.UPGRADE_SUB : this.buttonsText.CANCEL_SUB }}
+    </v-btn>
 </template>
 
 
@@ -24,7 +22,7 @@ export default {
 
     computed: {
         ...mapGetters({
-            plan: 'plan/plan',
+            plan: 'plan/currentPlan',
             planSlugs: 'plan/planSlugs',
         }),
 

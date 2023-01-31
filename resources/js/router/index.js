@@ -23,6 +23,7 @@ const Lectures = () => import('../views/Lecture/Lectures.vue')
 const LectureShow = () => import('../views/Lecture/LectureShow.vue')
 const LectureEdit = () => import('../views/Lecture/LectureEdit.vue')
 
+const Payment = () => import('../views/Payment/PaymentPage.vue')
 const Plans = () => import('../views/Plan/Plans.vue')
 
 const UserProfile = () => import('../views/User/UserProfile.vue')
@@ -148,6 +149,19 @@ const router = createRouter({
             }
         },
         /* Lecture Components */
+
+
+        /* Payment Components */
+        {
+            path: '/payment/:planSlug',
+            name: 'payment',
+            component: Payment,
+            meta: {
+                middleware: "auth",
+                title: `Payment`
+            }
+        },
+        /* Payment Components */
 
 
         /* Plan Components */

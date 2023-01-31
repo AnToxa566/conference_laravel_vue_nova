@@ -101,6 +101,16 @@ export default {
                 })
         },
 
+        fetchUser({ commit, state }) {
+            axios.get('/api/user', state.config)
+                .then(res => {
+                    commit('SET_USER', res.data)
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+        },
+
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {

@@ -27,6 +27,7 @@
                     <v-btn
                         v-show="this.plan.price && !this.isCurrentPlan"
                         color="green-darken-2"
+                        @click="upgradePlan"
                     >
                         Upgrade
                     </v-btn>
@@ -45,8 +46,7 @@
 
 
 <script>
-import { mapActions } from 'vuex'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'plan-card',
@@ -64,7 +64,7 @@ export default {
 
     computed: {
         ...mapGetters({
-            currentPlan: 'plan/plan',
+            currentPlan: 'plan/currentPlan',
         }),
 
         isCurrentPlan() {
@@ -76,6 +76,10 @@ export default {
         ...mapActions({
             loadUserPlan: 'plan/fetchUserPlan',
         }),
+
+        upgradePlan() {
+            this.$router.push({ name: 'payment', params: { planSlug: this.plan.slug }})
+        },
     },
 }
 </script>

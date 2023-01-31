@@ -74,6 +74,7 @@ import ShareButtons from './components/UI/ShareButtons.vue'
 
 
 // My Form Components
+import CustomSuccessAlert from './components/UI/CustomSuccessAlert.vue'
 import CustomErrorAlert from './components/UI/CustomErrorAlert.vue'
 import CustomInput from './components/FormComponents/CustomInput.vue'
 import CustomPhoneNumberInput from './components/FormComponents/CustomPhoneNumberInput.vue'
@@ -113,6 +114,7 @@ app
     .component('FavoriteBtn', FavoriteBtn)
     .component('CustomInput', CustomInput)
     .component('CustomTimer', CustomTimer)
+    .component('CustomSuccessAlert', CustomSuccessAlert)
     .component('CustomErrorAlert', CustomErrorAlert)
     .component('CustomDatepicker', CustomDatepicker)
     .component('CustomTimepicker', CustomTimepicker)

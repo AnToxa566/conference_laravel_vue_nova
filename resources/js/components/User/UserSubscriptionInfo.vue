@@ -21,7 +21,7 @@ export default {
 
     computed: {
         ...mapGetters({
-            plan: 'plan/plan',
+            plan: 'plan/currentPlan',
             user: 'auth/user',
             planSlugs: 'plan/planSlugs',
         }),
