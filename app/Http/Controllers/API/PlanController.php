@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Laravel\Cashier\Cashier;
 
 use App\Http\Requests\Plan\UpdateSubscriptionRequest;
 
@@ -17,26 +16,6 @@ use App\Models\User;
 
 class PlanController extends Controller
 {
-    public function loadPlans(): JsonResponse
-    {
-        Plan::truncate();
-
-        $allPlans = Cashier::stripe()->products->all(['active' => true]);
-
-        foreach ($allPlans as $plan) {
-            Plan::create([
-                'slug' => $plan->name,
-                'stripe_price' => $plan->default_price,
-                'price' => $plan->metadata->price,
-                'joins' => $plan->metadata->joins,
-                'description' => $plan->description,
-            ]);
-        }
-
-        return response()->json(null, 200);
-    }
-
-
     public function fetchPlans(): JsonResponse
     {
         return response()->json(Plan::get());
