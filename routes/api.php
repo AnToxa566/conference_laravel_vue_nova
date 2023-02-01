@@ -112,7 +112,7 @@ Route::controller(PaymentController::class)->group(function () {
         Route::get('/user/setup-intent', 'getSetupIntent')->name('user.getSetupIntent');
 
         Route::get('/user/payment-methods', 'getPaymentMethods')->name('user.getPaymentMethods');
-        Route::post('/user/payments', 'storePaymentMethods')->name('user.storePaymentMethods');
+        Route::post('/user/payments', 'storePaymentMethod')->name('user.storePaymentMethod');
         Route::post('/user/remove-payment', 'removePaymentMethod')->name('user.removePaymentMethod');
     });
 });

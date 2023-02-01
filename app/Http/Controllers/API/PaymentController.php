@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Payment\StorePaymentMethodRequest;
+use App\Http\Requests\Payment\RemovePaymentMethodRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -18,10 +20,10 @@ class PaymentController extends Controller
     }
 
 
-    public function storePaymentMethods(Request $request): JsonResponse
+    public function storePaymentMethod(StorePaymentMethodRequest $request): JsonResponse
     {
         $user = $request->user();
-        $paymentMethodID = $request->get('payment_method');
+        $paymentMethodID = $request->validated()['payment_method'];
 
         if ($user->stripe_id === null) {
             $user->createAsStripeCustomer();
@@ -55,10 +57,10 @@ class PaymentController extends Controller
     }
 
 
-    public function removePaymentMethod(Request $request): JsonResponse
+    public function removePaymentMethod(RemovePaymentMethodRequest $request): JsonResponse
     {
         $user = $request->user();
-        $paymentMethodID = $request->get('id');
+        $paymentMethodID = $request->validated()['payment_method'];
 
         $paymentMethods = $user->paymentMethods();
 

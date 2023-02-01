@@ -14,7 +14,7 @@
 
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
     name: 'payment-methods-pay-button',
@@ -29,6 +29,8 @@ export default {
     created() {
         this.loadUserPlan()
         this.loadPlan(this.$route.params.planSlug)
+
+        this.storeUpdateSubscriptionStatus(this.loadStatuses.NOT_STARTED)
     },
 
     computed: {
@@ -65,6 +67,10 @@ export default {
             updateSubscription: 'plan/updateSubscription',
         }),
 
+        ...mapMutations({
+            storeUpdateSubscriptionStatus: 'plan/storeUpdateSubscriptionStatus',
+        }),
+
         submitPayment() {
             if (!this.paymentMethodId) {
                 alert('Choose a payment method')
@@ -78,7 +84,7 @@ export default {
 
             this.updateSubscription({
                 plan_slug: this.plan.slug,
-                payment: this.paymentMethodId,
+                payment_method: this.paymentMethodId,
             })
         },
     },

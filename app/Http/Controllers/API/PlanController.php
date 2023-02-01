@@ -9,6 +9,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Cashier;
 
+use App\Http\Requests\Plan\UpdateSubscriptionRequest;
+
 use App\Models\Plan;
 use App\Models\User;
 
@@ -68,16 +70,19 @@ class PlanController extends Controller
     }
 
 
-    public function updateSubscription(Request $request): JsonResponse
+    public function updateSubscription(UpdateSubscriptionRequest $request): JsonResponse
     {
-        $plan = Plan::where('slug', $request->get('plan_slug'))->firstOrFail();
+        $validated = $request->validated();
+        $user = $request->user();
 
-        $request->user()->newSubscription($plan->slug, $plan->stripe_price)->create($request->get('payment'));
+        $plan = Plan::where('slug', $validated['plan_slug'])->firstOrFail();
 
-        $request->user()->joins_left = $plan->joins;
-        $request->user()->save();
+        $user->newSubscription($plan->slug, $plan->stripe_price)->create($validated['payment_method']);
 
-        $subscription = $request->user()->subscriptions()->active()->where('stripe_price', '!=', $plan->stripe_price)->firstOrFail();
+        $user->joins_left = $plan->joins;
+        $user->save();
+
+        $subscription = $user->subscriptions()->active()->where('stripe_price', '!=', $plan->stripe_price)->firstOrFail();
         $subscription->cancelNow();
 
         return response()->json(null, 204);
@@ -86,10 +91,12 @@ class PlanController extends Controller
 
     public function cancelSubscription(Request $request): JsonResponse
     {
-        $subscription = $request->user()->subscriptions()->active()->firstOrFail();
+        $user = $request->user();
+
+        $subscription = $user->subscriptions()->active()->firstOrFail();
         $subscription->cancelNow();
 
-        $this->subscribeBasicPlan($request->user());
+        $this->subscribeBasicPlan($user);
 
         return response()->json(null, 204);
     }
