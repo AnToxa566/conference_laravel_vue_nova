@@ -12,19 +12,28 @@
     <user-form
         @submit="updateUser"
     ></user-form>
+
+    <user-subscription
+        class="mt-4"
+    ></user-subscription>
 </template>
 
 
 <script>
-import UserForm from '../../components/User/UserForm.vue';
+import UserForm from '../../components/User/UserForm.vue'
+import UserSubscription from '../../components/User/UserSubscription.vue'
+
+import { mapActions } from 'vuex'
 
 export default {
     components: {
         UserForm,
+        UserSubscription,
     },
 
     created() {
-        this.$store.dispatch('auth/removeAuthErrors')
+        this.loadUser()
+        this.removeAuthErrors()
     },
 
     computed: {
@@ -41,6 +50,11 @@ export default {
     },
 
     methods: {
+        ...mapActions({
+            loadUser: 'auth/fetchUser',
+            removeAuthErrors: 'auth/removeAuthErrors',
+        }),
+
         async updateUser(user) {
             axios.get("/sanctum/csrf-cookie").then(response => {
                 this.$store.dispatch('auth/update', user)

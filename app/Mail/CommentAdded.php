@@ -13,32 +13,18 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Comment;
 
+
 class CommentAdded extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * The comment instance.
-     *
-     * @var \App\Models\Comment
-     */
     public Comment $comment;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public function __construct(Comment $comment)
     {
         $this->comment = $comment;
     }
 
-    /**
-     * Get the message envelope.
-     *
-     * @return \Illuminate\Mail\Mailables\Envelope
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -46,11 +32,6 @@ class CommentAdded extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the message content definition.
-     *
-     * @return \Illuminate\Mail\Mailables\Content
-     */
     public function content(): Content
     {
         return new Content(

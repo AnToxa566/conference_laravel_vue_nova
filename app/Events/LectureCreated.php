@@ -18,18 +18,8 @@ class LectureCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * The lecturer's instance.
-     *
-     * @var Lecture
-     */
     public Lecture $lecture;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(Lecture $lecture)
     {
         $this->lecture = $lecture;

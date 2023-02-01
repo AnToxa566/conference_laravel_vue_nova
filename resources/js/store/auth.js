@@ -68,6 +68,10 @@ export default {
         SET_HAS_AUTH_ERRORS (state, value) {
             state.hasAuthErrors = value
         },
+
+        DECREMENT_JOINS (state) {
+            state.user.joins_left--
+        },
     },
 
     actions: {
@@ -98,6 +102,16 @@ export default {
 
                         router.push({ name: 'login' })
                     }
+                })
+        },
+
+        fetchUser({ commit, state }) {
+            axios.get('/api/user', state.config)
+                .then(res => {
+                    commit('SET_USER', res.data)
+                })
+                .catch(err => {
+                    console.log(err.response)
                 })
         },
 

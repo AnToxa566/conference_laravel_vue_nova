@@ -13,11 +13,6 @@ class ZoomMeeting extends Field
 {
     use SupportsDependentFields;
 
-    /**
-     * The field's component.
-     *
-     * @var string
-     */
     public $component = 'zoom-meeting';
 
     public function zoomMeeting(ZoomMeetingModel $zoomMeeting): self

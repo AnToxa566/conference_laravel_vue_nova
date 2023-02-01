@@ -43,6 +43,18 @@
                 Profile
             </v-list-item>
 
+
+            <!-- User's Profile Page -->
+
+            <v-list-item
+                value="true"
+                prepend-icon="mdi-credit-card-outline"
+                @click="this.$router.push({ name: 'plans' })"
+            >
+                Products
+            </v-list-item>
+
+
             <!-- Logout Button -->
 
             <v-list-item

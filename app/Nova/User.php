@@ -25,45 +25,20 @@ use App\Rules\PhoneNumberRule;
 
 class User extends Resource
 {
-    /**
-     * The model the resource corresponds to.
-     *
-     * @var class-string<\App\Models\User>
-     */
     public static $model = \App\Models\User::class;
 
-    /**
-     * Indicates if the resource should be displayed in the sidebar.
-     *
-     * @var bool
-     */
     public static $displayInNavigation = false;
 
-    /**
-     * The columns that should be searched.
-     *
-     * @var array
-     */
     public static $search = [
         'id', 'first_name', 'last_name', 'email',
     ];
 
-    /**
-     * Get the value that should be displayed to represent the resource.
-     *
-     * @return string
-     */
     public function title(): string
     {
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    /**
-     * Get the fields displayed by the resource.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return array
-     */
+
     public function fields(NovaRequest $request): array
     {
         return [

@@ -28,35 +28,24 @@ use Illuminate\Support\Facades\Mail;
 
 class Conference extends Resource
 {
-    /**
-     * The model the resource corresponds to.
-     *
-     * @var class-string<\App\Models\Conference>
-     */
+    public const MIN_LATITUDE = -90;
+
+    public const MAX_LATITUDE = 90;
+
+    public const MIN_LONGITUDE = -180;
+
+    public const MAX_LONGITUDE = -180;
+
+
     public static $model = \App\Models\Conference::class;
 
-    /**
-     * The single value that should be used to represent the resource when being displayed.
-     *
-     * @var string
-     */
     public static $title = 'title';
 
-    /**
-     * The columns that should be searched.
-     *
-     * @var array
-     */
     public static $search = [
         'title',
     ];
 
-    /**
-     * Get the fields displayed by the resource.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return array
-     */
+
     public function fields(NovaRequest $request): array
     {
         return [
@@ -82,7 +71,8 @@ class Conference extends Resource
                 ->storeLongitudeField('longitude')
                 ->dependsOn(
                     ['latitude', 'longitude'],
-                    function (GoogleMaps $field, NovaRequest $request, FormData $formData) {
+                    static function (GoogleMaps $field, NovaRequest $request, FormData $formData): void
+                    {
                         if ($formData->latitude && $formData->longitude) {
                             $field->setDefaultLocation((float) $formData->latitude, (float) $formData->longitude);
                         }
@@ -103,36 +93,23 @@ class Conference extends Resource
         ];
     }
 
-    /**
-     * Handle any post-validation processing.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
-     */
+
     protected static function afterValidation(NovaRequest $request, $validator): void
     {
         $lat = $validator->getData()['latitude'];
         $lng = $validator->getData()['longitude'];
 
         if ($lat && $lng) {
-            if ($lat < -90 || $lat > 90) {
+            if ($lat < self::MIN_LATITUDE || $lat > self::MAX_LATITUDE) {
                 $validator->errors()->add('latitude', 'The latitude value must be between -90 and 90!');
             }
 
-            if ($lng < -180 || $lng > 180) {
+            if ($lng < self::MIN_LONGITUDE || $lng > self::MAX_LONGITUDE) {
                 $validator->errors()->add('longitude', 'The longitude value must be between -180 and 180!');
             }
         }
     }
 
-    /**
-     * Register a callback to be called after the resource is updated.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
     public static function afterUpdate(NovaRequest $request, Model $model): void
     {
         if ($model->wasChanged('category_id')) {
@@ -158,13 +135,6 @@ class Conference extends Resource
         }
     }
 
-    /**
-     * Register a callback to be called after the resource is deleted.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
     public static function afterDelete(NovaRequest $request, Model $model): void
     {
         $users = $model->users;

@@ -27,11 +27,6 @@ use Laravel\Nova\Menu\MenuSection;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
     public function boot(): void
     {
         parent::boot();
@@ -61,11 +56,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         });
     }
 
-    /**
-     * Register the Nova routes.
-     *
-     * @return void
-     */
     protected function routes(): void
     {
         Nova::routes()
@@ -74,27 +64,16 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 ->register();
     }
 
-    /**
-     * Register the Nova gate.
-     *
-     * This gate determines who can access Nova in non-local environments.
-     *
-     * @return void
-     */
     protected function gate(): void
     {
-        Gate::define('viewNova', function ($user) {
+        Gate::define('viewNova', static function (User $user): bool
+        {
             return in_array($user->type, [
                 User::ADMIN
             ]);
         });
     }
 
-    /**
-     * Get the dashboards that should be listed in the Nova sidebar.
-     *
-     * @return array
-     */
     protected function dashboards(): array
     {
         return [

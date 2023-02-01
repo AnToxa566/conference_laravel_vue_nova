@@ -1,24 +1,25 @@
 <template>
-    <Datepicker
-        dark
-        modelType="yyyy-MM-dd"
+    <div>
+        <Datepicker
+            dark
+            modelType="yyyy-MM-dd"
 
-        :placeholder=this.placeholder
-        :minDate=this.min
-        :maxDate=this.max
+            :placeholder=this.placeholder
+            :minDate=this.min
+            :maxDate=this.max
 
-        :modelValue="modelValue"
-        :enableTimePicker="false"
-        @update:modelValue="updateInput"
-    />
+            :modelValue="modelValue"
+            :enableTimePicker="false"
+            @update:modelValue="updateInput"
+        />
 
-    <div
-        v-if="!hideDetails"
-        id="message__wrapper"
-        class="hidden__message"
-    >
-        <p class="message">Field is required!</p>
+        <div
+            v-if="!hideDetails && !this.modelValue"
+        >
+            <p class="message">Field is required!</p>
+        </div>
     </div>
+
 </template>
 
 
@@ -57,11 +58,6 @@ export default {
     methods: {
         updateInput(event) {
             this.$emit('update:modelValue', event)
-
-            if (!this.hideDetails) {
-                const messageWrapper = document.getElementById("message__wrapper")
-                this.modelValue ? messageWrapper.classList.remove("hidden__message") : messageWrapper.classList.add("hidden__message")
-            }
         },
     },
 }
@@ -76,9 +72,6 @@ export default {
         padding-left: 35px;
     }
 
-    .hidden__message {
-        visibility: hidden;
-    }
     .message {
         color: #cf6679;
         font-size: 12px;

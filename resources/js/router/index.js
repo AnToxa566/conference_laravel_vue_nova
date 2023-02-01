@@ -15,15 +15,18 @@ const Conferences = () => import('../views/Conference/Conferences.vue')
 
 
 /* Authenticated Components */
-const UserProfile = () => import('../views/User/UserProfile.vue')
-
 const ConferenceShow = () => import('../views/Conference/ConferenceShow.vue')
+
+const FavoriteLectures = () => import('../views/Lecture/FavoriteLectures.vue')
 
 const Lectures = () => import('../views/Lecture/Lectures.vue')
 const LectureShow = () => import('../views/Lecture/LectureShow.vue')
 const LectureEdit = () => import('../views/Lecture/LectureEdit.vue')
 
-const FavoriteLectures = () => import('../views/Lecture/FavoriteLectures.vue')
+const Payment = () => import('../views/Payment/PaymentPage.vue')
+const Plans = () => import('../views/Plan/Plans.vue')
+
+const UserProfile = () => import('../views/User/UserProfile.vue')
 /* Authenticated Components */
 
 
@@ -146,6 +149,32 @@ const router = createRouter({
             }
         },
         /* Lecture Components */
+
+
+        /* Payment Components */
+        {
+            path: '/payment/:planSlug',
+            name: 'payment',
+            component: Payment,
+            meta: {
+                middleware: "auth",
+                title: `Payment`
+            }
+        },
+        /* Payment Components */
+
+
+        /* Plan Components */
+        {
+            path: '/plans',
+            name: 'plans',
+            component: Plans,
+            meta: {
+                middleware: "auth",
+                title: `Plans`
+            }
+        },
+        /* Plan Components */
     ]
 })
 

@@ -33,6 +33,7 @@
         <custom-datepicker
             v-model="user.birthdate"
             placeholder="Date of birthday"
+            class="mb-6"
 
             :max="new Date()"
         >
@@ -97,20 +98,24 @@
 
         <!-- Submit button -->
 
-        <v-btn
-            type="submit"
-            variant="tonal"
-            color="white"
-            class=""
-            @click.prevent="onSubmit(user)"
-        >
-            Save
-        </v-btn>
+        <div class="d-flex justify-content-end">
+            <v-btn
+                type="submit"
+                variant="tonal"
+                color="white"
+                @click.prevent="onSubmit(user)"
+            >
+                Save
+            </v-btn>
+        </div>
+
     </v-form>
 </template>
 
 
 <script>
+import moment from 'moment'
+
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
@@ -150,7 +155,11 @@ export default {
     }),
 
     created() {
-        if (this.isAuthenticated) Object.assign(this.user, this.storeUser);
+        if (this.isAuthenticated) {
+            Object.assign(this.user, this.storeUser)
+
+            this.user.birthdate = moment(this.user.birthdate).format('YYYY-MM-DD')
+        }
     },
 
     methods: {

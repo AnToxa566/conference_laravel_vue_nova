@@ -14,19 +14,14 @@ use App\Events\LectureCreated;
 use App\Models\User;
 use App\Models\Conference;
 
+
 class SendAnnouncerJoinedNotification
 {
-    /**
-     * Handle the event.
-     *
-     * @param  \App\Events\LectureCreated  $event
-     * @return void
-     */
     public function handle(LectureCreated $event): void
     {
         $listeners = Conference::findOrFail($event->lecture->conference_id)->users()->where('type', User::LISTENER)->get();
 
-        if (count($listeners)) {
+        if ($listeners->isNotEmpty()) {
             Mail::to($listeners)->send(new AnnouncerJoined($event->lecture));
         }
     }

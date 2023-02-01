@@ -11,14 +11,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Events\LectureDeleted;
 
+
 class SendLectureDeletionNotification
 {
-    /**
-     * Handle the event.
-     *
-     * @param  \App\Events\LectureDeleted  $event
-     * @return void
-     */
     public function handle(LectureDeleted $event): void
     {
         Mail::to($event->emails)->send(new LectureDeletedByAdmin($event->conferenceId, $event->conferenceTitle));

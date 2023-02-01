@@ -18,14 +18,18 @@ class UserLectureController extends Controller
     }
 
 
-    public function addFavoriteLecture(int $userId, int $lectureId): void
+    public function addFavoriteLecture(int $userId, int $lectureId): JsonResponse
     {
         User::findOrFail($userId)->favoriteLectures()->attach($lectureId);
+
+        return response()->json(null, 200);
     }
 
 
-    public function removeFavoriteLecture(int $userId, int $lectureId): void
+    public function removeFavoriteLecture(int $userId, int $lectureId): JsonResponse
     {
         User::findOrFail($userId)->favoriteLectures()->detach($lectureId);
+
+        return response()->json(null, 200);
     }
 }
