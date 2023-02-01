@@ -8,9 +8,7 @@ export default {
     },
 
     getters: {
-        countries(state) {
-            return state.countries
-        },
+        countries: state => state.countries,
     },
 
     mutations: {

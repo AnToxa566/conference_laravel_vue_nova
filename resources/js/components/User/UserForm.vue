@@ -33,6 +33,7 @@
         <custom-datepicker
             v-model="user.birthdate"
             placeholder="Date of birthday"
+            class="mb-6"
 
             :max="new Date()"
         >
@@ -113,6 +114,8 @@
 
 
 <script>
+import moment from 'moment'
+
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
@@ -152,7 +155,11 @@ export default {
     }),
 
     created() {
-        if (this.isAuthenticated) Object.assign(this.user, this.storeUser);
+        if (this.isAuthenticated) {
+            Object.assign(this.user, this.storeUser)
+
+            this.user.birthdate = moment(this.user.birthdate).format('YYYY-MM-DD')
+        }
     },
 
     methods: {

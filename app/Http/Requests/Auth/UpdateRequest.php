@@ -35,7 +35,7 @@ class UpdateRequest extends FormRequest
             'password'      => ['required', 'string', 'min:8', 'confirmed'],
 
             'birthdate'     => ['required', 'date', 'before:tomorrow'],
-            'country'       => ['required', 'string', 'max:255', 'exists:countries,name'],
+            'country'       => ['required', 'string', 'max:255', 'exists:countries,short_code'],
 
             'phone_number'          => ['required', 'string'],
             'country_phone_code'    => ['required', 'string'],
