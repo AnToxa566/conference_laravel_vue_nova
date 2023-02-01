@@ -47,7 +47,7 @@ class UserConferenceController extends Controller
             }
         }
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 
 
@@ -55,6 +55,6 @@ class UserConferenceController extends Controller
     {
         $request->user()->conferences()->detach($request->validated()['conferenceId']);
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 }

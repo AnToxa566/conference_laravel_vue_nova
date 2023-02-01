@@ -17,6 +17,8 @@ use App\Http\Controllers\API\MeetingController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\PlanController;
 
+use App\Http\Controllers\API\StripeWebhookController;
+
 use App\Http\Controllers\API\UserConferenceController;
 use App\Http\Controllers\API\UserLectureController;
 
@@ -149,4 +151,9 @@ Route::controller(UserLectureController::class)->group(function () {
         Route::get('/lectures/favorite/add/{user_id}/{lecture_id}', 'addFavoriteLecture')->name('lectures.addFavoriteLecture');
         Route::get('/lectures/favorite/remove/{user_id}/{lecture_id}', 'removeFavoriteLecture')->name('lectures.removeFavoriteLecture');
     });
+});
+
+
+Route::controller(StripeWebhookController::class)->group(function () {
+    Route::post('webhooks/stripe', 'handleWebhook')->name('webhooks.handleWebhook');
 });

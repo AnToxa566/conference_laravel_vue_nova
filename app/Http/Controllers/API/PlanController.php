@@ -33,7 +33,7 @@ class PlanController extends Controller
             ]);
         }
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 
 
@@ -66,7 +66,7 @@ class PlanController extends Controller
         $user->joins_left = $plan->joins;
         $user->save();
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 
 
@@ -85,7 +85,7 @@ class PlanController extends Controller
         $subscription = $user->subscriptions()->active()->where('stripe_price', '!=', $plan->stripe_price)->firstOrFail();
         $subscription->cancelNow();
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 
 
@@ -98,6 +98,6 @@ class PlanController extends Controller
 
         $this->subscribeBasicPlan($user);
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 }

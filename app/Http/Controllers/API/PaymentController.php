@@ -32,7 +32,7 @@ class PaymentController extends Controller
         $user->addPaymentMethod($paymentMethodID);
         $user->updateDefaultPaymentMethod($paymentMethodID);
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 
 
@@ -71,6 +71,6 @@ class PaymentController extends Controller
             }
         }
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 }

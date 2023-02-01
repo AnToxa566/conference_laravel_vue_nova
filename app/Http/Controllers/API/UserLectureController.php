@@ -22,7 +22,7 @@ class UserLectureController extends Controller
     {
         User::findOrFail($userId)->favoriteLectures()->attach($lectureId);
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 
 
@@ -30,6 +30,6 @@ class UserLectureController extends Controller
     {
         User::findOrFail($userId)->favoriteLectures()->detach($lectureId);
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 }

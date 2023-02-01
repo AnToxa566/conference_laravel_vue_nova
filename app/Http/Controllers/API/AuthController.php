@@ -70,6 +70,6 @@ class AuthController extends Controller
     {
         $request->user()->tokens()->delete();
 
-        return response()->json(null, 204);
+        return response()->json(null, 200);
     }
 }
