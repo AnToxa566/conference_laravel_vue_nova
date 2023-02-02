@@ -42,12 +42,12 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        $authorizedUser = User::where('email', $request->validated()['email'])->firstOrFail();
 
-        $authorizedUser = User::where('email', $validated['email'])->firstOrFail();
-
-        $authorizedUser->{'auth_token'} = $authorizedUser->createToken('auth_token')->plainTextToken;
-        return response()->json($authorizedUser);
+        return response()->json([
+            'user' => $authorizedUser,
+            'auth_token' => $authorizedUser->createToken('auth_token')->plainTextToken,
+        ]);
     }
 
 

@@ -24,6 +24,8 @@ class User extends Authenticatable
 
     public const ANNOUNCER = 'Announcer';
 
+    public const FACTORY_PASSWORD = '12345678';
+
 
     protected $table = 'users';
 

@@ -26,8 +26,8 @@ class RegisterTest extends TestCase
 
             'email'         => $email,
 
-            'password'              => $invalidPassword ? '1234567' : '12345678',
-            'password_confirmation' => $invalidPassword ? '1234567' : '12345678',
+            'password'              => $invalidPassword ? '123' : User::FACTORY_PASSWORD,
+            'password_confirmation' => $invalidPassword ? '123' : User::FACTORY_PASSWORD,
 
             'birthdate'     => '1999-01-01',
             'country'       => Country::TEST_COUNTRY_CODE,

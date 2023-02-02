@@ -118,9 +118,9 @@ export default {
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    if (res.data.type !== userTypes.ADMIN) {
-                        commit('SET_USER', res.data)
-                        commit('SET_CONFIG', res.data)
+                    if (res.data.user.type !== userTypes.ADMIN) {
+                        commit('SET_USER', res.data.user)
+                        commit('SET_CONFIG', res.data.auth_token)
                         commit('SET_AUTHENTICATED', true)
 
                         dispatch('fetchUserData')
