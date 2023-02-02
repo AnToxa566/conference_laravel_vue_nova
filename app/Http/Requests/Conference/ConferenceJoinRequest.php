@@ -19,7 +19,7 @@ class ConferenceJoinRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'conferenceId'   => ['required', 'numeric', 'exists:conferences,id'],
+            'conferenceId' => ['required', 'numeric', 'exists:conferences,id'],
         ];
     }
 }
