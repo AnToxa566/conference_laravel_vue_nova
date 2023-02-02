@@ -43,16 +43,16 @@ export default {
         SET_USER (state, user) {
             state.user = user
         },
-        SET_CONFIG (state, user) {
+        SET_CONFIG (state, authToken) {
             state.config = {
                 headers: {
-                    Authorization: `Bearer ${user.auth_token}`,
+                    Authorization: `Bearer ${authToken}`,
                     Accept :'application/json',
                 }
             }
 
             localStorage.setItem('config', JSON.stringify(state.config))
-            localStorage.setItem('authToken', JSON.stringify(user.auth_token))
+            localStorage.setItem('authToken', JSON.stringify(authToken))
         },
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -155,8 +155,8 @@ export default {
         register({ commit, dispatch }, user) {
             axios.post('/api/register', user)
                 .then(res => {
-                    commit('SET_USER', res.data)
-                    commit('SET_CONFIG', res.data)
+                    commit('SET_USER', res.data.user)
+                    commit('SET_CONFIG', res.data.auth_token)
 
                     commit('SET_AUTHENTICATED', true)
                     commit('SET_AUTH_ERRORS', {})

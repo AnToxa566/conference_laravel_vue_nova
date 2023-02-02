@@ -34,6 +34,7 @@ class User extends Authenticatable
         'email',
         'joins_left',
         'phone_number',
+        'country_phone_code',
         'password',
         'birthdate',
         'country',

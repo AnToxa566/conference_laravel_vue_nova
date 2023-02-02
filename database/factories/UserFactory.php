@@ -5,38 +5,81 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
+use App\Models\User;
+
+use App\Http\Controllers\API\PlanController;
+
+
 class UserFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'first_name'    => fake()->firstName(),
+            'last_name'     => fake()->lastName(),
+
+            'type'          => User::LISTENER,
+            'country'       => fake()->countryCode(),
+            'birthdate'     => now(),
+
+            'phone_number'          => fake()->phoneNumber(),
+            'country_phone_code'    => fake()->countryCode(),
+
+            'email'             => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+
+            'password'          => Hash::make('12345678'),
+            'remember_token'    => Str::random(10),
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return static
-     */
-    public function unverified()
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            if ($user->type !== User::ADMIN) {
+                (new PlanController())->subscribeBasicPlan($user);
+            }
+        });
+    }
+
+
+    public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'first_name'    => 'Admin',
+            'last_name'     => 'Admin',
+
+            'email' => 'admin@groupbwt.com',
+
+            'type' => User::ADMIN,
+        ]);
+    }
+
+
+    public function announcer(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => User::ANNOUNCER,
+        ]);
+    }
+
+
+    public function listener(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => User::LISTENER,
         ]);
     }
 }

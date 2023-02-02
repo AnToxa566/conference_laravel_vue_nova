@@ -33,8 +33,10 @@ class AuthController extends Controller
 
         (new PlanController())->subscribeBasicPlan($createdUser);
 
-        $createdUser->{'auth_token'} = $createdUser->createToken('auth_token')->plainTextToken;
-        return response()->json($createdUser);
+        return response()->json([
+            'user' => $createdUser,
+            'auth_token' => $createdUser->createToken('auth_token')->plainTextToken,
+        ]);
     }
 
 

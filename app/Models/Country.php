@@ -13,6 +13,9 @@ class Country extends Model
     use HasFactory;
 
 
+    public const TEST_COUNTRY_CODE = 'UA';
+
+
     protected $table = 'countries';
 
     protected $fillable = [
