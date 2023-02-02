@@ -27,8 +27,6 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ];
 
-        if (!User::where('email', '=', $user['email'])) {
-            User::insert($user);
-        }
+        User::insert($user);
     }
 }
