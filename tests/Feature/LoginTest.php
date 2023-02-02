@@ -32,6 +32,7 @@ class LoginTest extends TestCase
             ->assertJsonPath('user.email', $user->email);
     }
 
+
     public function testEmailDoesNotExists(): void
     {
         $response = $this->postJson('/api/login', [
@@ -41,6 +42,7 @@ class LoginTest extends TestCase
 
         $response->assertNotFound();
     }
+
 
     public function testPasswordInvalid(): void
     {
@@ -55,6 +57,7 @@ class LoginTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['password']);
     }
+
 
     public function testPasswordDoesNotMatch(): void
     {
