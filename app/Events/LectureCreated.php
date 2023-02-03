@@ -14,6 +14,7 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Lecture;
 
+
 class LectureCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;

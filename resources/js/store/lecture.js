@@ -240,7 +240,7 @@ export default {
                     commit('PUSH_LECTURE', res.data.lecture)
                     commit('SET_ERROR', '')
 
-                    store.dispatch('user_conferences/joinConference', res.data.lecture.conference_id)
+                    store.dispatch('user_conferences/fetchDataAfterJoinConference')
                     store.commit('conference/LECTURE_COUNT_INCREMENT', res.data.lecture.conference_id)
 
                     if (res.data.lecture.is_online != false) {

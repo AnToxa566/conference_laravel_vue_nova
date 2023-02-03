@@ -9,6 +9,7 @@ use App\Events\LectureCreated;
 use App\Events\LectureUpdated;
 use App\Events\LectureDeleted;
 use App\Listeners\ClearMeetingsCache;
+use App\Listeners\JoinAnnouncerToConference;
 use App\Listeners\SendCommentAddedNotification;
 use App\Listeners\SendAnnouncerJoinedNotification;
 use App\Listeners\SendLectureDeletionNotification;
@@ -19,13 +20,9 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+
 class EventServiceProvider extends ServiceProvider
 {
-    /**
-     * The event to listener mappings for the application.
-     *
-     * @var array<class-string, array<int, class-string>>
-     */
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
@@ -35,6 +32,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         LectureCreated::class => [
             ClearMeetingsCache::class,
+            JoinAnnouncerToConference::class,
             SendAnnouncerJoinedNotification::class,
         ],
         LectureUpdated::class => [
@@ -45,22 +43,7 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
-    /**
-     * Register any events for your application.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
-    }
-
-    /**
-     * Determine if events and listeners should be automatically discovered.
-     *
-     * @return bool
-     */
-    public function shouldDiscoverEvents()
+    public function shouldDiscoverEvents(): bool
     {
         return false;
     }

@@ -8,12 +8,9 @@ use App\Models\Lecture;
 use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
+
 class LectureStoreRequest extends FormRequest
 {
-    /**
-    * @param  \Illuminate\Validation\Validator  $validator
-    * @return void
-    */
     public function withValidator(Validator $validator): void
     {
         $conferenceId = $validator->getData()['conference_id'];
@@ -36,21 +33,11 @@ class LectureStoreRequest extends FormRequest
         );
     }
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules(): array
     {
         return [

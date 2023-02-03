@@ -18,56 +18,45 @@ export default {
     },
 
     getters: {
-        conference(state) {
-            return state.conference
-        },
-        conferenceById: (state) => (id) => {
-            return state.conferences.find(conference => conference.id == parseInt(id, 10));
-        },
+        conference: state => state.conference,
 
-        conferences(state) {
-            return state.conferences
-        },
-        filteredConferences(state) {
-            return state.filteredConferences
-        },
-        searchedConferences(state) {
-            return state.searchedConferences
-        },
-        conferencesPaginatedData(state) {
-            return state.conferencesPaginatedData
-        },
+        conferenceById: (state, id) => state.conferences.find(conf => conf.id == id),
 
-        error(state) {
-            return state.error
-        },
+        conferences: state => state.conferences,
 
-        formatedDateTime(state) {
-            return id => {
-                const conferencesId = state.conferences.map(conference => conference.id);
-                const index = conferencesId.indexOf(parseInt(id, 10));
-                const conference = state.conferences[index];
+        filteredConferences: state => state.filteredConferences,
 
-                if (index !== -1) {
-                    return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
-                }
+        searchedConferences: state => state.searchedConferences,
+
+        conferencesPaginatedData: state => state.conferencesPaginatedData,
+
+        error: state => state.error,
+
+        formatedDateTime: state => id => {
+            const conferencesId = state.conferences.map(conference => conference.id);
+            const index = conferencesId.indexOf(parseInt(id, 10));
+            const conference = state.conferences[index];
+
+            if (index !== -1) {
+                return moment(String(conference.date_time_event)).format('MMMM Do YYYY, h:mm a')
             }
         },
 
-        getMinCountLectures(state) {
+        getMinCountLectures: state => {
             const counts = state.conferences.map(conference => conference.lectures_count)
             return Math.min(...counts)
         },
-        getMaxCountLectures(state) {
+
+        getMaxCountLectures: state => {
             const counts = state.conferences.map(conference => conference.lectures_count)
             return Math.max(...counts)
         },
 
-        getMinDateEvent(state) {
+        getMinDateEvent: state => {
             const dates = state.conferences.map(conference => new Date(conference.date_time_event))
             return Math.min(...dates)
         },
-        getMaxDateEvent(state) {
+        getMaxDateEvent: state => {
             const dates = state.conferences.map(conference => new Date(conference.date_time_event))
             return Math.max(...dates)
         },
