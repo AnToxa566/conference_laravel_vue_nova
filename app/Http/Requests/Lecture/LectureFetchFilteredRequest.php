@@ -6,23 +6,14 @@ namespace App\Http\Requests\Lecture;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
 class LectureFetchFilteredRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules(): array
     {
         return [
@@ -35,14 +26,10 @@ class LectureFetchFilteredRequest extends FormRequest
             'startTimeBefore'   => ['nullable', 'date_format:H:i:s', 'after_or_equal:startTimeAfter'],
 
             'categoriesId'      => ['nullable', 'array'],
+            'categoriesId.*'    => ['numeric', 'exists:categories,id'],
         ];
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array<string, mixed>
-     */
     public function messages(): array
     {
         return [

@@ -6,23 +6,14 @@ namespace App\Http\Requests\Conference;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
 class ConferenceFetchFilteredRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules(): array
     {
         return [
@@ -33,14 +24,10 @@ class ConferenceFetchFilteredRequest extends FormRequest
             'dateBefore'        => ['nullable', 'date_format:Y-m-d', 'after_or_equal:dateAfter'],
 
             'categoriesId'      => ['nullable', 'array'],
+            'categoriesId.*'    => ['numeric', 'exists:categories,id'],
         ];
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array<string, mixed>
-     */
     public function messages(): array
     {
         return [
