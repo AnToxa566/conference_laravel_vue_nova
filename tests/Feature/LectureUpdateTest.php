@@ -153,4 +153,18 @@ class LectureUpdateTest extends TestCase
 
         $this->assertLectureHasNotUpdated($lecture, $newTitle);
     }
+
+
+    public function testUpdateWhenLectureDoesNotExists(): void
+    {
+        $user = User::factory()->announcer()->create();
+
+        $this
+            ->actingAs($user)
+            ->postJson(
+                'api/lectures/0/update',
+                []
+            )
+            ->assertNotFound();
+    }
 }
