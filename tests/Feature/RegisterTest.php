@@ -48,6 +48,7 @@ class RegisterTest extends TestCase
         $response
             ->assertSuccessful()
             ->assertJson([
+                'user' => true,
                 'auth_token' => true,
             ])
             ->assertJsonPath('user.email', $email);
