@@ -16,7 +16,7 @@ class LoginTest extends TestCase
     use RefreshDatabase;
 
 
-    public function testSuccessfulAuthentication(): void
+    public function testSuccessfulLogin(): void
     {
         $user = User::factory()->create();
 
@@ -33,7 +33,7 @@ class LoginTest extends TestCase
     }
 
 
-    public function testEmailDoesNotExists(): void
+    public function testLoginWhenEmailDoesNotExists(): void
     {
         $response = $this->postJson('/api/login', [
             'email'     => 'example@example.com',
@@ -44,7 +44,7 @@ class LoginTest extends TestCase
     }
 
 
-    public function testPasswordInvalid(): void
+    public function testLoginWithInvalidPassword(): void
     {
         $user = User::factory()->create();
 
@@ -59,7 +59,7 @@ class LoginTest extends TestCase
     }
 
 
-    public function testPasswordDoesNotMatch(): void
+    public function testLoginWhenPasswordDoesNotMatch(): void
     {
         $user = User::factory()->create();
 

@@ -17,7 +17,7 @@ class DeleteConferenceTest extends TestCase
     use RefreshDatabase;
 
 
-    public function testSuccessfulDelete(): void
+    public function testSuccessfulDeleteConference(): void
     {
         $admin = User::where('type', '=', User::ADMIN)->firstOrFail();
         $conference = Conference::factory()->create();
@@ -29,7 +29,7 @@ class DeleteConferenceTest extends TestCase
     }
 
 
-    public function testListenerTriesDelete(): void
+    public function testListenerTryingToDeleteConference(): void
     {
         $listener = User::factory()->listener()->create();
         $conference = Conference::factory()->create();
@@ -41,7 +41,7 @@ class DeleteConferenceTest extends TestCase
     }
 
 
-    public function testAnnouncerTriesDelete(): void
+    public function testAnnouncerTryingToDeleteConference(): void
     {
         $announcer = User::factory()->announcer()->create();
         $conference = Conference::factory()->create();
@@ -53,7 +53,7 @@ class DeleteConferenceTest extends TestCase
     }
 
 
-    public function testUnauthorizedTriesDelete(): void
+    public function testUnauthorizedTryingToDeleteConference(): void
     {
         $conference = Conference::factory()->create();
 
@@ -64,7 +64,7 @@ class DeleteConferenceTest extends TestCase
     }
 
 
-    public function testConferenceDoesNotExists(): void
+    public function testDeleteWhenConferenceDoesNotExists(): void
     {
         $admin = User::where('type', '=', User::ADMIN)->firstOrFail();
         $deletedConference = tap(Conference::firstOrFail())->delete();

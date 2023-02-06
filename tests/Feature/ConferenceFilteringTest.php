@@ -18,7 +18,7 @@ class ConferenceFilteringTest extends TestCase
     use RefreshDatabase;
 
 
-    public function testSuccessfulFiltering(): void
+    public function testSuccessfulConferenceFiltering(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
@@ -35,13 +35,13 @@ class ConferenceFilteringTest extends TestCase
     }
 
 
-    public function testUnauthorizedFiltering(): void
+    public function testUnauthorizedUserTryingToFilter(): void
     {
         $this->postJson('/api/conferences/filtered')->assertUnauthorized();
     }
 
 
-    public function testInvalidLectureCountFiltering(): void
+    public function testFilteringWithInvalidLectureCount(): void
     {
         $user = User::factory()->create();
 
@@ -56,7 +56,7 @@ class ConferenceFilteringTest extends TestCase
     }
 
 
-    public function testInvalidDateFiltering(): void
+    public function testFilteringWithInvalidDate(): void
     {
         $user = User::factory()->create();
 
@@ -71,7 +71,7 @@ class ConferenceFilteringTest extends TestCase
     }
 
 
-    public function testInvalidCategoriesFiltering(): void
+    public function testFilteringWithInvalidCategories(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();

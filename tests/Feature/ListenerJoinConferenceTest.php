@@ -35,7 +35,7 @@ class ListenerJoinConferenceTest extends TestCase
     }
 
 
-    public function testUnauthorizedUser(): void
+    public function testUnauthorizedUserTryingToJoin(): void
     {
         $conference = Conference::factory()->create();
 
@@ -51,7 +51,7 @@ class ListenerJoinConferenceTest extends TestCase
     }
 
 
-    public function testJoinsEnded(): void
+    public function testJoinWhenJoinsEnded(): void
     {
         $user = User::factory()->listener()->create();
         $conference = Conference::factory()->create();
@@ -72,7 +72,7 @@ class ListenerJoinConferenceTest extends TestCase
     }
 
 
-    public function testConferenceDoesNotExists(): void
+    public function testJoinWhenConferenceDoesNotExists(): void
     {
         $user = User::factory()->listener()->create();
         $conference = tap(Conference::first())->delete();
@@ -89,7 +89,7 @@ class ListenerJoinConferenceTest extends TestCase
     }
 
 
-    public function testInvalidData(): void
+    public function testJoinWithInvalidData(): void
     {
         $user = User::factory()->listener()->create();
 

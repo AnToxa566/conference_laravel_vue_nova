@@ -19,7 +19,7 @@ class LectureFilteringTest extends TestCase
     use RefreshDatabase;
 
 
-    public function testSuccessfulFiltering(): void
+    public function testSuccessfulLectureFilteringTest(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
@@ -38,7 +38,7 @@ class LectureFilteringTest extends TestCase
     }
 
 
-    public function testUnauthorizedFiltering(): void
+    public function testUnauthorizedUserTryingToFilter(): void
     {
         $conference = Conference::factory()->create();
 
@@ -48,7 +48,7 @@ class LectureFilteringTest extends TestCase
     }
 
 
-    public function testInvalidDurationFiltering(): void
+    public function testFilteringWithInvalidDuration(): void
     {
         $user = User::factory()->create();
         $conference = Conference::factory()->create();
@@ -66,7 +66,7 @@ class LectureFilteringTest extends TestCase
     }
 
 
-    public function testInvalidTimeFiltering(): void
+    public function testFilteringWithInvalidTime(): void
     {
         $user = User::factory()->create();
         $conference = Conference::factory()->create();
@@ -84,7 +84,7 @@ class LectureFilteringTest extends TestCase
     }
 
 
-    public function testInvalidCategoriesFiltering(): void
+    public function testFilteringWithInvalidCategories(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();

@@ -61,7 +61,7 @@ class RegisterTest extends TestCase
     }
 
 
-    public function testEmailTaken(): void
+    public function testRegistrationWhenEmailTaken(): void
     {
         $email = 'example@example.com';
 
@@ -77,7 +77,7 @@ class RegisterTest extends TestCase
     }
 
 
-    public function testInvalidData(): void
+    public function testRegistrationWithInvalidData(): void
     {
         $email = 'example@example.com';
 

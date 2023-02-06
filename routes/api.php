@@ -92,9 +92,14 @@ Route::controller(LectureController::class)->group(function () {
         Route::get('/lectures/search/{search}/limit/{limit}', 'fetchSearchedLectures')->name('lectures.fetchSearchedLectures');
         Route::get('/lectures/{id}/presentation/download', 'downloadPresentation')->name('lectures.downloadPresentation');
 
-        Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
-        Route::middleware(['can.update.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
-        Route::middleware(['can.delete.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+        Route::middleware(['announcer'])->group(function () {
+            Route::post('/lectures/add', 'store')->name('lectures.store');
+
+            Route::middleware(['lecture.owner'])->group(function () {
+                Route::post('/lectures/{id}/update', 'update')->name('lectures.update');
+                Route::get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+            });
+        });
     });
 });
 

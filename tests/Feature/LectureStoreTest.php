@@ -72,7 +72,7 @@ class LectureStoreTest extends TestCase
     }
 
 
-    public function testSuccessful(): void
+    public function testSuccessfulStoreLecture(): void
     {
         $user = User::factory()->announcer()->create();
         $lectureData = $this->getDataToStoreLecture();
@@ -91,7 +91,7 @@ class LectureStoreTest extends TestCase
     }
 
 
-    public function testUnauthorized(): void
+    public function testUnauthorizedUserTryingToStoreLecture(): void
     {
         $lectureData = $this->getDataToStoreLecture();
 
@@ -103,7 +103,7 @@ class LectureStoreTest extends TestCase
     }
 
 
-    public function testListener(): void
+    public function testListenerTryingToStoreLecture(): void
     {
         $user = User::factory()->listener()->create();
         $lectureData = $this->getDataToStoreLecture();
@@ -116,7 +116,7 @@ class LectureStoreTest extends TestCase
     }
 
 
-    public function testInvalidData(): void
+    public function testStoreLectureWithInvalidData(): void
     {
         $user = User::factory()->announcer()->create();
         $lectureData = $this->getDataToStoreLecture();
