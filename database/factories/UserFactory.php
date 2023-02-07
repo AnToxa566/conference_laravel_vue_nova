@@ -58,11 +58,6 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'first_name'    => 'Admin',
-            'last_name'     => 'Admin',
-
-            'email' => 'admin@groupbwt.com',
-
             'type' => User::ADMIN,
         ]);
     }

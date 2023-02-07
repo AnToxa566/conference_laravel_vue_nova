@@ -12,14 +12,14 @@ use App\Models\User;
 use App\Models\Conference;
 
 
-class DeleteConferenceByAdminTest extends TestCase
+class ConferenceDeleteByAdminTest extends TestCase
 {
     use RefreshDatabase;
 
 
     public function testSuccessfulDeleteConference(): void
     {
-        $admin = User::where('type', '=', User::ADMIN)->firstOrFail();
+        $admin = User::factory()->admin()->create();
         $conference = Conference::factory()->create();
 
         $response = $this->actingAs($admin)->deleteJson('/nova-api/conferences?resources[]='.$conference->id);
@@ -66,8 +66,8 @@ class DeleteConferenceByAdminTest extends TestCase
 
     public function testDeleteWhenConferenceDoesNotExists(): void
     {
-        $admin = User::where('type', '=', User::ADMIN)->firstOrFail();
-        $deletedConference = tap(Conference::firstOrFail())->delete();
+        $admin = User::factory()->admin()->create();
+        $deletedConference = tap(Conference::factory()->create())->delete();
 
         $response = $this->actingAs($admin)->deleteJson('/nova-api/conferences?resources[]='.$deletedConference->id);
 
