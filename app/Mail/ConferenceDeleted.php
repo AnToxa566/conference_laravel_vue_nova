@@ -16,7 +16,9 @@ class ConferenceDeleted extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+
     public string $conferenceTitle;
+
 
     public function __construct(string $conferenceTitle)
     {

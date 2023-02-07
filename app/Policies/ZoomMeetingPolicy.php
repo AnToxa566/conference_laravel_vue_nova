@@ -9,6 +9,7 @@ use App\Models\ZoomMeeting;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+
 class ZoomMeetingPolicy
 {
     use HandlesAuthorization;

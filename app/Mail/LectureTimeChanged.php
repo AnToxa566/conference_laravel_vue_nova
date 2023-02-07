@@ -19,7 +19,9 @@ class LectureTimeChanged extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+
     public Lecture $lecture;
+
 
     public function __construct(Lecture $lecture)
     {

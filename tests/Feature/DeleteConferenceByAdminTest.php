@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\Conference;
 
 
-class DeleteConferenceTest extends TestCase
+class DeleteConferenceByAdminTest extends TestCase
 {
     use RefreshDatabase;
 
