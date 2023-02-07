@@ -20,7 +20,7 @@ export default {
     getters: {
         conference: state => state.conference,
 
-        conferenceById: (state, id) => state.conferences.find(conf => conf.id == id),
+        conferenceById: state => id => state.conferences.find(conf => conf.id == id),
 
         conferences: state => state.conferences,
 
@@ -56,6 +56,7 @@ export default {
             const dates = state.conferences.map(conference => new Date(conference.date_time_event))
             return Math.min(...dates)
         },
+
         getMaxDateEvent: state => {
             const dates = state.conferences.map(conference => new Date(conference.date_time_event))
             return Math.max(...dates)

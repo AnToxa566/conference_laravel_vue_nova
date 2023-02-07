@@ -10,9 +10,7 @@ export default {
     },
 
     getters: {
-        joinedConferencesId(state) {
-            return state.joinedConferencesId
-        },
+        joinedConferencesId: state => state.joinedConferencesId,
     },
 
     mutations: {

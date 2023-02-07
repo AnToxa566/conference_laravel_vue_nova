@@ -26,18 +26,27 @@
     </v-breadcrumbs>
 </template>
 
+
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'bread-crumb',
 
     computed: {
+        ...mapGetters({
+            lectureById: 'lecture/lectureById',
+            conferenceById: 'conference/conferenceById',
+            getPathByLeafId: 'category/getPathByLeafId',
+        }),
+
         breadCrumbs() {
             if (this.$route.meta.breadCrumb) {
                 if (this.$route.meta.breadCrumb == 'conferences') {
                     return [{ text: 'Conferences', disabled: true, to: {} }]
                 }
                 else if (this.$route.meta.breadCrumb == 'conference') {
-                    const conference = this.$store.getters['conference/conferenceById'](this.$route.params.id)
+                    const conference = this.conferenceById(this.$route.params.id)
 
                     let text = conference.category_id ? conference.title + ' (' + this.getCategoriesPath(conference.category_id) + ')' : conference.title
 
@@ -47,8 +56,8 @@ export default {
                     ]
                 }
                 else if (this.$route.meta.breadCrumb == 'lecture') {
-                    const conference = this.$store.getters['conference/conferenceById'](this.$route.params.conference_id)
-                    const lecture = this.$store.getters['lecture/lectureById'](this.$route.params.lecture_id)
+                    const conference = this.conferenceById(this.$route.params.conference_id)
+                    const lecture = this.lectureById(this.$route.params.lecture_id)
 
                     let conferenceText = conference.category_id ? conference.title + ' (' + this.getCategoriesPath(conference.category_id) + ')' : conference.title
                     let lectureText = lecture.category_id ? lecture.title + ' (' + this.getCategoriesPath(lecture.category_id) + ')' : lecture.title
@@ -69,7 +78,7 @@ export default {
             let pathText = ''
 
             if (leafId) {
-                const path = this.$store.getters['category/getPathByLeafId'](leafId)
+                const path = this.getPathByLeafId(leafId)
 
                 path.forEach((val, key, arr) => {
                     if (Object.is(arr.length - 1, key)) {

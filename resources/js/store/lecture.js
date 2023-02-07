@@ -8,6 +8,7 @@ import router from '../router'
 export default {
     namespaced: true,
 
+
     state: {
         lecture: {},
 
@@ -20,28 +21,19 @@ export default {
 
 
     getters: {
-        lecture(state) {
-            return state.lecture
-        },
-        lectureById: (state) => (id) => {
-            return state.lectures.find(lecture => lecture.id == parseInt(id, 10));
-        },
+        lecture: state => state.lecture,
 
-        lectures(state) {
-            return state.lectures
-        },
-        searchedLectures(state) {
-            return state.searchedLectures
-        },
-        filteredLectures(state) {
-            return state.filteredLectures
-        },
+        lectureById: state => id => state.lectures.find(lecture => lecture.id == parseInt(id, 10)),
 
-        error(state) {
-            return state.error
-        },
+        lectures: state => state.lectures,
 
-        lectureIdByConferenceId: (state) => (conferenceId) => {
+        searchedLectures: state => state.searchedLectures,
+
+        filteredLectures: state => state.filteredLectures,
+
+        error: state => state.error,
+
+        lectureIdByConferenceId: state => conferenceId => {
             const lecture = state.lectures.find(lecture => lecture.conference_id == conferenceId && lecture.user_id == store.state.auth.user.id)
             return lecture ? lecture.id : undefined
         },
@@ -82,9 +74,7 @@ export default {
             ]
         },
 
-        isUserOwnThisLecture: (state) => (id) => {
-            return parseInt(store.state.auth.user.id, 10) == parseInt(state.lectures.find(lecture => lecture.id == parseInt(id, 10)).user_id, 10)
-        },
+        isUserOwnThisLecture: state => id => store.state.auth.user.id == state.lectures.find(lecture => lecture.id == id).user_id,
 
         getFreeStartTime: () => (conference, isEditMode = false) => {
             const format = "HH:mm"
@@ -113,7 +103,7 @@ export default {
             }
         },
 
-        isTimeFree: (state) => (conferenceId, isEditMode, startDateTime, endDateTime = null) => {
+        isTimeFree: state => (conferenceId, isEditMode, startDateTime, endDateTime = null) => {
             let result = { 'freeTimeAvailable': true }
 
             for (const lecture of state.lectures) {

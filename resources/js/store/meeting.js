@@ -9,15 +9,11 @@ export default {
     },
 
     getters: {
-        meetings(state) {
-            return state.meetings
-        },
+        meetings: state => state.meetings,
 
-        apiMeetings(state) {
-            return state.apiMeetings
-        },
+        apiMeetings: state => state.apiMeetings,
 
-        meetingsOfExistingLectures(state) {
+        meetingsOfExistingLectures: state => {
             const meetingsIds = state.meetings.map(m => m.id)
             const meetings = state.apiMeetings.filter(m => meetingsIds.includes(m.id))
 

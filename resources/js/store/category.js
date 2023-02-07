@@ -14,31 +14,19 @@ export default {
     },
 
     getters: {
-        categories(state) {
-            return state.categories
-        },
+        categories: state => state.categories,
 
-        categoryById: (state) => (id) => {
-            return state.categories.find(category => category.id == parseInt(id, 10));
-        },
+        categoryById: state => id => state.categories.find(category => category.id == parseInt(id, 10)),
 
-        roots(state) {
-            return state.roots
-        },
+        roots: state => state.roots,
 
-        nodes(state) {
-            return state.nodes
-        },
+        nodes: state => state.nodes,
 
-        lectureRoots(state) {
-            return state.lectureRoots
-        },
+        lectureRoots: state => state.lectureRoots,
 
-        lectureNodes(state) {
-            return state.lectureNodes
-        },
+        lectureNodes: state => state.lectureNodes,
 
-        getPathByLeafId: (state) => (leafId) => {
+        getPathByLeafId: state => leafId => {
             let leaf = state.categories.find(category => category.id == parseInt(leafId, 10))
             let path = []
 

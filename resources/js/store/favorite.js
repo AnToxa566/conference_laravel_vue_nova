@@ -9,17 +9,11 @@ export default {
     },
 
     getters: {
-        favoritedLecturesId(state) {
-            return state.favoritedLecturesId
-        },
+        favoritedLecturesId: state => state.favoritedLecturesId,
 
-        hasFavoritedLectures(state) {
-            return state.favoritedLecturesId.length > 0
-        },
+        hasFavoritedLectures: state => state.favoritedLecturesId.length > 0,
 
-        isLectureFavoritedById: (state) => (lectureId) => {
-            return state.favoritedLecturesId.includes(lectureId)
-        },
+        isLectureFavoritedById: state => lectureId => state.favoritedLecturesId.includes(lectureId),
     },
 
     mutations: {

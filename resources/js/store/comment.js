@@ -9,11 +9,9 @@ export default {
     },
 
     getters: {
-        commentsOfLecture(state) {
-            return state.commentsOfLecture
-        },
+        commentsOfLecture: state => state.commentsOfLecture,
 
-        canBeUpdated: (state) => (id) => {
+        canBeUpdated: state => id => {
             const updated_at = state.commentsOfLecture.find(comment => comment.id == parseInt(id, 10)).updated_at;
             const passedTime = Date.now() - (new Date(updated_at))
 

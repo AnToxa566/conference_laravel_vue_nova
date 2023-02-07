@@ -84,10 +84,8 @@ class LectureDeleteTest extends TestCase
 
     public function testDeleteWhenLectureDoesNotExists(): void
     {
-        $user = User::factory()->announcer()->create();
-
         $this
-            ->actingAs($user)
+            ->actingAs(User::factory()->announcer()->create())
             ->getJson('/api/lectures/0/delete')
             ->assertNotFound();
     }

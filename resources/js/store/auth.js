@@ -20,23 +20,15 @@ export default {
     },
 
     getters: {
-        user(state) {
-            return state.user
-        },
-        authenticated(state) {
-            return state.authenticated
-        },
+        user: state => state.user,
 
-        userTypes(state) {
-            return state.userTypes
-        },
+        authenticated: state => state.authenticated,
 
-        authErrors(state) {
-            return state.authErrors
-        },
-        hasAuthErrors(state) {
-            return state.hasAuthErrors
-        },
+        userTypes: state => state.userTypes,
+
+        authErrors: state => state.authErrors,
+
+        hasAuthErrors: state => state.hasAuthErrors,
     },
 
     mutations: {

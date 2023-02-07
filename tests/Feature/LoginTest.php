@@ -35,12 +35,12 @@ class LoginTest extends TestCase
 
     public function testLoginWhenEmailDoesNotExists(): void
     {
-        $response = $this->postJson('/api/login', [
-            'email'     => 'example@example.com',
-            'password'  => User::FACTORY_PASSWORD,
-        ]);
-
-        $response->assertNotFound();
+        $this
+            ->postJson('/api/login', [
+                'email'     => 'example@example.com',
+                'password'  => User::FACTORY_PASSWORD,
+            ])
+            ->assertNotFound();
     }
 
 
