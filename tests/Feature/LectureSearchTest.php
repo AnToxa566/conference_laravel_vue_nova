@@ -31,7 +31,7 @@ class LectureSearchTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToSearchLecture(): void
+    public function testUnauthorizedTryingToSearchLecture(): void
     {
         $this
             ->getJson('/api/lectures/search/'.(Lecture::factory()->create())->title.'/limit/1')

@@ -26,7 +26,7 @@ class LogoutTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToLogout(): void
+    public function testUnauthorizedTryingToLogout(): void
     {
         $response = $this->getJson('/api/logout');
 

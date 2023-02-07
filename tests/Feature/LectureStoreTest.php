@@ -91,7 +91,7 @@ class LectureStoreTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToStoreLecture(): void
+    public function testUnauthorizedTryingToStoreLecture(): void
     {
         $lectureData = $this->getDataToStoreLecture();
 

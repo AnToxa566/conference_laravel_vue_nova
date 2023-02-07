@@ -41,7 +41,7 @@ class LectureCommentingTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToCommentLecture(): void
+    public function testUnauthorizedTryingToCommentLecture(): void
     {
         $comment = Comment::factory()->make();
 

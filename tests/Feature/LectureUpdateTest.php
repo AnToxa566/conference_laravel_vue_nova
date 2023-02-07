@@ -80,7 +80,7 @@ class LectureUpdateTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToUpdateLecture(): void
+    public function testUnauthorizedTryingToUpdateLecture(): void
     {
         $newTitle = 'New Title';
         $lecture = Lecture::factory()->create();

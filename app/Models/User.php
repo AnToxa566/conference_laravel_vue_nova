@@ -32,14 +32,16 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
+
         'type',
-        'email',
+        'country',
+        'birthdate',
         'joins_left',
         'phone_number',
         'country_phone_code',
+
+        'email',
         'password',
-        'birthdate',
-        'country',
     ];
 
     protected $hidden = [

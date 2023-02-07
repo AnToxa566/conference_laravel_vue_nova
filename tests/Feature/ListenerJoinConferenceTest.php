@@ -35,7 +35,7 @@ class ListenerJoinConferenceTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToJoin(): void
+    public function testUnauthorizedTryingToJoin(): void
     {
         $conference = Conference::factory()->create();
 

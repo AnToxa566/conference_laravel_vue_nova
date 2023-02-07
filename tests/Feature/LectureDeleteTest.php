@@ -42,7 +42,7 @@ class LectureDeleteTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToDeleteLecture(): void
+    public function testUnauthorizedTryingToDeleteLecture(): void
     {
         $lecture = Lecture::factory()->create();
 

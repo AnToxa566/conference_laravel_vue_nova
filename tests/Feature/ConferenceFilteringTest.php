@@ -35,7 +35,7 @@ class ConferenceFilteringTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToFilter(): void
+    public function testUnauthorizedTryingToFilter(): void
     {
         $this->postJson('/api/conferences/filtered')->assertUnauthorized();
     }

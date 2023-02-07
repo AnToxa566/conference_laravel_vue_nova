@@ -38,7 +38,7 @@ class LectureFilteringTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToFilter(): void
+    public function testUnauthorizedTryingToFilter(): void
     {
         $conference = Conference::factory()->create();
 

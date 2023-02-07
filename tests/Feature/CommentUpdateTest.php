@@ -22,9 +22,8 @@ class CommentUpdateTest extends TestCase
         $this->assertDatabaseHas('comments', [
             'id' => $comment->id,
             'description' => $newDescription,
-        ]);
-
-        $this->assertDatabaseMissing('comments', [
+        ])
+        ->assertDatabaseMissing('comments', [
             'id' => $comment->id,
             'description' => $oldDescription,
         ]);
@@ -36,9 +35,8 @@ class CommentUpdateTest extends TestCase
         $this->assertDatabaseMissing('comments', [
             'id' => $comment->id,
             'description' => $newDescription,
-        ]);
-
-        $this->assertDatabaseHas('comments', [
+        ])
+        ->assertDatabaseHas('comments', [
             'id' => $comment->id,
             'description' => $oldDescription,
         ]);
@@ -69,7 +67,7 @@ class CommentUpdateTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToUpdateComment(): void
+    public function testUnauthorizedTryingToUpdateComment(): void
     {
         $oldDescription = 'Old description';
         $newDescription = 'New description';

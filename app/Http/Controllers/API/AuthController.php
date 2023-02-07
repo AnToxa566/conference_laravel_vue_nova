@@ -57,7 +57,7 @@ class AuthController extends Controller
         $validated['password'] = Hash::make($validated['password']);
 
         return response()->json(
-            tap(User::findOrFail($validated['id']))->update($validated)
+            tap(User::findOrFail($request->user()->id))->update($validated)
         );
     }
 

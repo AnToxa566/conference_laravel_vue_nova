@@ -31,7 +31,7 @@ class ConferenceSearchTest extends TestCase
     }
 
 
-    public function testUnauthorizedUserTryingToSearchConference(): void
+    public function testUnauthorizedTryingToSearchConference(): void
     {
         $this
             ->getJson('/api/conferences/search/'.(Conference::factory()->create())->title.'/limit/1')
