@@ -20,7 +20,7 @@ class LectureStoreTest extends TestCase
 
     private function getDataToStoreLecture(): array
     {
-        $lecture = Lecture::factory()->forUser()->forConference()->make();
+        $lecture = Lecture::factory()->make();
 
         return [
             'user_id'           => $lecture->user->id,

@@ -23,17 +23,6 @@ use App\Http\Controllers\API\UserConferenceController;
 use App\Http\Controllers\API\UserLectureController;
 
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json($request->user());
 });
@@ -60,9 +49,11 @@ Route::controller(CategoryController::class)->group(function () {
 Route::controller(CommentController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/comments/{lecture_id}/limit/{limit}/page/{page}', 'fetchByLectureId')->name('comments.fetchByLectureId');
-
         Route::post('/comments/add', 'store')->name('comments.store');
-        Route::middleware(['user.comment'])->post('/comments/{id}/update', 'update')->name('comments.update');
+
+        Route::middleware(['user.comment'])->group(function () {
+            Route::post('/comments/{id}/update', 'update')->name('comments.update');
+        });
     });
 });
 

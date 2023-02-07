@@ -28,7 +28,7 @@ class LectureDeleteTest extends TestCase
     public function testSuccessfulLectureDelete(): void
     {
         $user = User::factory()->announcer()->create();
-        $lecture = Lecture::factory()->for($user)->forConference()->create();
+        $lecture = Lecture::factory()->for($user)->create();
 
         $response = $this->actingAs($user)->getJson('/api/lectures/'.$lecture->id.'/delete');
 
@@ -44,7 +44,7 @@ class LectureDeleteTest extends TestCase
 
     public function testUnauthorizedUserTryingToDeleteLecture(): void
     {
-        $lecture = Lecture::factory()->forUser()->forConference()->create();
+        $lecture = Lecture::factory()->create();
 
         $this
             ->getJson('/api/lectures/'.$lecture->id.'/delete')
@@ -57,7 +57,7 @@ class LectureDeleteTest extends TestCase
     public function testListenerTryingToUpdateLecture(): void
     {
         $user = User::factory()->listener()->create();
-        $lecture = Lecture::factory()->forUser()->forConference()->create();
+        $lecture = Lecture::factory()->create();
 
         $this
             ->actingAs($user)
@@ -71,7 +71,7 @@ class LectureDeleteTest extends TestCase
     public function testNotLectureOwnerTryingToDeleteLecture(): void
     {
         $user = User::factory()->announcer()->create();
-        $lecture = Lecture::factory()->forUser()->forConference()->create();
+        $lecture = Lecture::factory()->create();
 
         $this
             ->actingAs($user)

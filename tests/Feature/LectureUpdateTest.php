@@ -63,7 +63,7 @@ class LectureUpdateTest extends TestCase
     public function testSuccessfulLectureUpdate(): void
     {
         $user = User::factory()->announcer()->create();
-        $lecture = Lecture::factory()->for($user)->forConference()->create();
+        $lecture = Lecture::factory()->for($user)->create();
 
         $newTitle = 'New Title';
 
@@ -83,7 +83,7 @@ class LectureUpdateTest extends TestCase
     public function testUnauthorizedUserTryingToUpdateLecture(): void
     {
         $newTitle = 'New Title';
-        $lecture = Lecture::factory()->forUser()->forConference()->create();
+        $lecture = Lecture::factory()->create();
 
         $this
             ->postJson(
@@ -99,7 +99,7 @@ class LectureUpdateTest extends TestCase
     public function testListenerTryingToUpdateLecture(): void
     {
         $user = User::factory()->listener()->create();
-        $lecture = Lecture::factory()->forUser()->forConference()->create();
+        $lecture = Lecture::factory()->create();
 
         $newTitle = 'New Title';
 
@@ -118,7 +118,7 @@ class LectureUpdateTest extends TestCase
     public function testNotLectureOwnerTryingToUpdateLecture(): void
     {
         $user = User::factory()->announcer()->create();
-        $lecture = Lecture::factory()->forUser()->forConference()->create();
+        $lecture = Lecture::factory()->create();
 
         $newTitle = 'New Title';
 
@@ -137,7 +137,7 @@ class LectureUpdateTest extends TestCase
     public function testUpdateLectureWithInvalidData(): void
     {
         $user = User::factory()->announcer()->create();
-        $lecture = Lecture::factory()->for($user)->forConference()->create();
+        $lecture = Lecture::factory()->for($user)->create();
 
         $newTitle = '';
 
