@@ -20,22 +20,11 @@ class LectureStoreTest extends TestCase
 
     private function getDataToStoreLecture(): array
     {
-        $lecture = Lecture::factory()->make();
+        $lecture = Lecture::factory()->make()->toArray();
 
-        return [
-            'user_id'           => $lecture->user->id,
-            'conference_id'     => $lecture->conference->id,
-            'category_id'       => $lecture->category ? $lecture->category->id : null,
+        $lecture['presentation'] = UploadedFile::fake()->create('presentetion.pptx');
 
-            'title'             => $lecture->title,
-            'description'       => $lecture->description,
-
-            'date_time_start'   => $lecture->date_time_start,
-            'date_time_end'     => $lecture->date_time_end,
-
-            'presentation'      => UploadedFile::fake()->create('presentetion.pptx'),
-            'is_online'         => $lecture->is_online,
-        ];
+        return $lecture;
     }
 
 

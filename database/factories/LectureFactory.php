@@ -19,7 +19,7 @@ class LectureFactory extends Factory
         $presentetion = UploadedFile::fake()->create('presentetion.pptx');
 
         return [
-            'user_id'           => (User::factory()->create())->id,
+            'user_id'           => (User::factory()->announcer()->create())->id,
             'conference_id'     => (Conference::factory()->create())->id,
 
             'title'             => ucfirst(fake()->words(2, true)),

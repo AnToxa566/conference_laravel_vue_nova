@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
-use App\Models\User;
 use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Http\FormRequest;
+
+use App\Models\User;
 
 
 class LoginRequest extends FormRequest
@@ -26,7 +27,9 @@ class LoginRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        $user = User::where('email', $this->email)->firstOrFail();
+
+        return $user->type !== User::ADMIN;
     }
 
     public function rules(): array

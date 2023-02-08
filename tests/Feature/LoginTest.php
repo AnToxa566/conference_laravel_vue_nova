@@ -72,4 +72,17 @@ class LoginTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['password']);
     }
+
+
+    public function testAdminTryingToLogin(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $this
+            ->postJson('/api/login', [
+                'email'     => $user->email,
+                'password'  => User::FACTORY_PASSWORD,
+            ])
+            ->assertForbidden();
+    }
 }

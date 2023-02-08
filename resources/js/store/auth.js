@@ -110,18 +110,13 @@ export default {
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    if (res.data.user.type !== userTypes.ADMIN) {
-                        commit('SET_USER', res.data.user)
-                        commit('SET_CONFIG', res.data.auth_token)
-                        commit('SET_AUTHENTICATED', true)
+                    commit('SET_USER', res.data.user)
+                    commit('SET_CONFIG', res.data.auth_token)
+                    commit('SET_AUTHENTICATED', true)
 
-                        dispatch('fetchUserData')
+                    dispatch('fetchUserData')
 
-                        router.push({ name: 'conferences' })
-                    }
-                    else {
-                        dispatch('loginToNova', user)
-                    }
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
                     commit('SET_USER', {})
@@ -130,16 +125,6 @@ export default {
                     commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
 
-                    console.log(err.response)
-                })
-        },
-
-        loginToNova({ }, user) {
-            axios.post('/nova/login', user)
-                .then(res => {
-                    window.location.href = '/nova'
-                })
-                .catch(err => {
                     console.log(err.response)
                 })
         },
