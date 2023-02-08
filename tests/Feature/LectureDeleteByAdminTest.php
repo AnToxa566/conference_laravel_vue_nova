@@ -17,39 +17,41 @@ class LectureDeleteByAdminTest extends TestCase
     use RefreshDatabase;
 
 
-    public function testSuccessfulLectureDelete(): void
+    protected function testNotAdminTryingToDeleteLecture(string $userType): void
     {
-        $admin = User::factory()->admin()->create();
         $lecture = Lecture::factory()->create();
 
-        $response = $this->actingAs($admin)->deleteJson('/nova-api/lectures?resources[]='.$lecture->id);
+        $this
+            ->actingAs(User::factory()->{$userType}()->create())
+            ->deleteJson('/nova-api/lectures?resources[]='.$lecture->id)
+            ->assertForbidden();
 
-        $response->assertSuccessful();
+        $this->assertModelExists($lecture);
+    }
+
+
+    public function testSuccessfulLectureDelete(): void
+    {
+        $lecture = Lecture::factory()->create();
+
+        $this
+            ->actingAs(User::factory()->admin()->create())
+            ->deleteJson('/nova-api/lectures?resources[]='.$lecture->id)
+            ->assertSuccessful();
+
         $this->assertModelMissing($lecture);
     }
 
 
     public function testListenerTryingToDeleteLecture(): void
     {
-        $listener = User::factory()->listener()->create();
-        $lecture = Lecture::factory()->create();
-
-        $response = $this->actingAs($listener)->deleteJson('/nova-api/lectures?resources[]='.$lecture->id);
-
-        $response->assertForbidden();
-        $this->assertModelExists($lecture);
+        $this->testNotAdminTryingToDeleteLecture('listener');
     }
 
 
     public function testAnnouncerTryingToDeleteLecture(): void
     {
-        $announcer = User::factory()->announcer()->create();
-        $lecture = Lecture::factory()->create();
-
-        $response = $this->actingAs($announcer)->deleteJson('/nova-api/lectures?resources[]='.$lecture->id);
-
-        $response->assertForbidden();
-        $this->assertModelExists($lecture);
+        $this->testNotAdminTryingToDeleteLecture('announcer');
     }
 
 
@@ -57,21 +59,23 @@ class LectureDeleteByAdminTest extends TestCase
     {
         $lecture = Lecture::factory()->create();
 
-        $response = $this->deleteJson('/nova-api/lectures?resources[]='.$lecture->id);
+        $this
+            ->deleteJson('/nova-api/lectures?resources[]='.$lecture->id)
+            ->assertUnauthorized();
 
-        $response->assertUnauthorized();
         $this->assertModelExists($lecture);
     }
 
 
     public function testDeleteWhenLectureDoesNotExists(): void
     {
-        $admin = User::factory()->admin()->create();
         $deletedLecture = tap(Lecture::factory()->create())->delete();
 
-        $response = $this->actingAs($admin)->deleteJson('/nova-api/lectures?resources[]='.$deletedLecture->id);
+        $this
+            ->actingAs(User::factory()->admin()->create())
+            ->deleteJson('/nova-api/lectures?resources[]='.$deletedLecture->id)
+            ->assertSuccessful();
 
-        $response->assertSuccessful();
         $this->assertModelMissing($deletedLecture);
     }
 }

@@ -17,39 +17,41 @@ class CommentDeleteByAdminTest extends TestCase
     use RefreshDatabase;
 
 
-    public function testSuccessfulDeleteComment(): void
+    protected function testNotAdminTryingToDeleteComment(string $userType): void
     {
-        $admin = User::factory()->admin()->create();
         $comment = Comment::factory()->create();
 
-        $response = $this->actingAs($admin)->deleteJson('/nova-api/comments?resources[]='.$comment->id);
+        $this
+            ->actingAs(User::factory()->{$userType}()->create())
+            ->deleteJson('/nova-api/comments?resources[]='.$comment->id)
+            ->assertForbidden();
 
-        $response->assertSuccessful();
+        $this->assertModelExists($comment);
+    }
+
+
+    public function testSuccessfulDeleteComment(): void
+    {
+        $comment = Comment::factory()->create();
+
+        $this
+            ->actingAs(User::factory()->admin()->create())
+            ->deleteJson('/nova-api/comments?resources[]='.$comment->id)
+            ->assertSuccessful();
+
         $this->assertModelMissing($comment);
     }
 
 
     public function testListenerTryingToDeleteComment(): void
     {
-        $listener = User::factory()->listener()->create();
-        $comment = Comment::factory()->create();
-
-        $response = $this->actingAs($listener)->deleteJson('/nova-api/comments?resources[]='.$comment->id);
-
-        $response->assertForbidden();
-        $this->assertModelExists($comment);
+        $this->testNotAdminTryingToDeleteComment('listener');
     }
 
 
     public function testAnnouncerTryingToDeleteComment(): void
     {
-        $announcer = User::factory()->announcer()->create();
-        $comment = Comment::factory()->create();
-
-        $response = $this->actingAs($announcer)->deleteJson('/nova-api/comments?resources[]='.$comment->id);
-
-        $response->assertForbidden();
-        $this->assertModelExists($comment);
+        $this->testNotAdminTryingToDeleteComment('announcer');
     }
 
 
@@ -57,21 +59,23 @@ class CommentDeleteByAdminTest extends TestCase
     {
         $comment = Comment::factory()->create();
 
-        $response = $this->deleteJson('/nova-api/comments?resources[]='.$comment->id);
+        $this
+            ->deleteJson('/nova-api/comments?resources[]='.$comment->id)
+            ->assertUnauthorized();
 
-        $response->assertUnauthorized();
         $this->assertModelExists($comment);
     }
 
 
     public function testDeleteWhenCommentDoesNotExists(): void
     {
-        $admin = User::factory()->admin()->create();
         $deletedComment = tap(Comment::factory()->create())->delete();
 
-        $response = $this->actingAs($admin)->deleteJson('/nova-api/comments?resources[]='.$deletedComment->id);
+        $this
+            ->actingAs(User::factory()->admin()->create())
+            ->deleteJson('/nova-api/comments?resources[]='.$deletedComment->id)
+            ->assertSuccessful();
 
-        $response->assertSuccessful();
         $this->assertModelMissing($deletedComment);
     }
 }

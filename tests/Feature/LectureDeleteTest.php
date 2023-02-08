@@ -17,28 +17,19 @@ class LectureDeleteTest extends TestCase
     use RefreshDatabase;
 
 
-    private function assertLectureHasNotDeleted(int $lectureId): void
-    {
-        $this->assertDatabaseHas('lectures', [
-            'id' => $lectureId,
-        ]);
-    }
-
-
     public function testSuccessfulLectureDelete(): void
     {
         $user = User::factory()->announcer()->create();
         $lecture = Lecture::factory()->for($user)->create();
 
-        $response = $this->actingAs($user)->getJson('/api/lectures/'.$lecture->id.'/delete');
-
-        $response
+        $this
+            ->actingAs($user)
+            ->getJson('/api/lectures/'.$lecture->id.'/delete')
             ->assertSuccessful()
-            ->assertJsonPath('id', $lecture->id);
+            ->assertJsonPath('id', $lecture->id)
+            ->assertJsonPath('title', $lecture->title);
 
-        $this->assertDatabaseMissing('lectures', [
-            'id' => $lecture->id,
-        ]);
+        $this->assertModelMissing($lecture);
     }
 
 
@@ -50,35 +41,33 @@ class LectureDeleteTest extends TestCase
             ->getJson('/api/lectures/'.$lecture->id.'/delete')
             ->assertUnauthorized();
 
-        $this->assertLectureHasNotDeleted($lecture->id);
+        $this->assertModelExists($lecture);
     }
 
 
-    public function testListenerTryingToUpdateLecture(): void
+    public function testListenerTryingToDeleteLecture(): void
     {
-        $user = User::factory()->listener()->create();
         $lecture = Lecture::factory()->create();
 
         $this
-            ->actingAs($user)
+            ->actingAs(User::factory()->listener()->create())
             ->getJson('/api/lectures/'.$lecture->id.'/delete')
             ->assertForbidden();
 
-        $this->assertLectureHasNotDeleted($lecture->id);
+        $this->assertModelExists($lecture);
     }
 
 
     public function testNotLectureOwnerTryingToDeleteLecture(): void
     {
-        $user = User::factory()->announcer()->create();
         $lecture = Lecture::factory()->create();
 
         $this
-            ->actingAs($user)
+            ->actingAs(User::factory()->announcer()->create())
             ->getJson('/api/lectures/'.$lecture->id.'/delete')
             ->assertForbidden();
 
-        $this->assertLectureHasNotDeleted($lecture->id);
+        $this->assertModelExists($lecture);
     }
 
 

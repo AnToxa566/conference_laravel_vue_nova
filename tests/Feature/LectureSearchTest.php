@@ -21,9 +21,9 @@ class LectureSearchTest extends TestCase
     {
         $lecture = Lecture::factory()->create();
 
-        $response = $this->actingAs(User::factory()->create())->getJson('/api/lectures/search/'.$lecture->title.'/limit/1');
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->getJson('/api/lectures/search/'.$lecture->title.'/limit/1')
             ->assertSuccessful()
             ->assertJsonCount(1)
             ->assertJsonPath('0.id', $lecture->id)
@@ -34,16 +34,16 @@ class LectureSearchTest extends TestCase
     public function testUnauthorizedTryingToSearchLecture(): void
     {
         $this
-            ->getJson('/api/lectures/search/'.(Lecture::factory()->create())->title.'/limit/1')
+            ->getJson('/api/lectures/search/test/limit/1')
             ->assertUnauthorized();
     }
 
 
     public function testSearchLectureWhichDoesNotExists(): void
     {
-        $response = $this->actingAs(User::factory()->create())->getJson('/api/lectures/search/missing/limit/1');
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->getJson('/api/lectures/search/missing/limit/1')
             ->assertSuccessful()
             ->assertJsonCount(0)
             ->assertJsonMissingPath('0.title');
@@ -52,9 +52,9 @@ class LectureSearchTest extends TestCase
 
     public function testSearchLectureWithInvalidLimit(): void
     {
-        $response = $this->actingAs(User::factory()->create())->getJson('/api/lectures/search/'.(Lecture::factory()->create())->title.'/limit/0');
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->getJson('/api/lectures/search/'.(Lecture::factory()->create())->title.'/limit/0')
             ->assertSuccessful()
             ->assertJsonCount(0)
             ->assertJsonMissingPath('0.title');

@@ -17,7 +17,7 @@ class CommentUpdateTest extends TestCase
     use RefreshDatabase;
 
 
-    private function assertCommentHasUpdated(Comment $comment, string $oldDescription, string $newDescription): void
+    protected function assertCommentHasUpdated(Comment $comment, string $oldDescription, string $newDescription): void
     {
         $this->assertDatabaseHas('comments', [
             'id' => $comment->id,
@@ -30,7 +30,7 @@ class CommentUpdateTest extends TestCase
     }
 
 
-    private function assertCommentHasNotUpdated(Comment $comment, string $oldDescription, string $newDescription): void
+    protected function assertCommentHasNotUpdated(Comment $comment, string $oldDescription, string $newDescription): void
     {
         $this->assertDatabaseMissing('comments', [
             'id' => $comment->id,
@@ -76,11 +76,11 @@ class CommentUpdateTest extends TestCase
             'description' => $oldDescription,
         ]);
 
-        $response = $this->postJson('/api/comments/'.$comment->id.'/update', [
-            'description' => $newDescription,
-        ]);
-
-        $response->assertUnauthorized();
+        $this
+            ->postJson('/api/comments/'.$comment->id.'/update', [
+                'description' => $newDescription,
+            ])
+            ->assertUnauthorized();
 
         $this->assertCommentHasNotUpdated($comment, $oldDescription, $newDescription);
     }
@@ -95,13 +95,12 @@ class CommentUpdateTest extends TestCase
             'description' => $oldDescription,
         ]);
 
-        $anotherUser = User::factory()->create();
-
-        $response = $this->actingAs($anotherUser)->postJson('/api/comments/'.$comment->id.'/update', [
-            'description' => $newDescription,
-        ]);
-
-        $response->assertForbidden();
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/comments/'.$comment->id.'/update', [
+                'description' => $newDescription,
+            ])
+            ->assertForbidden();
 
         $this->assertCommentHasNotUpdated($comment, $oldDescription, $newDescription);
     }
@@ -117,11 +116,11 @@ class CommentUpdateTest extends TestCase
             'description' => $oldDescription,
         ]);
 
-        $response = $this->actingAs($user)->postJson('/api/comments/'.$comment->id.'/update', [
-            'description' => $invalidDescription,
-        ]);
-
-        $response
+        $this
+            ->actingAs($user)
+            ->postJson('/api/comments/'.$comment->id.'/update', [
+                'description' => $invalidDescription,
+            ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['description']);
 

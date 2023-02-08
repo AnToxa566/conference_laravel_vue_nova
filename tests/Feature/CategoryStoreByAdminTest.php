@@ -17,14 +17,33 @@ class CategoryStoreByAdminTest extends TestCase
     use RefreshDatabase;
 
 
+    protected function testNotAdminTryingToStoreCategory(string $userType): void
+    {
+        $category = Category::factory()->make();
+
+        $this
+            ->actingAs(User::factory()->{$userType}()->create())
+            ->postJson(
+                '/nova-api/categories/',
+                $category->toArray()
+            )
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('categories', [
+            'title' => $category->title,
+        ]);
+    }
+
+
     public function testSuccessfulStoreCategory(): void
     {
-        $response = $this->actingAs(User::factory()->admin()->create())->postJson(
-            '/nova-api/categories?editing=true&editMode=create',
-            Category::factory()->make()->toArray()
-        );
-
-        $response->assertSuccessful();
+        $response = $this
+            ->actingAs(User::factory()->admin()->create())
+            ->postJson(
+                '/nova-api/categories/',
+                Category::factory()->make()->toArray()
+            )
+            ->assertSuccessful();
 
         $this->assertDatabaseHas('categories', [
             'id' => $response['id'],
@@ -34,37 +53,13 @@ class CategoryStoreByAdminTest extends TestCase
 
     public function testListenerTryingToStoreCategory(): void
     {
-        $category = Category::factory()->make();
-
-        $this
-            ->actingAs(User::factory()->listener()->create())
-            ->postJson(
-                '/nova-api/categories?editing=true&editMode=create',
-                $category->toArray()
-            )
-            ->assertForbidden();
-
-        $this->assertDatabaseMissing('categories', [
-            'title' => $category->title,
-        ]);
+        $this->testNotAdminTryingToStoreCategory('listener');
     }
 
 
     public function testAnnouncerTryingToStoreCategory(): void
     {
-        $category = Category::factory()->make();
-
-        $this
-            ->actingAs(User::factory()->announcer()->create())
-            ->postJson(
-                '/nova-api/categories?editing=true&editMode=create',
-                $category->toArray()
-            )
-            ->assertForbidden();
-
-        $this->assertDatabaseMissing('categories', [
-            'title' => $category->title,
-        ]);
+        $this->testNotAdminTryingToStoreCategory('announcer');
     }
 
 
@@ -74,7 +69,7 @@ class CategoryStoreByAdminTest extends TestCase
 
         $this
             ->postJson(
-                '/nova-api/categories?editing=true&editMode=create',
+                '/nova-api/categories/',
                 $category->toArray()
             )
             ->assertUnauthorized();
@@ -90,13 +85,12 @@ class CategoryStoreByAdminTest extends TestCase
         $category = Category::factory()->make();
         $category->title = '';
 
-        $response = $this->actingAs(User::factory()->admin()->create())
-        ->postJson(
-            '/nova-api/categories?editing=true&editMode=create',
-            $category->toArray()
-        );
-
-        $response
+        $this
+            ->actingAs(User::factory()->admin()->create())
+            ->postJson(
+                '/nova-api/categories/',
+                $category->toArray()
+            )
             ->assertUnprocessable()
             ->assertJsonValidationErrors('title');
 

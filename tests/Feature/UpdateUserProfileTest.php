@@ -16,7 +16,12 @@ class UpdateUserProfileTest extends TestCase
     use RefreshDatabase;
 
 
-    private function getUpdatedUserData(User $user, string $newFirstName): array
+    protected const OLD_FIRST_NAME = 'Old';
+
+    protected const NEW_FIRST_NAME = 'New';
+
+
+    protected function getUpdatedUserData(User $user, string $newFirstName): array
     {
         $arrayUser = $user->toArray();
 
@@ -29,7 +34,7 @@ class UpdateUserProfileTest extends TestCase
     }
 
 
-    private function assertUserHasUpdated(User $user, string $oldFirstName, string $newFirstName): void
+    protected function assertUserHasUpdated(User $user, string $oldFirstName, string $newFirstName): void
     {
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
@@ -42,7 +47,7 @@ class UpdateUserProfileTest extends TestCase
     }
 
 
-    private function assertUserHasNotUpdated(User $user, string $oldFirstName, string $newFirstName): void
+    protected function assertUserHasNotUpdated(User $user, string $oldFirstName, $newFirstName): void
     {
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
@@ -57,76 +62,62 @@ class UpdateUserProfileTest extends TestCase
 
     public function testSuccessfulUpdateUserProfile(): void
     {
-        $firstName = 'Test';
-        $newFirstName = 'Updated';
+        $user = User::factory()->create(['first_name' => self::OLD_FIRST_NAME]);
 
-        $user = User::factory()->create(['first_name' => $firstName]);
-        $updatedUser = $this->getUpdatedUserData($user, $newFirstName);
-
-        $response = $this->actingAs($user)->postJson('/api/profile/update', $updatedUser);
-
-        $response
+        $this
+            ->actingAs($user)
+            ->postJson('/api/profile/update', $this->getUpdatedUserData($user, self::NEW_FIRST_NAME))
             ->assertSuccessful()
             ->assertJsonPath('id', $user->id)
-            ->assertJsonPath('first_name', $newFirstName);
+            ->assertJsonPath('first_name', self::NEW_FIRST_NAME);
 
-        $this->assertUserHasUpdated($user, $firstName, $newFirstName);
+        $this->assertUserHasUpdated($user, self::OLD_FIRST_NAME, self::NEW_FIRST_NAME);
     }
 
 
     public function testUnauthorizedTryingToUpdateProfile(): void
     {
-        $firstName = 'Test';
-        $newFirstName = 'Updated';
-
-        $user = User::factory()->create(['first_name' => $firstName]);
-        $updatedUser = $this->getUpdatedUserData($user, $newFirstName);
+        $user = User::factory()->create(['first_name' => self::OLD_FIRST_NAME]);
 
         $this
-            ->postJson('/api/profile/update', $updatedUser)
+            ->postJson('/api/profile/update', $this->getUpdatedUserData($user, self::NEW_FIRST_NAME))
             ->assertUnauthorized();
 
-        $this->assertUserHasNotUpdated($user, $firstName, $newFirstName);
+        $this->assertUserHasNotUpdated($user, self::OLD_FIRST_NAME, self::NEW_FIRST_NAME);
     }
 
 
     public function testUpdateProfileWhenEmailTaken(): void
     {
-        $firstName = 'Test';
-        $newFirstName = 'Updated';
-
         $email = 'test@test.com';
-
         User::factory()->create(['email' => $email]);
-        $user = User::factory()->create(['first_name' => $firstName]);
 
-        $updatedUser = $this->getUpdatedUserData($user, $newFirstName);
-        $updatedUser['email'] = $email;
+        $user = User::factory()->create(['first_name' => self::OLD_FIRST_NAME]);
 
-        $response = $this->actingAs($user)->postJson('/api/profile/update', $updatedUser);
+        $updatedUserData = $this->getUpdatedUserData($user, self::NEW_FIRST_NAME);
+        $updatedUserData['email'] = $email;
 
-        $response
+        $this
+            ->actingAs($user)
+            ->postJson('/api/profile/update', $updatedUserData)
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['email']);
 
-        $this->assertUserHasNotUpdated($user, $firstName, $newFirstName);
+        $this->assertUserHasNotUpdated($user, self::OLD_FIRST_NAME, self::NEW_FIRST_NAME);
     }
 
 
     public function testUpdateProfileWithInvalidData(): void
     {
-        $firstName = 'Test';
-        $newFirstName = '';
+        $user = User::factory()->create(['first_name' => self::OLD_FIRST_NAME]);
+        $updatedUser = $this->getUpdatedUserData($user, '');
 
-        $user = User::factory()->create(['first_name' => $firstName]);
-        $updatedUser = $this->getUpdatedUserData($user, $newFirstName);
-
-        $response = $this->actingAs($user)->postJson('/api/profile/update', $updatedUser);
-
-        $response
+        $this
+            ->actingAs($user)
+            ->postJson('/api/profile/update', $updatedUser)
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['first_name']);
 
-        $this->assertUserHasNotUpdated($user, $firstName, $newFirstName);
+        $this->assertUserHasNotUpdated($user, self::OLD_FIRST_NAME, $updatedUser['first_name']);
     }
 }

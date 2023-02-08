@@ -17,22 +17,16 @@ class LectureUpdateTest extends TestCase
     use RefreshDatabase;
 
 
-    private function getLectureDataToUpdate(Lecture $lecture, string $newTitle): array
+    protected function getLectureDataToUpdate(Lecture $lecture, string $newTitle): array
     {
-        return [
-            'user_id'           => $lecture->user->id,
-            'conference_id'     => $lecture->conference->id,
+        $arrayLecture = $lecture->toArray();
+        $arrayLecture['title'] = $newTitle;
 
-            'title'             => $newTitle,
-            'description'       => $lecture->description,
-
-            'date_time_start'   => $lecture->date_time_start,
-            'date_time_end'     => $lecture->date_time_end,
-        ];
+        return $arrayLecture;
     }
 
 
-    private function assertLectureUpdated(Lecture $oldLecture, string $newTitle): void
+    protected function assertLectureUpdated(Lecture $oldLecture, string $newTitle): void
     {
         $this
             ->assertDatabaseHas('lectures', [
@@ -46,7 +40,7 @@ class LectureUpdateTest extends TestCase
     }
 
 
-    private function assertLectureHasNotUpdated(Lecture $lecture, string $newTitle): void
+    protected function assertLectureHasNotUpdated(Lecture $lecture, string $newTitle): void
     {
         $this
             ->assertDatabaseMissing('lectures', [
@@ -67,13 +61,14 @@ class LectureUpdateTest extends TestCase
 
         $newTitle = 'New Title';
 
-        $response = $this->actingAs($user)->postJson(
-            'api/lectures/'.$lecture->id.'/update',
-            $this->getLectureDataToUpdate($lecture, $newTitle)
-        );
-
-        $response
+        $this
+            ->actingAs($user)
+            ->postJson(
+                'api/lectures/'.$lecture->id.'/update',
+                $this->getLectureDataToUpdate($lecture, $newTitle)
+            )
             ->assertSuccessful()
+            ->assertJsonPath('id', $lecture->id)
             ->assertJsonPath('title', $newTitle);
 
         $this->assertLectureUpdated($lecture, $newTitle);
@@ -82,8 +77,8 @@ class LectureUpdateTest extends TestCase
 
     public function testUnauthorizedTryingToUpdateLecture(): void
     {
-        $newTitle = 'New Title';
         $lecture = Lecture::factory()->create();
+        $newTitle = 'New Title';
 
         $this
             ->postJson(
@@ -98,13 +93,11 @@ class LectureUpdateTest extends TestCase
 
     public function testListenerTryingToUpdateLecture(): void
     {
-        $user = User::factory()->listener()->create();
         $lecture = Lecture::factory()->create();
-
         $newTitle = 'New Title';
 
         $this
-            ->actingAs($user)
+            ->actingAs(User::factory()->listener()->create())
             ->postJson(
                 'api/lectures/'.$lecture->id.'/update',
                 $this->getLectureDataToUpdate($lecture, $newTitle)
@@ -117,13 +110,11 @@ class LectureUpdateTest extends TestCase
 
     public function testNotLectureOwnerTryingToUpdateLecture(): void
     {
-        $user = User::factory()->announcer()->create();
         $lecture = Lecture::factory()->create();
-
         $newTitle = 'New Title';
 
         $this
-            ->actingAs($user)
+            ->actingAs(User::factory()->announcer()->create())
             ->postJson(
                 'api/lectures/'.$lecture->id.'/update',
                 $this->getLectureDataToUpdate($lecture, $newTitle)
@@ -141,15 +132,14 @@ class LectureUpdateTest extends TestCase
 
         $newTitle = '';
 
-        $response = $this
+        $this
             ->actingAs($user)
             ->postJson(
                 'api/lectures/'.$lecture->id.'/update',
                 $this->getLectureDataToUpdate($lecture, $newTitle)
             )
-            ->assertUnprocessable();
-
-        $response->assertJsonValidationErrors(['title']);
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['title']);
 
         $this->assertLectureHasNotUpdated($lecture, $newTitle);
     }

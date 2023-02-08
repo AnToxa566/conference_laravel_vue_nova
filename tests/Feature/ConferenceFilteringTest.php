@@ -20,18 +20,15 @@ class ConferenceFilteringTest extends TestCase
 
     public function testSuccessfulConferenceFiltering(): void
     {
-        $user = User::factory()->create();
-        $category = Category::factory()->create();
+        $conference = Conference::factory()->forCategory()->create();
 
-        Conference::factory()->for($category)->create();
-
-        $response = $this->actingAs($user)->postJson('/api/conferences/filtered', [
-            'categoriesId' => [$category->id],
-        ]);
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/conferences/filtered', [
+                'categoriesId' => [$conference->category_id],
+            ])
             ->assertSuccessful()
-            ->assertJsonPath('0.category_id', $category->id);
+            ->assertJsonPath('0.category_id', $conference->category_id);
     }
 
 
@@ -43,14 +40,12 @@ class ConferenceFilteringTest extends TestCase
 
     public function testFilteringWithInvalidLectureCount(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->postJson('/api/conferences/filtered', [
-            'minLectureCount' => 1,
-            'maxLectureCount' => 0,
-        ]);
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/conferences/filtered', [
+                'minLectureCount' => 1,
+                'maxLectureCount' => 0,
+            ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['minLectureCount', 'maxLectureCount']);
     }
@@ -58,14 +53,12 @@ class ConferenceFilteringTest extends TestCase
 
     public function testFilteringWithInvalidDate(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->postJson('/api/conferences/filtered', [
-            'dateAfter'  => now()->addDays(1)->format('Y-m-d'),
-            'dateBefore' => now(),
-        ]);
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/conferences/filtered', [
+                'dateAfter'  => now()->addDays(1)->format('Y-m-d'),
+                'dateBefore' => now(),
+            ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['dateAfter', 'dateBefore']);
     }
@@ -73,15 +66,12 @@ class ConferenceFilteringTest extends TestCase
 
     public function testFilteringWithInvalidCategories(): void
     {
-        $user = User::factory()->create();
-        $category = Category::factory()->create();
-
-        $response = $this->actingAs($user)->postJson('/api/conferences/filtered', [
-            'categoriesId' => [$category->id, 'invalid'],
-        ]);
-
-        $response
+        $this
+            ->actingAs(User::factory()->create()
+            )->postJson('/api/conferences/filtered', [
+                'categoriesId' => ['invalid'],
+            ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['categoriesId.1']);
+            ->assertJsonValidationErrors(['categoriesId.0']);
     }
 }

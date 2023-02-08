@@ -18,18 +18,17 @@ class LoginTest extends TestCase
 
     public function testSuccessfulLogin(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create()->toArray();
+        $user['password'] = User::FACTORY_PASSWORD;
 
-        $response = $this->postJson('/api/login', [
-            'email'     => $user->email,
-            'password'  => User::FACTORY_PASSWORD,
-        ]);
-
-        $response->assertSuccessful()
+        $this
+            ->postJson('/api/login', $user)
+            ->assertSuccessful()
             ->assertJson([
+                'user' => true,
                 'auth_token' => true,
             ])
-            ->assertJsonPath('user.email', $user->email);
+            ->assertJsonPath('user.email', $user['email']);
     }
 
 
@@ -46,29 +45,11 @@ class LoginTest extends TestCase
 
     public function testLoginWithInvalidPassword(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->postJson('/api/login', [
-            'email'     => $user->email,
-            'password'  => '',
-        ]);
-
-        $response
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['password']);
-    }
-
-
-    public function testLoginWhenPasswordDoesNotMatch(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->postJson('/api/login', [
-            'email'     => $user->email,
-            'password'  => 'password',
-        ]);
-
-        $response
+        $this
+            ->postJson('/api/login', [
+                'email'     => (User::factory()->create())->email,
+                'password'  => 'password',
+            ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['password']);
     }
@@ -76,11 +57,9 @@ class LoginTest extends TestCase
 
     public function testAdminTryingToLogin(): void
     {
-        $user = User::factory()->admin()->create();
-
         $this
             ->postJson('/api/login', [
-                'email'     => $user->email,
+                'email'     => (User::factory()->admin()->create())->email,
                 'password'  => User::FACTORY_PASSWORD,
             ])
             ->assertForbidden();

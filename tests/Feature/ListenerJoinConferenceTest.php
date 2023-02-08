@@ -19,14 +19,15 @@ class ListenerJoinConferenceTest extends TestCase
 
     public function testSuccessfulJoin(): void
     {
-        $user = User::factory()->listener()->create();
+        $user = User::factory()->create();
         $conference = Conference::factory()->create();
 
-        $response = $this->actingAs($user)->postJson('/api/conferences/join', [
-            'conferenceId' => $conference->id,
-        ]);
-
-        $response->assertSuccessful();
+        $this
+            ->actingAs($user)
+            ->postJson('/api/conferences/join', [
+                'conferenceId' => $conference->id,
+            ])
+            ->assertSuccessful();
 
         $this->assertDatabaseHas('conference_user', [
             'user_id' => $user->id,
@@ -39,11 +40,11 @@ class ListenerJoinConferenceTest extends TestCase
     {
         $conference = Conference::factory()->create();
 
-        $response = $this->postJson('/api/conferences/join', [
-            'conferenceId' => $conference->id,
-        ]);
-
-        $response->assertUnauthorized();
+        $this
+            ->postJson('/api/conferences/join', [
+                'conferenceId' => $conference->id,
+            ])
+            ->assertUnauthorized();
 
         $this->assertDatabaseMissing('conference_user', [
             'conference_id' => $conference->id,
@@ -59,11 +60,12 @@ class ListenerJoinConferenceTest extends TestCase
         $user->joins_left = 0;
         $user->save();
 
-        $response = $this->actingAs($user)->postJson('/api/conferences/join', [
-            'conferenceId' => $conference->id,
-        ]);
-
-        $response->assertForbidden();
+        $this
+            ->actingAs($user)
+            ->postJson('/api/conferences/join', [
+                'conferenceId' => $conference->id,
+            ])
+            ->assertForbidden();
 
         $this->assertDatabaseMissing('conference_user', [
             'user_id' => $user->id,
@@ -72,31 +74,14 @@ class ListenerJoinConferenceTest extends TestCase
     }
 
 
-    public function testJoinWhenConferenceDoesNotExists(): void
+    public function testJoinWithInvalidConference(): void
     {
-        $user = User::factory()->listener()->create();
-        $conference = tap(Conference::first())->delete();
-
-        $response = $this->actingAs($user)->postJson('/api/conferences/join', [
-            'conferenceId' => $conference->id,
-        ]);
-
-        $response->assertUnprocessable();
-
-        $this->assertDatabaseMissing('conference_user', [
-            'conference_id' => $conference->id,
-        ]);
-    }
-
-
-    public function testJoinWithInvalidData(): void
-    {
-        $user = User::factory()->listener()->create();
-
-        $response = $this->actingAs($user)->postJson('/api/conferences/join', [
-            'conferenceId' => '',
-        ]);
-
-        $response->assertUnprocessable();
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/conferences/join', [
+                'conferenceId' => 0,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('conferenceId');
     }
 }

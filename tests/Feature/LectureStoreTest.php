@@ -18,7 +18,7 @@ class LectureStoreTest extends TestCase
     use RefreshDatabase;
 
 
-    private function getDataToStoreLecture(): array
+    protected function getDataToStoreLecture(): array
     {
         $lecture = Lecture::factory()->make()->toArray();
 
@@ -28,7 +28,7 @@ class LectureStoreTest extends TestCase
     }
 
 
-    private function assertLectureStored(array $lectureData, int $lectureId): void
+    protected function assertLectureStored(array $lectureData, int $lectureId): void
     {
         $this
             ->assertDatabaseHas('lectures', [
@@ -48,7 +48,7 @@ class LectureStoreTest extends TestCase
     }
 
 
-    private function assertLectureHasNotStored(array $lectureData): void
+    protected function assertLectureHasNotStored(array $lectureData): void
     {
         $this
             ->assertDatabaseMissing('lectures', [
@@ -63,12 +63,11 @@ class LectureStoreTest extends TestCase
 
     public function testSuccessfulStoreLecture(): void
     {
-        $user = User::factory()->announcer()->create();
         $lectureData = $this->getDataToStoreLecture();
 
-        $response = $this->actingAs($user)->postJson('/api/lectures/add', $lectureData);
-
-        $response
+        $response = $this
+            ->actingAs(User::factory()->announcer()->create())
+            ->postJson('/api/lectures/add', $lectureData)
             ->assertSuccessful()
             ->assertJson([
                 'lecture' => true,
@@ -94,11 +93,11 @@ class LectureStoreTest extends TestCase
 
     public function testListenerTryingToStoreLecture(): void
     {
-        $user = User::factory()->listener()->create();
         $lectureData = $this->getDataToStoreLecture();
 
         $this
-            ->actingAs($user)->postJson('/api/lectures/add', $lectureData)
+            ->actingAs(User::factory()->listener()->create())
+            ->postJson('/api/lectures/add', $lectureData)
             ->assertForbidden();
 
         $this->assertLectureHasNotStored($lectureData);
@@ -107,14 +106,15 @@ class LectureStoreTest extends TestCase
 
     public function testStoreLectureWithInvalidData(): void
     {
-        $user = User::factory()->announcer()->create();
         $lectureData = $this->getDataToStoreLecture();
 
         $lectureData['title'] = '';
 
         $this
-            ->actingAs($user)->postJson('/api/lectures/add', $lectureData)
-            ->assertUnprocessable();
+            ->actingAs(User::factory()->announcer()->create())
+            ->postJson('/api/lectures/add', $lectureData)
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('title');
 
         $this->assertLectureHasNotStored($lectureData);
     }

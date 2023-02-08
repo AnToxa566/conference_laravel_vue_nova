@@ -21,46 +21,40 @@ class LectureFilteringTest extends TestCase
 
     public function testSuccessfulLectureFilteringTest(): void
     {
-        $user = User::factory()->create();
-        $category = Category::factory()->create();
-        $conference = Conference::factory()->create();
+        $lecture = Lecture::factory()->forCategory()->create();
 
-        Lecture::factory()->for($user)->for($conference)->for($category)->create();
-
-        $response = $this->actingAs($user)->postJson('/api/lectures/filtered', [
-            'conferenceId' => $conference->id,
-            'categoriesId' => [$category->id],
-        ]);
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/lectures/filtered', [
+                'conferenceId' => $lecture->conference_id,
+                'categoriesId' => [$lecture->category_id],
+            ])
             ->assertSuccessful()
-            ->assertJsonPath('0.category_id', $category->id);
+            ->assertJsonPath('0.title', $lecture->title)
+            ->assertJsonPath('0.category_id', $lecture->category_id);
     }
 
 
     public function testUnauthorizedTryingToFilter(): void
     {
-        $conference = Conference::factory()->create();
-
-        $this->postJson('/api/lectures/filtered', [
-            'conferenceId' => $conference->id,
-        ])->assertUnauthorized();
+        $this
+            ->postJson('/api/lectures/filtered', [
+                'conferenceId' => (Lecture::factory()->create())->conference_id,
+            ])
+            ->assertUnauthorized();
     }
 
 
     public function testFilteringWithInvalidDuration(): void
     {
-        $user = User::factory()->create();
-        $conference = Conference::factory()->create();
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/lectures/filtered', [
+                'conferenceId' => (Lecture::factory()->create())->conference_id,
 
-        $response = $this->actingAs($user)->postJson('/api/lectures/filtered', [
-            'conferenceId' => $conference->id,
-
-            'minDuration' => 1,
-            'maxDuration' => 0,
-        ]);
-
-        $response
+                'minDuration' => 1,
+                'maxDuration' => 0,
+            ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['minDuration', 'maxDuration']);
     }
@@ -68,17 +62,14 @@ class LectureFilteringTest extends TestCase
 
     public function testFilteringWithInvalidTime(): void
     {
-        $user = User::factory()->create();
-        $conference = Conference::factory()->create();
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/lectures/filtered', [
+                'conferenceId' => (Lecture::factory()->create())->conference_id,
 
-        $response = $this->actingAs($user)->postJson('/api/lectures/filtered', [
-            'conferenceId' => $conference->id,
-
-            'startTimeAfter' => now()->addHour()->format('H:i:s'),
-            'startTimeBefore' => now()->format('H:i:s'),
-        ]);
-
-        $response
+                'startTimeAfter' => now()->addHour()->format('H:i:s'),
+                'startTimeBefore' => now()->format('H:i:s'),
+            ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['startTimeAfter', 'startTimeBefore']);
     }
@@ -86,17 +77,13 @@ class LectureFilteringTest extends TestCase
 
     public function testFilteringWithInvalidCategories(): void
     {
-        $user = User::factory()->create();
-        $category = Category::factory()->create();
-        $conference = Conference::factory()->create();
-
-        $response = $this->actingAs($user)->postJson('/api/lectures/filtered', [
-            'conferenceId' => $conference->id,
-            'categoriesId' => [$category->id, 'invalid'],
-        ]);
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/lectures/filtered', [
+                'conferenceId' => (Lecture::factory()->create())->conference_id,
+                'categoriesId' => ['invalid'],
+            ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['categoriesId.1']);
+            ->assertJsonValidationErrors(['categoriesId.0']);
     }
 }

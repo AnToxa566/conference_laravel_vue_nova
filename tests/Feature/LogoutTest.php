@@ -18,18 +18,15 @@ class LogoutTest extends TestCase
 
     public function testSuccessfulLogout(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->getJson('/api/logout');
-
-        $response->assertSuccessful();
+        $this
+            ->actingAs(User::factory()->create())
+            ->getJson('/api/logout')
+            ->assertSuccessful();
     }
 
 
     public function testUnauthorizedTryingToLogout(): void
     {
-        $response = $this->getJson('/api/logout');
-
-        $response->assertUnauthorized();
+        $this->getJson('/api/logout')->assertUnauthorized();
     }
 }

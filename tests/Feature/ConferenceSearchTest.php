@@ -21,9 +21,9 @@ class ConferenceSearchTest extends TestCase
     {
         $conference = Conference::factory()->create();
 
-        $response = $this->actingAs(User::factory()->create())->getJson('/api/conferences/search/'.$conference->title.'/limit/1');
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->getJson('/api/conferences/search/'.$conference->title.'/limit/1')
             ->assertSuccessful()
             ->assertJsonCount(1)
             ->assertJsonPath('0.id', $conference->id)
@@ -33,17 +33,15 @@ class ConferenceSearchTest extends TestCase
 
     public function testUnauthorizedTryingToSearchConference(): void
     {
-        $this
-            ->getJson('/api/conferences/search/'.(Conference::factory()->create())->title.'/limit/1')
-            ->assertUnauthorized();
+        $this->getJson('/api/conferences/search/test/limit/1')->assertUnauthorized();
     }
 
 
     public function testSearchConferenceWhichDoesNotExists(): void
     {
-        $response = $this->actingAs(User::factory()->create())->getJson('/api/conferences/search/missing/limit/1');
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->getJson('/api/conferences/search/missing/limit/1')
             ->assertSuccessful()
             ->assertJsonCount(0)
             ->assertJsonMissingPath('0.title');
@@ -52,9 +50,9 @@ class ConferenceSearchTest extends TestCase
 
     public function testSearchConferenceWithInvalidLimit(): void
     {
-        $response = $this->actingAs(User::factory()->create())->getJson('/api/conferences/search/'.(Conference::factory()->create())->title.'/limit/0');
-
-        $response
+        $this
+            ->actingAs(User::factory()->create())
+            ->getJson('/api/conferences/search/'.(Conference::factory()->create())->title.'/limit/0')
             ->assertSuccessful()
             ->assertJsonCount(0)
             ->assertJsonMissingPath('0.title');

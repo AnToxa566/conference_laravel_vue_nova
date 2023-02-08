@@ -17,39 +17,41 @@ class ConferenceDeleteByAdminTest extends TestCase
     use RefreshDatabase;
 
 
-    public function testSuccessfulDeleteConference(): void
+    protected function testNotAdminTryingToDeleteConference(string $userType): void
     {
-        $admin = User::factory()->admin()->create();
         $conference = Conference::factory()->create();
 
-        $response = $this->actingAs($admin)->deleteJson('/nova-api/conferences?resources[]='.$conference->id);
+        $this
+            ->actingAs(User::factory()->{$userType}()->create())
+            ->deleteJson('/nova-api/conferences?resources[]='.$conference->id)
+            ->assertForbidden();
 
-        $response->assertSuccessful();
+        $this->assertModelExists($conference);
+    }
+
+
+    public function testSuccessfulDeleteConference(): void
+    {
+        $conference = Conference::factory()->create();
+
+        $this
+            ->actingAs(User::factory()->admin()->create())
+            ->deleteJson('/nova-api/conferences?resources[]='.$conference->id)
+            ->assertSuccessful();
+
         $this->assertModelMissing($conference);
     }
 
 
     public function testListenerTryingToDeleteConference(): void
     {
-        $listener = User::factory()->listener()->create();
-        $conference = Conference::factory()->create();
-
-        $response = $this->actingAs($listener)->deleteJson('/nova-api/conferences?resources[]='.$conference->id);
-
-        $response->assertForbidden();
-        $this->assertModelExists($conference);
+        $this->testNotAdminTryingToDeleteConference('listener');
     }
 
 
     public function testAnnouncerTryingToDeleteConference(): void
     {
-        $announcer = User::factory()->announcer()->create();
-        $conference = Conference::factory()->create();
-
-        $response = $this->actingAs($announcer)->deleteJson('/nova-api/conferences?resources[]='.$conference->id);
-
-        $response->assertForbidden();
-        $this->assertModelExists($conference);
+        $this->testNotAdminTryingToDeleteConference('announcer');
     }
 
 
@@ -57,21 +59,23 @@ class ConferenceDeleteByAdminTest extends TestCase
     {
         $conference = Conference::factory()->create();
 
-        $response = $this->deleteJson('/nova-api/conferences?resources[]='.$conference->id);
+        $this
+            ->deleteJson('/nova-api/conferences?resources[]='.$conference->id)
+            ->assertUnauthorized();
 
-        $response->assertUnauthorized();
         $this->assertModelExists($conference);
     }
 
 
     public function testDeleteWhenConferenceDoesNotExists(): void
     {
-        $admin = User::factory()->admin()->create();
         $deletedConference = tap(Conference::factory()->create())->delete();
 
-        $response = $this->actingAs($admin)->deleteJson('/nova-api/conferences?resources[]='.$deletedConference->id);
+        $this
+            ->actingAs(User::factory()->admin()->create())
+            ->deleteJson('/nova-api/conferences?resources[]='.$deletedConference->id)
+            ->assertSuccessful();
 
-        $response->assertSuccessful();
         $this->assertModelMissing($deletedConference);
     }
 }

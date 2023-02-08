@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Models\User;
-use App\Models\Country;
 
 
 class RegisterTest extends TestCase
@@ -18,43 +16,34 @@ class RegisterTest extends TestCase
     use RefreshDatabase;
 
 
-    private function postRegister(string $email, bool $invalidPassword = false): TestResponse
+    protected function getUserDataToRegister($isInvalidPassword = false): array
     {
-        return $this->postJson('/api/register', [
-            'first_name'    => 'Example',
-            'last_name'     => 'Example',
+        $userData = User::factory()->make()->toArray();
 
-            'email'         => $email,
+        $invalidPassword = '123';
 
-            'password'              => $invalidPassword ? '123' : User::FACTORY_PASSWORD,
-            'password_confirmation' => $invalidPassword ? '123' : User::FACTORY_PASSWORD,
+        $userData['password'] = $isInvalidPassword ? $invalidPassword : User::FACTORY_PASSWORD;
+        $userData['password_confirmation'] = $isInvalidPassword ? $invalidPassword : User::FACTORY_PASSWORD;
 
-            'birthdate'     => '1999-01-01',
-            'country'       => Country::TEST_COUNTRY_CODE,
-            'type'          => User::LISTENER,
-
-            'phone_number'          => '+380999999999',
-            'country_phone_code'    => Country::TEST_COUNTRY_CODE,
-        ]);
+        return $userData;
     }
 
 
     public function testSuccessfulRegistration(): void
     {
-        $email = 'example@example.com';
+        $userData = $this->getUserDataToRegister();
 
-        $response = $this->postRegister($email);
-
-        $response
+        $response = $this
+            ->postJson('/api/register', $userData)
             ->assertSuccessful()
             ->assertJson([
                 'user' => true,
                 'auth_token' => true,
             ])
-            ->assertJsonPath('user.email', $email);
+            ->assertJsonPath('user.email', $userData['email']);
 
         $this->assertDatabaseHas('users', [
-            'email' => $email,
+            'email' => $userData['email'],
         ])->assertDatabaseHas('subscriptions', [
             'user_id' => $response['user']['id'],
         ]);
@@ -65,13 +54,13 @@ class RegisterTest extends TestCase
     {
         $email = 'example@example.com';
 
-        User::factory()->create([
-            'email' => $email,
-        ]);
+        User::factory()->create([ 'email' => $email ]);
 
-        $response = $this->postRegister($email);
+        $userData = $this->getUserDataToRegister();
+        $userData['email'] = $email;
 
-        $response
+        $this
+            ->postJson('/api/register', $userData)
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['email']);
     }
@@ -79,16 +68,15 @@ class RegisterTest extends TestCase
 
     public function testRegistrationWithInvalidData(): void
     {
-        $email = 'example@example.com';
+        $userData = $this->getUserDataToRegister(true);
 
-        $response = $this->postRegister($email, true);
-
-        $response
+        $this
+            ->postJson('/api/register', $userData)
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['password']);
 
         $this->assertDatabaseMissing('users', [
-            'email' => $email,
+            'email' => $userData['email'],
         ]);
     }
 }

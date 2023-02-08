@@ -17,19 +17,37 @@ class LectureCommentingTest extends TestCase
     use RefreshDatabase;
 
 
+    protected function assertDatabaseMissingComment(Comment $comment): void
+    {
+        $this->assertDatabaseMissing('comments', [
+            'user_id' => $comment->user_id,
+            'lecture_id' => $comment->lecture_id,
+        ]);
+    }
+
+
+    protected function testLectureCommentingWithInvalidData(string $attribute, string $invalidData = null): void
+    {
+        $comment = Comment::factory()->make();
+        $comment[$attribute] = $invalidData;
+
+        $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/comments/add', $comment->toArray())
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors([$attribute]);
+
+        $this->assertDatabaseMissingComment($comment);
+    }
+
+
     public function testSuccessfulLectureCommenting(): void
     {
-        $user = User::factory()->create();
         $comment = Comment::factory()->make();
 
-        $response = $this->actingAs($user)->postJson('/api/comments/add', [
-            'user_id'       => $comment->user_id,
-            'lecture_id'    => $comment->lecture_id,
-
-            'description'   => $comment->description,
-        ]);
-
-        $response
+        $response = $this
+            ->actingAs(User::factory()->create())
+            ->postJson('/api/comments/add', $comment->toArray())
             ->assertSuccessful()
             ->assertJsonPath('user_id', $comment->user_id)
             ->assertJsonPath('lecture_id', $comment->lecture_id)
@@ -45,83 +63,28 @@ class LectureCommentingTest extends TestCase
     {
         $comment = Comment::factory()->make();
 
-        $response = $this->postJson('/api/comments/add', [
-            'user_id'       => $comment->user_id,
-            'lecture_id'    => $comment->lecture_id,
+        $this
+            ->postJson('/api/comments/add', $comment->toArray())
+            ->assertUnauthorized();
 
-            'description'   => $comment->description,
-        ]);
-
-        $response->assertUnauthorized();
-
-        $this->assertDatabaseMissing('comments', [
-            'lecture_id' => $comment->lecture_id,
-        ]);
+        $this->assertDatabaseMissingComment($comment);
     }
 
 
-    public function testLectureCommentingWhenUserDoesNotExists(): void
+    public function testLectureCommentingWithInvalidUser(): void
     {
-        $user = User::factory()->create();
-        $comment = Comment::factory()->make();
-
-        $response = $this->actingAs($user)->postJson('/api/comments/add', [
-            'user_id'       => 0,
-            'lecture_id'    => $comment->lecture_id,
-
-            'description'   => $comment->description,
-        ]);
-
-        $response
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['user_id']);
-
-        $this->assertDatabaseMissing('comments', [
-            'lecture_id' => $comment->lecture_id,
-        ]);
+        $this->testLectureCommentingWithInvalidData('user_id');
     }
 
 
-    public function testLectureCommentingWhenLectureDoesNotExists(): void
+    public function testLectureCommentingWithInvalidLecture(): void
     {
-        $user = User::factory()->create();
-        $comment = Comment::factory()->make();
-
-        $response = $this->actingAs($user)->postJson('/api/comments/add', [
-            'user_id'       => $comment->user_id,
-            'lecture_id'    => 0,
-
-            'description'   => $comment->description,
-        ]);
-
-        $response
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['lecture_id']);
-
-        $this->assertDatabaseMissing('comments', [
-            'lecture_id' => $comment->lecture_id,
-        ]);
+        $this->testLectureCommentingWithInvalidData('lecture_id');
     }
 
 
     public function testLectureCommentingWithInvalidDescription(): void
     {
-        $user = User::factory()->create();
-        $comment = Comment::factory()->make();
-
-        $response = $this->actingAs($user)->postJson('/api/comments/add', [
-            'user_id'       => $comment->user_id,
-            'lecture_id'    => $comment->lecture_id,
-
-            'description'   => '',
-        ]);
-
-        $response
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['description']);
-
-        $this->assertDatabaseMissing('comments', [
-            'lecture_id' => $comment->lecture_id,
-        ]);
+        $this->testLectureCommentingWithInvalidData('description');
     }
 }
