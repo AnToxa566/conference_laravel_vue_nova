@@ -73,6 +73,8 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data: () => ({
         filter: {
@@ -96,23 +98,15 @@ export default {
     },
 
     computed: {
-        minLecturesCount() {
-            return this.$store.getters['conference/getMinCountLectures']
-        },
-        maxLecturesCount() {
-            return this.$store.getters['conference/getMaxCountLectures']
-        },
+        ...mapGetters({
+            minLecturesCount: 'conference/getMinCountLectures',
+            maxLecturesCount: 'conference/getMaxCountLectures',
 
-        minDateEvent() {
-            return this.$store.getters['conference/getMinDateEvent']
-        },
-        maxDateEvent() {
-            return this.$store.getters['conference/getMaxDateEvent']
-        },
+            minDateEvent: 'conference/getMinDateEvent',
+            maxDateEvent: 'conference/getMaxDateEvent',
 
-        categories() {
-            return this.$store.getters['category/categories']
-        }
+            categories: 'category/categories',
+        }),
     },
 
     methods: {

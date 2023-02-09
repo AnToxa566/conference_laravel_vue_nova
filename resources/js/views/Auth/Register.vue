@@ -169,6 +169,7 @@
 
 <script>
 import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
+import { mapGetters } from 'vuex'
 
 export default {
     name:'Register',
@@ -200,16 +201,11 @@ export default {
     }),
 
     computed: {
-        userTypes() {
-            return this.$store.getters['auth/userTypes']
-        },
-
-        hasAuthErrors() {
-            return this.$store.getters['auth/hasAuthErrors']
-        },
-        authErrors() {
-            return this.$store.getters['auth/authErrors']
-        },
+        ...mapGetters({
+            userTypes: 'auth/userTypes',
+            authErrors: 'auth/authErrors',
+            hasAuthErrors: 'auth/hasAuthErrors',
+        }),
     },
 
     created() {

@@ -73,6 +73,7 @@
 
 <script>
 import axios from 'axios';
+import { mapGetters } from 'vuex'
 
 export default {
     name: "Login",
@@ -89,12 +90,10 @@ export default {
     },
 
     computed: {
-        hasAuthErrors() {
-            return this.$store.getters['auth/hasAuthErrors']
-        },
-        authErrors() {
-            return this.$store.getters['auth/authErrors']
-        },
+        ...mapGetters({
+            authErrors: 'auth/authErrors',
+            hasAuthErrors: 'auth/hasAuthErrors',
+        }),
     },
 
     created() {

@@ -70,12 +70,18 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'dropdown-menu',
 
     computed: {
+        ...mapGetters({
+            user: 'auth/user',
+        }),
+
         getUserFullName() {
-            return this.$store.getters['auth/user'].first_name + ' ' + this.$store.getters['auth/user'].last_name
+            return this.user.first_name + ' ' + this.user.last_name
         },
     },
 

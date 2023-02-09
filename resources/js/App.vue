@@ -13,7 +13,8 @@
 </template>
 
 <script>
-import AppBar from './components/UI/AppBar.vue';
+import AppBar from './components/UI/AppBar.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'app',
@@ -41,9 +42,9 @@ export default {
     },
 
     computed: {
-        authenticated() {
-            return this.$store.getters['auth/authenticated']
-        }
+        ...mapGetters({
+            authenticated: 'auth/authenticated',
+        }),
     }
 }
 </script>

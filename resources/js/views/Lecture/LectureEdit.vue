@@ -3,7 +3,7 @@
         class="mb-4"
     >
         <template v-slot:header>
-            {{ this.isUserOwnThisLecture ? 'Update lecture' : this.$router.push({ name: '404' }) }}
+            {{ this.isUserOwnThisLecture(this.lectureId) ? 'Update lecture' : this.$router.push({ name: '404' }) }}
         </template>
     </custom-header>
 
@@ -21,7 +21,7 @@
         <template v-slot:extraButtons>
             <join-cancel-buttons
                 :isJoined="true"
-                :conference="this.conferenceById"
+                :conference="this.conferenceById(this.conferenceId)"
             ></join-cancel-buttons>
         </template>
     </lecture-form>
@@ -30,6 +30,8 @@
 
 <script>
 import LectureForm from '../../components/Lecture/LectureForm.vue'
+
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
@@ -50,24 +52,12 @@ export default {
     },
 
     computed: {
-        conferenceById() {
-            return this.$store.getters['conference/conferenceById'](this.conferenceId)
-        },
-
-        lecture() {
-            return this.$store.getters['lecture/lecture']
-        },
-        userId() {
-            return this.$store.getters['auth/user'].id
-        },
-
-        isUserOwnThisLecture() {
-            return this.$store.getters['lecture/isUserOwnThisLecture'](this.lectureId)
-        },
-
-        error() {
-            return this.$store.getters['lecture/error']
-        },
+        ...mapGetters({
+            conferenceById: 'conference/conferenceById',
+            lecture: 'lecture/lecture',
+            isUserOwnThisLecture: 'lecture/isUserOwnThisLecture',
+            error: 'lecture/error',
+        }),
     },
 
     methods: {

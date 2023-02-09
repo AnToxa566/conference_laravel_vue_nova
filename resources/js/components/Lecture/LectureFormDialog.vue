@@ -35,6 +35,7 @@
 
 <script>
 import LectureForm from './LectureForm.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
@@ -61,13 +62,9 @@ export default {
     },
 
     computed: {
-        getFreeStartTime() {
-            return this.$store.getters['lecture/getFreeStartTime'](this.conference)
-        },
-
-        error() {
-            return this.$store.getters['lecture/error']
-        },
+        ...mapGetters({
+            error: 'lecture/error',
+        }),
     },
 
     methods: {

@@ -136,6 +136,8 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'app-bar-search-input',
 
@@ -152,13 +154,10 @@ export default {
     }),
 
     computed: {
-        searchedConferences() {
-            return this.$store.getters['conference/searchedConferences']
-        },
-
-        searchedLectures() {
-            return this.$store.getters['lecture/searchedLectures']
-        },
+        ...mapGetters({
+            searchedConferences: 'conference/searchedConferences',
+            searchedLectures: 'lecture/searchedLectures',
+        }),
     },
 
     methods: {

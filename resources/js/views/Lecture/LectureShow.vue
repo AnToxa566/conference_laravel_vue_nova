@@ -116,7 +116,7 @@
     <!-- Buttons for owner this lecture -->
 
     <div
-        v-if="isUserOwnThisLecture"
+        v-if="isUserOwnThisLecture(this.lectureId)"
         class="d-flex mb-6"
     >
         <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${this.conferenceId}/lectures/${this.lectureId}/edit`)"> Edit </v-btn>
@@ -150,6 +150,8 @@ import CommentForm from '../../components/Comment/CommentForm.vue'
 import CommentList from '../../components/Comment/CommentList.vue'
 import moment from 'moment'
 
+import { mapGetters } from 'vuex'
+
 export default {
     components: {
         CommentForm,
@@ -174,7 +176,7 @@ export default {
         this.$store.dispatch('conference/fetchDetailConference', this.conferenceId)
         this.$store.dispatch('lecture/fetchLectureById', this.lectureId)
 
-        this.lecture = this.$store.getters['lecture/lectureById'](this.lectureId)
+        this.lecture = this.lectureById(this.lectureId)
     },
 
     mounted() {
@@ -184,28 +186,27 @@ export default {
     },
 
     computed: {
-        conference() {
-            return this.$store.getters['conference/conference']
-        },
+        ...mapGetters({
+            meetings: 'meeting/meetings',
+            conference: 'conference/conference',
+            lectureById: 'lecture/lectureById',
+            categoryById: 'category/categoryById',
+            joinedConferencesId: 'user_conferences/joinedConferencesId',
+            isUserOwnThisLecture: 'lecture/isUserOwnThisLecture',
+        }),
+
         category() {
-            return this.$store.getters['category/categoryById'](this.lecture.category_id)
+            return this.categoryById(this.lecture.category_id)
         },
         meeting() {
-            return this.$store.getters['meeting/meetings'].find(m => m.lecture_id == this.lecture.id)
+            return this.meetings.find(m => m.lecture_id == this.lecture.id)
         },
         meetingUrl() {
-            return this.isUserOwnThisLecture ? this.meeting.start_url : this.meeting.join_url
-        },
-
-        userId() {
-            return this.$store.getters['auth/user'].id
+            return this.isUserOwnThisLecture(this.lectureId) ? this.meeting.start_url : this.meeting.join_url
         },
 
         isJoined() {
-            return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conferenceId, 10))
-        },
-        isUserOwnThisLecture() {
-            return this.$store.getters['lecture/isUserOwnThisLecture'](this.lectureId)
+            return this.joinedConferencesId.includes(parseInt(this.conferenceId, 10))
         },
 
         formattedDate() {
@@ -219,7 +220,7 @@ export default {
         },
 
         getStartLectureTimestamp() {
-            return this.isUserOwnThisLecture ? this.announcerStartLectureTimestamp : this.startLectureTimestamp
+            return this.isUserOwnThisLecture(this.lectureId) ? this.announcerStartLectureTimestamp : this.startLectureTimestamp
         },
         announcerStartLectureTimestamp() {
             return this.startLectureTimestamp - (10 * 60 * 1000)

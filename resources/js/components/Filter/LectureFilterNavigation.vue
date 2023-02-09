@@ -75,6 +75,8 @@
 <script>
 import lecture from '../../config/lecture'
 
+import { mapGetters } from 'vuex'
+
 export default {
     data: () => ({
         filter: {
@@ -104,9 +106,9 @@ export default {
     },
 
     computed: {
-        categories() {
-            return this.$store.getters['category/categories']
-        }
+        ...mapGetters({
+            categories: 'category/categories',
+        }),
     },
 
     methods: {

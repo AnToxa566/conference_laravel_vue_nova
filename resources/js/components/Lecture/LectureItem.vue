@@ -96,6 +96,8 @@
 import lectureConsts from '../../config/lecture'
 import moment from 'moment'
 
+import { mapGetters } from 'vuex'
+
 export default {
     data: () => ({
         show: false,
@@ -133,6 +135,10 @@ export default {
     },
 
     computed: {
+        ...mapGetters({
+            isLectureFavoritedById: 'favorite/isLectureFavoritedById',
+        }),
+
         startFormattedTime() {
             return moment(new Date(this.lecture.date_time_start)).format('HH:mm')
         },
@@ -158,7 +164,7 @@ export default {
         },
 
         isFavourite() {
-            return this.$store.getters['favorite/isLectureFavoritedById'](this.lecture.id)
+            return this.isLectureFavoritedById(this.lecture.id)
         },
     },
 

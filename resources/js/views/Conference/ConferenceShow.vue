@@ -17,7 +17,7 @@
 
     <info-card>
         <template v-slot:header> Date / Time </template>
-        <template v-slot:body> {{ this.formatedDateTime }} </template>
+        <template v-slot:body> {{ this.formatedDateTime(this.id) }} </template>
     </info-card>
 
     <!-- Address -->
@@ -89,6 +89,8 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data: () => ({
         id: null,
@@ -100,19 +102,15 @@ export default {
     },
 
     computed: {
-        conference() {
-            return this.$store.getters['conference/conference']
-        },
+        ...mapGetters({
+            conference: 'conference/conference',
+            categoryById: 'category/categoryById',
+            formatedDateTime: 'conference/formatedDateTime',
+            joinedConferencesId: 'user_conferences/joinedConferencesId',
+        }),
+
         category() {
-            return this.$store.getters['category/categoryById'](this.conference.category_id)
-        },
-
-        formatedDateTime() {
-            return this.$store.getters['conference/formatedDateTime'](this.id)
-        },
-
-        joinedConferencesId() {
-            return this.$store.getters['user_conferences/joinedConferencesId']
+            return this.categoryById(this.conference.category_id)
         },
 
         addressPosition() {

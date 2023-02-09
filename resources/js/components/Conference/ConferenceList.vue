@@ -25,6 +25,8 @@
 import ConferenceItem from './ConferenceItem.vue'
 import pagination from '../../config/pagination'
 
+import { mapGetters } from 'vuex'
+
 export default {
     components: {
         ConferenceItem,
@@ -43,24 +45,16 @@ export default {
     },
 
     computed: {
+        ...mapGetters({
+            isAuthenticated: 'auth/authenticated',
+
+            allConferences: 'conference/conferences',
+            filteredConferences: 'conference/filteredConferences',
+            conferencesPaginatedData: 'conference/conferencesPaginatedData',
+        }),
+
         conferences() {
             return this.isAuthenticated ? this.filteredConferences : this.allConferences
-        },
-
-        isAuthenticated() {
-            return this.$store.getters['auth/authenticated']
-        },
-
-        allConferences() {
-            return this.$store.getters['conference/conferences']
-        },
-
-        filteredConferences() {
-            return this.$store.getters['conference/filteredConferences']
-        },
-
-        conferencesPaginatedData() {
-            return this.$store.getters['conference/conferencesPaginatedData']
         },
     },
 

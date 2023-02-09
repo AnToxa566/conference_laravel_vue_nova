@@ -163,8 +163,9 @@
 <script>
 import lecture from '../../config/lecture'
 import moment from 'moment'
+
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { mapGetters, useStore } from 'vuex'
 
 export default {
     setup () {
@@ -252,23 +253,19 @@ export default {
     },
 
     computed: {
-        conference() {
-            return this.$store.getters['conference/conference']
-        },
+        ...mapGetters({
+            conference: 'conference/conference',
+            categoryById: 'category/categoryById',
+
+            roots: 'category/lectureRoots',
+            nodes: 'category/lectureNodes',
+
+            isLectureTimeFree: 'lecture/isTimeFree',
+            getFreeStartTime: 'lecture/getFreeStartTime',
+        }),
+
         category() {
-            return this.$store.getters['category/categoryById'](this.lecture.category_id)
-        },
-
-        roots() {
-            return this.$store.getters['category/lectureRoots']
-        },
-
-        nodes() {
-            return this.$store.getters['category/lectureNodes']
-        },
-
-        getFreeStartTime() {
-            return this.$store.getters['lecture/getFreeStartTime'](this.conference, this.isEditMode)
+            return this.categoryById(this.lecture.category_id)
         },
 
         startTimeErrorMessage() {
@@ -280,7 +277,7 @@ export default {
             const checkFreeTime = this.isTimeFree(customerDateTimeStart)
 
             if (!checkFreeTime.freeTimeAvailable) {
-                const nearestFreeTime = this.getFreeStartTime
+                const nearestFreeTime = this.getFreeStartTime(this.conference, this.isEditMode)
 
                 return this.getTimeErrorMessage(checkFreeTime.lecture) + ' The nearest free time: ' + nearestFreeTime
             }
@@ -355,7 +352,7 @@ export default {
         },
 
         isTimeFree(startDateTime, endDateTime = null) {
-            return this.$store.getters['lecture/isTimeFree'](this.conference.id, this.isEditMode, startDateTime, endDateTime)
+            return this.isLectureTimeFree(this.conference.id, this.isEditMode, startDateTime, endDateTime)
         },
 
         getTimeErrorMessage(lecture) {

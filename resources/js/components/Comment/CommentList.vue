@@ -21,6 +21,8 @@
 import CommentItem from './CommentItem.vue'
 import axios from "axios";
 
+import { mapGetters } from 'vuex'
+
 export default {
     components: {
         CommentItem,
@@ -57,12 +59,13 @@ export default {
     },
 
     computed: {
-        commentsCount() {
-            return this.$store.getters['lecture/lectures'].find(lec => lec.id == this.lecture_id).comments_count
-        },
+        ...mapGetters({
+            lectures: 'lecture/lectures',
+            comments: 'comment/commentsOfLecture',
+        }),
 
-        comments() {
-            return this.$store.getters['comment/commentsOfLecture']
+        commentsCount() {
+            return this.lectures.find(lec => lec.id == this.lecture_id).comments_count
         },
     },
 
