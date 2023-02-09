@@ -32,7 +32,7 @@ class Conference extends Model
     ];
 
     protected $casts = [
-        'date_time_event' => 'datetime'
+        'date_time_event' => 'datetime:Y-m-d H:m'
     ];
 
 

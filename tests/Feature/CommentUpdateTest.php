@@ -132,7 +132,7 @@ class CommentUpdateTest extends TestCase
     {
         $this
             ->actingAs(User::factory()->create())
-            ->postJson('/api/comments/0/update', [])
+            ->postJson('/api/comments/0/update')
             ->assertNotFound();
     }
 }

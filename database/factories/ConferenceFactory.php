@@ -13,7 +13,7 @@ class ConferenceFactory extends Factory
     {
         return [
             'title'             => ucfirst(fake()->words(2, true)),
-            'date_time_event'   => fake()->dateTimeBetween('now', '+1 year'),
+            'date_time_event'   => fake()->dateTimeBetween('now', '+1 year')->format('Y-m-d H:m'),
 
             'latitude'  => fake()->latitude(),
             'longitude' => fake()->longitude(),

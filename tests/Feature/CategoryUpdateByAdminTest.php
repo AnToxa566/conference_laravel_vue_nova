@@ -139,7 +139,7 @@ class CategoryUpdateByAdminTest extends TestCase
     {
         $this
             ->actingAs(User::factory()->admin()->create())
-            ->putJson('/nova-api/categories/0', [])
+            ->putJson('/nova-api/categories/0')
             ->assertNotFound();
     }
 }
