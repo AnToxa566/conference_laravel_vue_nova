@@ -1,5 +1,13 @@
 <template>
-    <span v-if="this.visible">{{ this.timestampToHumanDate }}</span>
+    <span v-show="this.visible">
+        <v-progress-circular
+            v-if="!this.isTimerReady"
+            size="15"
+            indeterminate
+        ></v-progress-circular>
+
+        <span v-else>{{ this.timestampToHumanDate }}</span>
+    </span>
 </template>
 
 
@@ -22,7 +30,10 @@ export default {
             months: null,
             years: null,
         },
+
         timer: null,
+
+        isTimerReady: false,
     }),
 
     props: {
@@ -61,6 +72,8 @@ export default {
                 this.leftTime.days = Math.floor((this.leftTime.timestamp / (60 * 60 * 24)) % 30)
                 this.leftTime.months = Math.floor((this.leftTime.timestamp / (60 * 60 * 24 * 30)) % 12)
                 this.leftTime.years = Math.floor((this.leftTime.timestamp / (60 * 60 * 24 * 30 * 365)))
+
+                this.isTimerReady = true;
             }, 1000)
         },
 
