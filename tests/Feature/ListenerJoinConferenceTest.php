@@ -52,6 +52,25 @@ class ListenerJoinConferenceTest extends TestCase
     }
 
 
+    public function testAnnouncerTryingToJoin(): void
+    {
+        $user = User::factory()->announcer()->create();
+        $conference = Conference::factory()->create();
+
+        $this
+            ->actingAs($user)
+            ->postJson('/api/conferences/join', [
+                'conferenceId' => $conference->id,
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('conference_user', [
+            'user_id' => $user->id,
+            'conference_id' => $conference->id,
+        ]);
+    }
+
+
     public function testJoinWhenJoinsEnded(): void
     {
         $user = User::factory()->listener()->create();

@@ -6,6 +6,7 @@ namespace App\Http\Requests\Conference;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use App\Models\User;
 use App\Models\Plan;
 
 
@@ -13,7 +14,10 @@ class ConferenceJoinRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->joins_left > 0 || $this->user()->joins_left === Plan::UNLIMITED_JOINS;
+        return
+            $this->user()->type === User::LISTENER
+            &&
+            ($this->user()->joins_left > 0 || $this->user()->joins_left === Plan::UNLIMITED_JOINS);
     }
 
     public function rules(): array
