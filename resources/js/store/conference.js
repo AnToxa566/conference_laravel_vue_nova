@@ -64,32 +64,36 @@ export default {
     },
 
     mutations: {
-        SET_CONFERENCE (state, value) {
+        storeConference (state, value) {
             state.conference = value
         },
-        SET_CONFERENCES (state, value) {
+
+        storeConferences (state, value) {
             state.conferences = value
         },
-        SET_FILTERED_CONFERENCES (state, value) {
+
+        storeFilteredConferences (state, value) {
             state.filteredConferences = value
         },
-        SET_SEARCHED_CONFERENCES (state, value) {
+
+        storeSearchedConferences (state, value) {
             state.searchedConferences = value
         },
-        SET_CONFERENCES_PAGINATED_DATA (state, value) {
+
+        storeConferencesPaginatedData (state, value) {
             state.conferencesPaginatedData = value
         },
 
-        SET_ERROR (state, value) {
+        storeError (state, value) {
             state.error = value
         },
 
-        LECTURE_COUNT_INCREMENT (state, id) {
+        incrementLectureCount (state, id) {
             const index = state.conferences.findIndex(c => c.id == parseInt(id, 10));
             state.conferences[index].lectures_count++
         },
 
-        LECTURE_COUNT_DECREMENT (state, id) {
+        decrementLectureCount (state, id) {
             const index = state.conferences.findIndex(c => c.id == parseInt(id, 10));
             state.conferences[index].lectures_count--
         },
@@ -99,8 +103,8 @@ export default {
         fetchAllConferences({ commit }) {
             axios.get('/api/conferences')
                 .then(res => {
-                    commit('SET_ERROR', '')
-                    commit('SET_CONFERENCES', res.data)
+                    commit('storeError', '')
+                    commit('storeConferences', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -120,25 +124,25 @@ export default {
                 paginatedConferences: conferences.slice((query.page - 1) * query.perPage, query.page * query.perPage)
             }
 
-            commit('SET_CONFERENCES_PAGINATED_DATA', pagination)
+            commit('storeConferencesPaginatedData', pagination)
         },
 
 
         fetchFilteredConferences({ commit, state, dispatch }, filter) {
             axios.post('/api/conferences/filtered', filter, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_FILTERED_CONFERENCES', res.data)
+                    commit('storeFilteredConferences', res.data)
 
                     dispatch('fetchPaginatedConferences', {
                         page: state.conferencesPaginatedData.currentPage,
                         perPage: state.conferencesPaginatedData.perPage,
                     })
 
-                    commit('SET_ERROR', '')
+                    commit('storeError', '')
                 })
                 .catch(err => {
                     console.log(err.response)
-                    commit('SET_ERROR', err.response.data.message)
+                    commit('storeError', err.response.data.message)
                 })
         },
 
@@ -146,7 +150,7 @@ export default {
         fetchDetailConference({ commit, dispatch }, id) {
             axios.get(`/api/conferences/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_CONFERENCE', res.data)
+                    commit('storeConference', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -157,7 +161,7 @@ export default {
         searchConferences({ commit }, query) {
             axios.get(`/api/conferences/search/${query.search}/limit/${query.limit}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_SEARCHED_CONFERENCES', res.data)
+                    commit('storeSearchedConferences', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)

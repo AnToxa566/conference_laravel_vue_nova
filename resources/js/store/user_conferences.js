@@ -14,10 +14,11 @@ export default {
     },
 
     mutations: {
-        SET_JOINED_CONFERENCES_ID (state, value) {
+        storeJoinedConferencesId (state, value) {
             state.joinedConferencesId = value
         },
-        REMOVE_JOINED_CONFERENCE_ID (state, value) {
+
+        deleteJoinedConferencesId (state, value) {
             const index = state.joinedConferencesId.indexOf(parseInt(value, 10));
             state.joinedConferencesId.splice(index, 1);
         },
@@ -27,7 +28,7 @@ export default {
         fetchJoinedConferences({ commit }) {
             axios.get(`/api/conferences/joined/${store.state.auth.user.id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_JOINED_CONFERENCES_ID', res.data)
+                    commit('storeJoinedConferencesId', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -52,7 +53,7 @@ export default {
         cancelParticipation({ commit }, conferenceId) {
             axios.post(`/api/conferences/cancel`, { conferenceId: conferenceId }, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('REMOVE_JOINED_CONFERENCE_ID', conferenceId)
+                    commit('deleteJoinedConferencesId', conferenceId)
                 })
                 .catch(err => {
                     console.log(err.response)

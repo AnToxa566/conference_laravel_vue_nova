@@ -22,15 +22,15 @@ export default {
     },
 
     mutations: {
-        SET_MEETINGS (state, meetings) {
+        storeMeetings (state, meetings) {
             state.meetings = meetings
         },
 
-        SET_API_MEETINGS (state, meetings) {
+        storeApiMeetings (state, meetings) {
             state.apiMeetings = meetings
         },
 
-        PUSH_MEETING (state, meeting) {
+        storeMeeting (state, meeting) {
             state.meetings.push(meeting)
         },
     },
@@ -39,7 +39,7 @@ export default {
         fetchMeetingsFromAPI({ commit }) {
             axios.get(`/api/meetings/api`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_API_MEETINGS', res.data)
+                    commit('storeApiMeetings', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -49,7 +49,7 @@ export default {
         fetchMeetingsFromDB({ commit }) {
             axios.get(`/api/meetings/db`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_MEETINGS', res.data)
+                    commit('storeMeetings', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)

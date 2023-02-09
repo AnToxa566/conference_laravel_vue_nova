@@ -140,41 +140,41 @@ export default {
 
 
     mutations: {
-        SET_LECTURE (state, value) {
+        storeLecture (state, value) {
             state.lecture = value
         },
 
-        SET_LECTURES (state, value) {
+        storeLectures (state, value) {
             state.lectures = value
         },
 
-        SET_SEARCHED_LECTURES (state, value) {
+        storeSearchedLectures (state, value) {
             state.searchedLectures = value
         },
 
-        SET_FILTERED_LECTURES (state, value) {
+        storeFilteredLectures (state, value) {
             state.filteredLectures = value
         },
 
-        SET_ERROR (state, value) {
+        storeError (state, value) {
             state.error = value
         },
 
-        PUSH_LECTURE (state, value) {
+        pushLecture (state, value) {
             state.lectures.push(value)
         },
 
-        UPDATE_LECTURE (state, value) {
+        updateLecture (state, value) {
             const index = state.lectures.map(lecture => lecture.id).indexOf(value.id);
             state.lectures.splice(index, 1, value);
         },
 
-        REMOVE_LECTURE (state, id) {
+        deleteLecture (state, id) {
             let index = state.lectures.map(lecture => lecture.id).indexOf(id);
             state.lectures.splice(index, 1);
         },
 
-        COMMENT_INCREMENT (state, id) {
+        incrementCommentCount (state, id) {
             const index = state.lectures.findIndex(lec => lec.id == id);
             state.lectures[index].comments_count++
         }
@@ -185,7 +185,7 @@ export default {
         fetchAllLectures({ commit }) {
             axios.get('/api/lectures', JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_LECTURES', res.data)
+                    commit('storeLectures', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -195,19 +195,19 @@ export default {
         fetchFilteredLectures({ commit }, filter) {
             axios.post('/api/lectures/filtered', filter, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_FILTERED_LECTURES', res.data)
-                    commit('SET_ERROR', '')
+                    commit('storeFilteredLectures', res.data)
+                    commit('storeError', '')
                 })
                 .catch(err => {
                     console.log(err.response)
-                    commit('SET_ERROR', err.response.data.message)
+                    commit('storeError', err.response.data.message)
                 })
         },
 
         fetchLectureById({ commit }, id) {
             axios.get(`/api/lectures/${id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_LECTURE', res.data)
+                    commit('storeLecture', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -217,7 +217,7 @@ export default {
         searchLectures({ commit }, query) {
             axios.get(`/api/lectures/search/${query.search}/limit/${query.limit}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_SEARCHED_LECTURES', res.data)
+                    commit('storeSearchedLectures', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -227,32 +227,32 @@ export default {
         storeLecture({ commit }, lecture) {
             axios.post('/api/lectures/add', lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('PUSH_LECTURE', res.data.lecture)
-                    commit('SET_ERROR', '')
+                    commit('pushLecture', res.data.lecture)
+                    commit('storeError', '')
 
                     store.dispatch('user_conferences/fetchDataAfterJoinConference')
-                    store.commit('conference/LECTURE_COUNT_INCREMENT', res.data.lecture.conference_id)
+                    store.commit('conference/incrementLectureCount', res.data.lecture.conference_id)
 
                     if (res.data.lecture.is_online != false) {
-                        store.commit('meeting/PUSH_MEETING', res.data.meeting)
+                        store.commit('meeting/storeMeeting', res.data.meeting)
                     }
                 })
                 .catch(err => {
                     console.log(err)
-                    commit('SET_ERROR', err.response.data.message)
+                    commit('storeError', err.response.data.message)
                 })
         },
 
         updateLecture({ commit }, lecture) {
             axios.post(`/api/lectures/${lecture.id}/update`, lecture, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('UPDATE_LECTURE', res.data)
-                    commit('SET_ERROR', '')
+                    commit('updateLecture', res.data)
+                    commit('storeError', '')
                     router.go(-1)
                 })
                 .catch(err => {
                     console.log(err.response)
-                    commit('SET_ERROR', err.response.data.message)
+                    commit('storeError', err.response.data.message)
                 })
         },
 
@@ -274,10 +274,10 @@ export default {
         deleteLecture({ commit }, lectureId) {
             axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('REMOVE_LECTURE', res.data.id)
+                    commit('deleteLecture', res.data.id)
 
-                    store.commit('user_conferences/REMOVE_JOINED_CONFERENCE_ID', res.data.conference_id)
-                    store.commit('conference/LECTURE_COUNT_DECREMENT', res.data.conference_id)
+                    store.commit('user_conferences/deleteJoinedConferencesId', res.data.conference_id)
+                    store.commit('conference/decrementLectureCount', res.data.conference_id)
 
                     router.push({ name: 'conferences' })
                 })
@@ -287,7 +287,7 @@ export default {
         },
 
         incrementCommentsCount({ commit }, lectureId) {
-            commit('COMMENT_INCREMENT', lectureId)
+            commit('incrementCommentCount', lectureId)
         },
     }
 }

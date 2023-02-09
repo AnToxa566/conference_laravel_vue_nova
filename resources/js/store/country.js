@@ -12,7 +12,7 @@ export default {
     },
 
     mutations: {
-        SET_COUNTRIES (state, value) {
+        storeCountries (state, value) {
             state.countries = value
         },
     },
@@ -21,7 +21,7 @@ export default {
         fetchAllCountries({ commit }) {
             axios.get('/api/countries')
                 .then(res => {
-                    commit('SET_COUNTRIES', res.data)
+                    commit('storeCountries', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)

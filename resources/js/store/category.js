@@ -44,15 +44,15 @@ export default {
     },
 
     mutations: {
-        SET_CATEGORIES (state, categories) {
+        storeCategories (state, categories) {
             state.categories = categories
         },
 
-        SET_ROOTS (state, categories) {
+        storeRoots (state, categories) {
             state.roots = categories.filter(category => !category.parent_id).map(category => category.id)
         },
 
-        SET_NODES (state, categories) {
+        storeNodes (state, categories) {
             const nodes = {}
 
             categories.forEach(category => {
@@ -73,12 +73,12 @@ export default {
             state.nodes = nodes
         },
 
-        SET_LECTURE_ROOTS (state, parentId) {
+        storeLectureRoots (state, parentId) {
             state.lectureRoots = []
             state.lectureRoots.push(parentId)
         },
 
-        SET_LECTURE_NODES (state, parentId) {
+        storeLectureNodes (state, parentId) {
             const categories = []
             const nodes = {}
 
@@ -115,10 +115,10 @@ export default {
         fetchAllCategories({ commit }) {
             axios.get('/api/categories')
                 .then(res => {
-                    commit('SET_CATEGORIES', res.data)
+                    commit('storeCategories', res.data)
 
-                    commit('SET_NODES', res.data)
-                    commit('SET_ROOTS', res.data)
+                    commit('storeNodes', res.data)
+                    commit('storeRoots', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -126,8 +126,8 @@ export default {
         },
 
         fetchBranche({ commit }, parentId) {
-            commit('SET_LECTURE_ROOTS', parentId)
-            commit('SET_LECTURE_NODES', parentId)
+            commit('storeLectureRoots', parentId)
+            commit('storeLectureNodes', parentId)
         },
     }
 }

@@ -58,7 +58,7 @@ export default {
     },
 
     created() {
-        this.$store.commit('lecture/SET_ERROR', '')
+        this.$store.commit('lecture/storeError', '')
     },
 
     computed: {

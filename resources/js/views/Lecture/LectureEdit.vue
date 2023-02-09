@@ -48,7 +48,7 @@ export default {
         this.lectureId = parseInt(this.$route.params.lecture_id, 10);
 
         this.$store.dispatch('lecture/fetchLectureById', this.lectureId)
-        this.$store.commit('lecture/SET_ERROR', '')
+        this.$store.commit('lecture/storeError', '')
     },
 
     computed: {

@@ -41,7 +41,7 @@ export default {
     },
 
     mounted() {
-        this.$store.commit('comment/SET_COMMENTS_OF_LECTURE', [])
+        this.$store.commit('comment/storeCommentsOfLecture', [])
 
         const options = {
             rootMargin: '0px',
@@ -79,7 +79,7 @@ export default {
 
                 if (result.data.length) {
                     if (this.page == 1) {
-                        this.$store.commit('comment/SET_COMMENTS_OF_LECTURE', result.data)
+                        this.$store.commit('comment/storeCommentsOfLecture', result.data)
                     }
                     else {
                         this.$store.commit('comment/PUSH_COMMENTS', result.data)

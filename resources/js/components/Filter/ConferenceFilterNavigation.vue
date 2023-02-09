@@ -113,7 +113,7 @@ export default {
         updateFilters() {
             clearTimeout(this.timeout)
 
-            this.$store.commit('conference/SET_FILTERED_CONFERENCES', [])
+            this.$store.commit('conference/storeFilteredConferences', [])
 
             const self = this
             this.timeout = setTimeout(() => self.fetchFilteredConferences(), 800);

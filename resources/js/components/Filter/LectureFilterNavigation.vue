@@ -115,7 +115,7 @@ export default {
         updateFilters() {
             clearTimeout(this.timeout)
 
-            this.$store.commit('lecture/SET_FILTERED_LECTURES', [])
+            this.$store.commit('lecture/storeFilteredLectures', [])
 
             const self = this
             this.timeout = setTimeout(() => self.fetchFilteredLectures(), 800);
