@@ -19,7 +19,7 @@ class ListenerJoinConferenceTest extends TestCase
 
     public function testSuccessfulJoin(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->listener()->create();
         $conference = Conference::factory()->create();
 
         $this
@@ -77,7 +77,7 @@ class ListenerJoinConferenceTest extends TestCase
     public function testJoinWithInvalidConference(): void
     {
         $this
-            ->actingAs(User::factory()->create())
+            ->actingAs(User::factory()->listener()->create())
             ->postJson('/api/conferences/join', [
                 'conferenceId' => 0,
             ])
