@@ -19,35 +19,15 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Category extends Resource
 {
-    /**
-     * The model the resource corresponds to.
-     *
-     * @var class-string<\App\Models\Category>
-     */
     public static $model = \App\Models\Category::class;
 
-    /**
-     * The single value that should be used to represent the resource when being displayed.
-     *
-     * @var string
-     */
     public static $title = 'title';
 
-    /**
-     * The columns that should be searched.
-     *
-     * @var array
-     */
     public static $search = [
         'title',
     ];
 
-    /**
-     * Get the fields displayed by the resource.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return array
-     */
+
     public function fields(NovaRequest $request): array
     {
         return [
@@ -64,7 +44,8 @@ class Category extends Resource
                 ->nullable()
                 ->rules('nullable', 'exists:categories,id'),
 
-            Number::make('Child Count', function () {
+            Number::make('Child Count', function (): int
+                {
                     return $this->childs->count();
                 })
                 ->textAlign('left')
@@ -74,12 +55,7 @@ class Category extends Resource
         ];
     }
 
-    /**
-     * Removes all children of a category from the database.
-     *
-     * @param  \Illuminate\Database\Eloquent\Collection  $childs
-     * @return void
-     */
+
     protected static function deleteCategoryChilds(Collection $childs): void
     {
         foreach($childs as $child) {
@@ -91,13 +67,7 @@ class Category extends Resource
         }
     }
 
-    /**
-     * Register a callback to be called after the resource is deleted.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
+
     public static function afterDelete(NovaRequest $request, Model $model): void
     {
         self::deleteCategoryChilds($model->childs);

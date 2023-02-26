@@ -17,21 +17,21 @@
                         {{ conference.title }}
 
                         <v-chip
-                            v-if="this.category"
+                            v-if="this.conference.category_id"
                             variant="outlined"
                             color="white"
                             :rounded="true"
                         >
-                            #{{ this.category.title }}
+                            #{{ this.categoryById(this.conference.category_id).title }}
                         </v-chip>
                     </div>
                 </v-card-title>
 
                 <!-- Date & Time -->
-                <v-card-subtitle> {{ formatedDateTime }} </v-card-subtitle>
+                <v-card-subtitle> {{ this.formatedDateTime(this.conference.id) }} </v-card-subtitle>
 
                 <!-- Country -->
-                <v-card-subtitle> {{ conference.country }} </v-card-subtitle>
+                <v-card-subtitle> {{ this.conferenceCountry.name }} </v-card-subtitle>
 
 
                 <!-- Buttons -->
@@ -77,6 +77,8 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     props: {
         conference: {
@@ -86,16 +88,19 @@ export default {
     },
 
     computed: {
+        ...mapGetters({
+            joinedConferencesId: 'user_conferences/joinedConferencesId',
+            formatedDateTime: 'conference/formatedDateTime',
+            categoryById: 'category/categoryById',
+            countries: 'country/countries'
+        }),
+
         isJoined() {
-            return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conference.id, 10))
+            return this.joinedConferencesId.includes(parseInt(this.conference.id, 10))
         },
 
-        formatedDateTime() {
-            return this.$store.getters['conference/formatedDateTime'](this.conference.id)
-        },
-
-        category() {
-            return this.$store.getters['category/categoryById'](this.conference.category_id)
+        conferenceCountry() {
+            return this.countries.find(c => c.short_code === this.conference.country)
         },
     },
 };

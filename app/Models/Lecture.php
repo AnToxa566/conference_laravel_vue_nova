@@ -12,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Lecture extends Model
 {
     use HasFactory;
+
 
     protected $table = 'lectures';
 
@@ -39,6 +41,7 @@ class Lecture extends Model
         'date_time_start' => 'datetime',
         'date_time_end' => 'datetime',
     ];
+
 
     public function followingUsers(): BelongsToMany
     {
@@ -69,6 +72,7 @@ class Lecture extends Model
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
+
 
     public function scopeSearch(Builder $query, string $search, int $limit): Builder
     {

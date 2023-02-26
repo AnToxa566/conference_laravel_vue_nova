@@ -1,16 +1,11 @@
 <template>
     <v-btn
-        v-if="!isJoined && !this.isAnnouncer"
+        v-if="!isJoined"
         variant="tonal" color="white" class="mx-1"
-        @click="this.joinConference()"
+        @click="this.joinValidation"
     >
         Join
     </v-btn>
-
-    <lecture-form-dialog
-        v-else-if="!isJoined && this.isAnnouncer"
-        :conference="this.conference"
-    ></lecture-form-dialog>
 
     <v-btn
         v-else
@@ -26,9 +21,14 @@
         title="Cancel participation?"
         text="Are you sure you want to cancel your participation in this conference?"
 
-        @confirm="this.cancelParticipation"
+        @confirm="this.cancelParticipationValidation"
     >
     </action-confirmation>
+
+    <lecture-form-dialog
+        v-model="lectureFormDialog"
+        :conference="this.conference"
+    ></lecture-form-dialog>
 </template>
 
 
@@ -36,11 +36,13 @@
 import LectureFormDialog from '../Lecture/LectureFormDialog.vue'
 import userTypes from '../../config/user_types'
 
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
     name: 'join-cancel-buttons',
 
     data: () => ({
-        dialog: false,
+        lectureFormDialog: false,
         confirmationDialog: false,
     }),
 
@@ -61,42 +63,66 @@ export default {
     },
 
     computed: {
-        user() {
-            return this.$store.getters['auth/user']
-        },
-        lectureId() {
-            return this.$store.getters['lecture/lectureIdByConferenceId'](this.conference.id)
-        },
-        authenticated() {
-            return this.$store.getters['auth/authenticated']
-        },
+        ...mapGetters({
+            user: 'auth/user',
+            lectureId: 'lecture/lectureIdByConferenceId',
+            authenticated: 'auth/authenticated',
+        }),
 
         isAnnouncer() {
-            return this.$store.getters['auth/user'].type == userTypes.ANNOUNCER
+            return this.user.type == userTypes.ANNOUNCER
+        },
+
+        isJoinsEnded() {
+            return this.user.joins_left === 0
         },
     },
 
     methods: {
-        joinConference() {
-            if (this.authenticated) {
-                if (!this.isJoined) {
-                    this.$store.dispatch('user_conferences/joinConference', this.conference.id)
-                }
+        ...mapActions({
+            deleteLecture: 'lecture/deleteLecture',
+            joinConference: 'user_conferences/joinConference',
+            cancelParticipation: 'user_conferences/cancelParticipation',
+        }),
+
+        joinValidation() {
+            if (!this.authenticated) {
+                this.$router.push({ name: 'login' })
+                return
             }
-            else {
-                this.$router.push('/login')
+
+            if (this.isJoinsEnded) {
+                this.$router.push({
+                    name: 'plans',
+                    query: { joinsEnded: true },
+                })
+
+                return
             }
+
+            if (this.isJoined) {
+                return
+            }
+
+            if (this.isAnnouncer) {
+                this.lectureFormDialog = true
+                return
+            }
+
+            this.joinConference(this.conference.id)
         },
 
-        cancelParticipation(event) {
-            if (this.isJoined && event) {
-                if (this.isAnnouncer) {
-                    this.$store.dispatch('lecture/deleteLecture', this.lectureId)
-                }
-                else {
-                    this.$store.dispatch('user_conferences/cancelParticipation', this.conference.id)
-                }
+        cancelParticipationValidation(isConfirmed) {
+            if (!this.isJoined || !isConfirmed) {
+                return
             }
+
+            if (this.isAnnouncer) {
+                this.deleteLecture(this.lectureId(this.conference.id))
+                return
+            }
+
+            this.cancelParticipation(this.conference.id)
         },
     }
 }

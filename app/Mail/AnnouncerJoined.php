@@ -15,32 +15,18 @@ use Illuminate\Queue\SerializesModels;
 use Carbon\Carbon;
 use App\Models\Lecture;
 
+
 class AnnouncerJoined extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * The lecture instance.
-     *
-     * @var \App\Models\Lecture
-     */
     public Lecture $lecture;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public function __construct(Lecture $lecture)
     {
         $this->lecture = $lecture;
     }
 
-    /**
-     * Get the message envelope.
-     *
-     * @return \Illuminate\Mail\Mailables\Envelope
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -48,11 +34,6 @@ class AnnouncerJoined extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the message content definition.
-     *
-     * @return \Illuminate\Mail\Mailables\Content
-     */
     public function content(): Content
     {
         return new Content(

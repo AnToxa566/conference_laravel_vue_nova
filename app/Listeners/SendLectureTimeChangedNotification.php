@@ -13,14 +13,9 @@ use App\Mail\LectureTimeChanged;
 use App\Models\Conference;
 use App\Models\User;
 
+
 class SendLectureTimeChangedNotification
 {
-    /**
-     * Handle the event.
-     *
-     * @param  \App\Events\LectureUpdated  $event
-     * @return void
-     */
     public function handle(LectureUpdated $event): void
     {
         if ($event->lecture->wasChanged(['date_time_start', 'date_time_end'])) {

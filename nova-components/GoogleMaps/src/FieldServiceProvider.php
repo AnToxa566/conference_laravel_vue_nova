@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Custom\GoogleMaps;
 
 use Illuminate\Support\ServiceProvider;
@@ -8,26 +10,11 @@ use Laravel\Nova\Nova;
 
 class FieldServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         Nova::serving(function (ServingNova $event) {
             Nova::script('google-maps', __DIR__.'/../dist/js/field.js');
             Nova::style('google-maps', __DIR__.'/../dist/css/field.css');
         });
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
     }
 }

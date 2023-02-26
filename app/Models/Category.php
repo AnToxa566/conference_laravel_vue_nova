@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Category extends Model
 {
     use HasFactory;
+
 
     protected $table = 'categories';
 
@@ -19,6 +21,7 @@ class Category extends Model
         'title',
         'parent_id',
     ];
+
 
     public function parent(): BelongsTo
     {

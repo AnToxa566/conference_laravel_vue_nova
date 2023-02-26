@@ -9,24 +9,23 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
+use App\Http\Controllers\API\PlanController;
+
 
 class UsersTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
+        $planController = new PlanController();
+
         $users = [
             [
                 'first_name' => 'Anton',
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2003-03-16',
                 'type' => User::LISTENER,
-                'country' => 'Ukraine',
-                'email' => 'anton@groupbwt.com',
+                'country' => 'UA',
+                'email' => 'bohachuk_am@groupbwt.com',
                 'phone_number' => '+380991124364',
                 'country_phone_code' => 'UA',
                 'password' => Hash::make('12345678'),
@@ -36,8 +35,8 @@ class UsersTableSeeder extends Seeder
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2007-05-13',
                 'type' => User::ANNOUNCER,
-                'country' => 'Ukraine',
-                'email' => 'bohdan@groupbwt.com',
+                'country' => 'UA',
+                'email' => 'bogachuk566@gmail.com',
                 'phone_number' => '+380662037939',
                 'country_phone_code' => 'UA',
                 'password' => Hash::make('12345678'),
@@ -47,14 +46,18 @@ class UsersTableSeeder extends Seeder
                 'last_name' => 'Bohachuk',
                 'birthdate' => '2004-04-28',
                 'type' => User::ANNOUNCER,
-                'country' => 'Ukraine',
-                'email' => 'liza@groupbwt.com',
+                'country' => 'UA',
+                'email' => 'trash.anton.bog@gmail.com',
                 'phone_number' => '+380998888888',
                 'country_phone_code' => 'UA',
                 'password' => Hash::make('12345678'),
             ],
         ];
 
-        User::insert($users);
+        foreach ($users as $user) {
+            $createdUder = User::create($user);
+
+            $planController->subscribeBasicPlan($createdUder);
+        }
     }
 }

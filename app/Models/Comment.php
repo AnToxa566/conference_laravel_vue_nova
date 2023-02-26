@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Comment extends Model
 {
     use HasFactory;
+
 
     protected $table = 'comments';
 
@@ -21,6 +23,7 @@ class Comment extends Model
 
         'description',
     ];
+
 
     public function user(): BelongsTo
     {
@@ -32,11 +35,7 @@ class Comment extends Model
       return $this->belongsTo(Lecture::class);
     }
 
-    /**
-     * Interact with the comment's username.
-     *
-     * @return  \Illuminate\Database\Eloquent\Casts\Attribute
-     */
+
     protected function userName(): Attribute
     {
         return Attribute::make(

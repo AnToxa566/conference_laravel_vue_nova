@@ -14,40 +14,21 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Conference;
 use App\Models\User;
 
+
 class ListenerJoined extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-     /**
-     * The conference instance.
-     *
-     * @var \App\Models\Conference
-     */
     public Conference $conference;
 
-    /**
-     * A new listener.
-     *
-     * @var \App\Models\User
-     */
     public User $listener;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public function __construct(User $listener, Conference $conference)
     {
         $this->listener = $listener;
         $this->conference = $conference;
     }
 
-    /**
-     * Get the message envelope.
-     *
-     * @return \Illuminate\Mail\Mailables\Envelope
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -55,11 +36,6 @@ class ListenerJoined extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the message content definition.
-     *
-     * @return \Illuminate\Mail\Mailables\Content
-     */
     public function content(): Content
     {
         return new Content(

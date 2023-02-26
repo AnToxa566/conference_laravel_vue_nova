@@ -6,11 +6,16 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\User;
-use App\Models\Conference;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\Conference\ConferenceJoinRequest;
+use App\Http\Requests\Conference\ConferenceCancelParticipationRequest;
 
 use App\Mail\ListenerJoined;
+
+use App\Models\User;
+use App\Models\Plan;
+use App\Models\Conference;
+
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -22,24 +27,34 @@ class UserConferenceController extends Controller
     }
 
 
-    public function joinConference(int $userId, int $conferenceId): void
+    public function joinConference(ConferenceJoinRequest $request): JsonResponse
     {
-        $user = User::findOrFail($userId);
+        $conferenceId = $request->validated()['conferenceId'];
+        $user = $request->user();
+
         $user->conferences()->attach($conferenceId);
+
+        if ($user->joins_left !== Plan::UNLIMITED_JOINS) {
+            $user->decrement('joins_left');
+        }
 
         if ($user->type === User::LISTENER) {
             $conference = Conference::findOrFail($conferenceId);
             $announcers = $conference->users()->where('type', User::ANNOUNCER)->get();
 
-            if (count($announcers)) {
+            if ($announcers->isNotEmpty()) {
                 Mail::to($announcers)->send(new ListenerJoined($user, $conference));
             }
         }
+
+        return response()->json(null, 200);
     }
 
 
-    public function cancelParticipation($userId, $conferenceId): void
+    public function cancelParticipation(ConferenceCancelParticipationRequest $request): JsonResponse
     {
-        User::findOrFail($userId)->conferences()->detach($conferenceId);
+        $request->user()->conferences()->detach($request->validated()['conferenceId']);
+
+        return response()->json(null, 200);
     }
 }

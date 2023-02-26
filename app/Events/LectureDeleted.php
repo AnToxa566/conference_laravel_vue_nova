@@ -16,32 +16,12 @@ class LectureDeleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * The announcer's email.
-     *
-     * @var array
-     */
     public array $emails;
 
-    /**
-     * The conference's id.
-     *
-     * @var int
-     */
     public int $conferenceId;
 
-    /**
-     * The conference's title.
-     *
-     * @var string
-     */
     public string $conferenceTitle;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(array $emails, int $conferenceId, string $conferenceTitle)
     {
         $this->emails = $emails;

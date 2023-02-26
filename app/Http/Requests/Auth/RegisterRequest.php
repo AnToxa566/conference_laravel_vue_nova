@@ -33,7 +33,7 @@ class RegisterRequest extends FormRequest
             'password'      => ['required', 'string', 'min:8', 'confirmed'],
 
             'birthdate'     => ['required', 'date', 'before:tomorrow'],
-            'country'       => ['required', 'string', 'max:255', 'exists:countries,name'],
+            'country'       => ['required', 'string', 'max:255', 'exists:countries,short_code'],
             'type'          => ['required', 'string', 'max:255'],
 
             'phone_number'          => ['required', 'string'],

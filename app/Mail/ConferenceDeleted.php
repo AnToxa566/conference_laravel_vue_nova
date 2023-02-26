@@ -11,32 +11,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+
 class ConferenceDeleted extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * The conference instance.
-     *
-     * @var string
-     */
     public string $conferenceTitle;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public function __construct(string $conferenceTitle)
     {
         $this->conferenceTitle = $conferenceTitle;
     }
 
-    /**
-     * Get the message envelope.
-     *
-     * @return \Illuminate\Mail\Mailables\Envelope
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -44,11 +30,6 @@ class ConferenceDeleted extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the message content definition.
-     *
-     * @return \Illuminate\Mail\Mailables\Content
-     */
     public function content(): Content
     {
         return new Content(
