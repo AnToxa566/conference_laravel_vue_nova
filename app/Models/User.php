@@ -24,19 +24,24 @@ class User extends Authenticatable
 
     public const ANNOUNCER = 'Announcer';
 
+    public const FACTORY_PASSWORD = '12345678';
+
 
     protected $table = 'users';
 
     protected $fillable = [
         'first_name',
         'last_name',
+
         'type',
-        'email',
+        'country',
+        'birthdate',
         'joins_left',
         'phone_number',
+        'country_phone_code',
+
+        'email',
         'password',
-        'birthdate',
-        'country',
     ];
 
     protected $hidden = [

@@ -12,15 +12,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+
 class LectureDeleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
 
     public array $emails;
 
     public int $conferenceId;
 
     public string $conferenceTitle;
+
 
     public function __construct(array $emails, int $conferenceId, string $conferenceTitle)
     {

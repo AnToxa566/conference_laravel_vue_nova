@@ -18,7 +18,9 @@ class CommentAdded extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+
     public Comment $comment;
+
 
     public function __construct(Comment $comment)
     {

@@ -16,9 +16,11 @@ class LectureDeletedByAdmin extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+
     public int $conferenceId;
 
     public string $conferenceTitle;
+
 
     public function __construct(int $conferenceId, string $conferenceTitle)
     {

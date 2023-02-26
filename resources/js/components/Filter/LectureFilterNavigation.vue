@@ -75,6 +75,8 @@
 <script>
 import lecture from '../../config/lecture'
 
+import { mapGetters } from 'vuex'
+
 export default {
     data: () => ({
         filter: {
@@ -104,16 +106,16 @@ export default {
     },
 
     computed: {
-        categories() {
-            return this.$store.getters['category/categories']
-        }
+        ...mapGetters({
+            categories: 'category/categories',
+        }),
     },
 
     methods: {
         updateFilters() {
             clearTimeout(this.timeout)
 
-            this.$store.commit('lecture/SET_FILTERED_LECTURES', [])
+            this.$store.commit('lecture/storeFilteredLectures', [])
 
             const self = this
             this.timeout = setTimeout(() => self.fetchFilteredLectures(), 800);

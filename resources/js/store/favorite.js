@@ -9,29 +9,23 @@ export default {
     },
 
     getters: {
-        favoritedLecturesId(state) {
-            return state.favoritedLecturesId
-        },
+        favoritedLecturesId: state => state.favoritedLecturesId,
 
-        hasFavoritedLectures(state) {
-            return state.favoritedLecturesId.length > 0
-        },
+        hasFavoritedLectures: state => state.favoritedLecturesId.length > 0,
 
-        isLectureFavoritedById: (state) => (lectureId) => {
-            return state.favoritedLecturesId.includes(lectureId)
-        },
+        isLectureFavoritedById: state => lectureId => state.favoritedLecturesId.includes(lectureId),
     },
 
     mutations: {
-        SET_FAVORITE_LECTURES_ID (state, value) {
+        storeFavoritedLecturesId (state, value) {
             state.favoritedLecturesId = value
         },
 
-        PUSH_FAVORITE_LECTURE_ID (state, id) {
+        pushFavoritedLectureId (state, id) {
             state.favoritedLecturesId.push(id)
         },
 
-        REMOVE_FAVORITE_LECTURE_ID (state, id) {
+        deleteFavoritedLectureId (state, id) {
             const index = state.favoritedLecturesId.indexOf(parseInt(id, 10));
             state.favoritedLecturesId.splice(index, 1);
         },
@@ -41,7 +35,7 @@ export default {
         fetchFavoritedLecturesId({ commit }) {
             axios.get(`/api/lectures/favorited/${store.state.auth.user.id}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('SET_FAVORITE_LECTURES_ID', res.data)
+                    commit('storeFavoritedLecturesId', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -51,7 +45,7 @@ export default {
         addLectureToFavorite({ commit }, lectureId) {
             axios.get(`/api/lectures/favorite/add/${store.state.auth.user.id}/${lectureId}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('PUSH_FAVORITE_LECTURE_ID', lectureId)
+                    commit('pushFavoritedLectureId', lectureId)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -61,7 +55,7 @@ export default {
         removeLectureFromFavorite({ commit }, lectureId) {
             axios.get(`/api/lectures/favorite/remove/${store.state.auth.user.id}/${lectureId}`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
-                    commit('REMOVE_FAVORITE_LECTURE_ID', lectureId)
+                    commit('deleteFavoritedLectureId', lectureId)
                 })
                 .catch(err => {
                     console.log(err.response)

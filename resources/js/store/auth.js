@@ -16,67 +16,58 @@ export default {
         authErrors: {},
         hasAuthErrors: false,
 
-        config: null,
+        config: {},
     },
 
     getters: {
-        user(state) {
-            return state.user
-        },
-        authenticated(state) {
-            return state.authenticated
-        },
+        user: state => state.user,
 
-        userTypes(state) {
-            return state.userTypes
-        },
+        authenticated: state => state.authenticated,
 
-        authErrors(state) {
-            return state.authErrors
-        },
-        hasAuthErrors(state) {
-            return state.hasAuthErrors
-        },
+        userTypes: state => state.userTypes,
+
+        authErrors: state => state.authErrors,
+
+        hasAuthErrors: state => state.hasAuthErrors,
     },
 
     mutations: {
-        SET_USER (state, user) {
+        storeUser (state, user) {
             state.user = user
         },
-        SET_CONFIG (state, user) {
+
+        storeConfig (state, authToken) {
             state.config = {
                 headers: {
-                    Authorization: `Bearer ${user.auth_token}`,
+                    Authorization: `Bearer ${authToken}`,
                     Accept :'application/json',
                 }
             }
 
             localStorage.setItem('config', JSON.stringify(state.config))
-            localStorage.setItem('authToken', JSON.stringify(user.auth_token))
+            localStorage.setItem('authToken', JSON.stringify(authToken))
         },
-        SET_AUTHENTICATED (state, value) {
+
+        storeAuthenticated (state, value) {
             state.authenticated = value
         },
 
-        SET_USER_TYPES (state, value) {
+        storeUserTypes (state, value) {
             state.userTypes = value
         },
 
-        SET_AUTH_ERRORS (state, value) {
+        storeAuthErrors (state, value) {
             state.authErrors = value
         },
-        SET_HAS_AUTH_ERRORS (state, value) {
-            state.hasAuthErrors = value
-        },
 
-        DECREMENT_JOINS (state) {
-            state.user.joins_left--
+        storeHasAuthErrors (state, value) {
+            state.hasAuthErrors = value
         },
     },
 
     actions: {
         initData({ commit }) {
-            commit('SET_USER_TYPES', [ userTypes.LISTENER, userTypes.ANNOUNCER ])
+            commit('storeUserTypes', [ userTypes.LISTENER, userTypes.ANNOUNCER ])
         },
 
         fetchUserData() {
@@ -91,14 +82,14 @@ export default {
                 })
                 .catch(err => {
                     if (state.authenticated && err.response.status === 401) {
-                        commit('SET_USER', {})
-                        commit('SET_AUTHENTICATED', false)
+                        commit('storeUser', {})
+                        commit('storeAuthenticated', false)
 
                         store.dispatch('conference/fetchPaginatedConferences', {
                             page: 1,
                             perPage: pagination.PER_PAGE,
                         })
-                        store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
+                        store.commit('user_conferences/storeJoinedConferencesId', [])
 
                         router.push({ name: 'login' })
                     }
@@ -108,7 +99,7 @@ export default {
         fetchUser({ commit, state }) {
             axios.get('/api/user', state.config)
                 .then(res => {
-                    commit('SET_USER', res.data)
+                    commit('storeUser', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -118,36 +109,21 @@ export default {
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    if (res.data.type !== userTypes.ADMIN) {
-                        commit('SET_USER', res.data)
-                        commit('SET_CONFIG', res.data)
-                        commit('SET_AUTHENTICATED', true)
+                    commit('storeUser', res.data.user)
+                    commit('storeConfig', res.data.auth_token)
+                    commit('storeAuthenticated', true)
 
-                        dispatch('fetchUserData')
+                    dispatch('fetchUserData')
 
-                        router.push({ name: 'conferences' })
-                    }
-                    else {
-                        dispatch('loginToNova', user)
-                    }
+                    router.push({ name: 'conferences' })
                 })
                 .catch(err => {
-                    commit('SET_USER', {})
-                    commit('SET_AUTHENTICATED', false)
+                    commit('storeUser', {})
+                    commit('storeAuthenticated', false)
 
-                    commit('SET_AUTH_ERRORS', err.response.data.message)
-                    commit('SET_HAS_AUTH_ERRORS', true)
+                    commit('storeAuthErrors', err.response.data.message)
+                    commit('storeHasAuthErrors', true)
 
-                    console.log(err.response)
-                })
-        },
-
-        loginToNova({ }, user) {
-            axios.post('/nova/login', user)
-                .then(res => {
-                    window.location.href = '/nova'
-                })
-                .catch(err => {
                     console.log(err.response)
                 })
         },
@@ -155,22 +131,22 @@ export default {
         register({ commit, dispatch }, user) {
             axios.post('/api/register', user)
                 .then(res => {
-                    commit('SET_USER', res.data)
-                    commit('SET_CONFIG', res.data)
+                    commit('storeUser', res.data.user)
+                    commit('storeConfig', res.data.auth_token)
 
-                    commit('SET_AUTHENTICATED', true)
-                    commit('SET_AUTH_ERRORS', {})
+                    commit('storeAuthenticated', true)
+                    commit('storeAuthErrors', {})
 
                     dispatch('fetchUserData')
 
                     router.push({ name: 'conferences' })
                 })
                 .catch(err => {
-                    commit('SET_USER', {})
-                    commit('SET_AUTHENTICATED', false)
+                    commit('storeUser', {})
+                    commit('storeAuthenticated', false)
 
-                    commit('SET_AUTH_ERRORS', err.response.data.message)
-                    commit('SET_HAS_AUTH_ERRORS', true)
+                    commit('storeAuthErrors', err.response.data.message)
+                    commit('storeHasAuthErrors', true)
 
                     console.log(err.response)
                 })
@@ -179,14 +155,14 @@ export default {
         update({ commit, state }, user) {
             axios.post('/api/profile/update', user, state.config)
                 .then(res => {
-                    commit('SET_USER', res.data)
-                    commit('SET_AUTH_ERRORS', {})
+                    commit('storeUser', res.data)
+                    commit('storeAuthErrors', {})
 
                     router.push({ name: 'conferences' })
                 })
                 .catch(err => {
-                    commit('SET_AUTH_ERRORS', err.response.data.message)
-                    commit('SET_HAS_AUTH_ERRORS', true)
+                    commit('storeAuthErrors', err.response.data.message)
+                    commit('storeHasAuthErrors', true)
 
                     console.log(err.response)
                 })
@@ -195,14 +171,14 @@ export default {
         logout({ commit, state }) {
             axios.get('/api/logout', state.config)
                 .then(res => {
-                    commit('SET_USER', {})
-                    commit('SET_AUTHENTICATED', false)
+                    commit('storeUser', {})
+                    commit('storeAuthenticated', false)
 
                     store.dispatch('conference/fetchPaginatedConferences', {
                         page: 1,
                         perPage: pagination.PER_PAGE,
                     })
-                    store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
+                    store.commit('user_conferences/storeJoinedConferencesId', [])
 
                     localStorage.removeItem('config')
                     localStorage.removeItem('authToken')
@@ -215,8 +191,8 @@ export default {
         },
 
         removeAuthErrors({ commit }) {
-            commit('SET_AUTH_ERRORS', {})
-            commit('SET_HAS_AUTH_ERRORS', false)
+            commit('storeAuthErrors', {})
+            commit('storeHasAuthErrors', false)
         },
     }
 }

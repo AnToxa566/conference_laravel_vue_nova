@@ -19,6 +19,7 @@
 
 <script>
 import LectureList from '../../components/Lecture/LectureList.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
@@ -26,11 +27,13 @@ export default {
     },
 
     computed: {
-        favoriteLectures() {
-            const lectures = this.$store.getters['lecture/lectures']
-            const favoriteLecturesId = this.$store.getters['favorite/favoritedLecturesId']
+        ...mapGetters({
+            lectures: 'lecture/lectures',
+            favoritedLecturesId: 'favorite/favoritedLecturesId',
+        }),
 
-            return lectures.filter(lecture => favoriteLecturesId.includes(lecture.id))
+        favoriteLectures() {
+            return this.lectures.filter(lecture => this.favoritedLecturesId.includes(lecture.id))
         },
     },
 }

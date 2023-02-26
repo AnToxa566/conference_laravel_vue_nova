@@ -102,6 +102,10 @@ class Lecture extends Resource
                 ->alwaysShow()
                 ->rules('required'),
 
+            Text::make('Presentation Path')->hide()->hideFromIndex()->hideFromDetail(),
+
+            Text::make('Presentation Name')->hide()->hideFromIndex()->hideFromDetail(),
+
             File::make('Presentation', 'presentation_path')
                 ->prunable()
                 ->disk('local')

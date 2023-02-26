@@ -37,6 +37,7 @@
 
 <script>
 import ConferenceList from '../../components/Conference/ConferenceList.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
@@ -44,13 +45,10 @@ export default {
     },
 
     computed: {
-        isAuthenticated() {
-            return this.$store.getters['auth/authenticated']
-        },
-
-        error() {
-            return this.$store.getters['conference/error']
-        },
+        ...mapGetters({
+            isAuthenticated: 'auth/authenticated',
+            error: 'conference/error',
+        }),
     },
 }
 </script>

@@ -13,7 +13,8 @@
 </template>
 
 <script>
-import AppBar from './components/UI/AppBar.vue';
+import AppBar from './components/UI/AppBar.vue'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'app',
@@ -24,26 +25,44 @@ export default {
 
     mounted() {
         if (this.authenticated) {
-            this.$store.dispatch('auth/initData')
-            this.$store.dispatch('auth/fetchUserData')
+            this.initData()
+            this.fetchUserData()
 
-            this.$store.dispatch('lecture/fetchAllLectures')
+            this.fetchAllLectures()
 
-            this.$store.dispatch('meeting/fetchMeetingsFromAPI')
-            this.$store.dispatch('meeting/fetchMeetingsFromDB')
+            this.fetchMeetingsFromAPI()
+            this.fetchMeetingsFromDB()
         }
 
-        this.$store.dispatch('auth/checkAuth')
+        this.checkAuth()
 
-        this.$store.dispatch('conference/fetchAllConferences')
-        this.$store.dispatch('country/fetchAllCountries')
-        this.$store.dispatch('category/fetchAllCategories')
+        this.fetchAllConferences()
+        this.fetchAllCountries()
+        this.fetchAllCategories()
     },
 
     computed: {
-        authenticated() {
-            return this.$store.getters['auth/authenticated']
-        }
-    }
+        ...mapGetters({
+            authenticated: 'auth/authenticated',
+        }),
+    },
+
+    methods: {
+        ...mapActions({
+            initData: 'auth/initData',
+            fetchUserData: 'auth/fetchUserData',
+
+            fetchAllLectures: 'lecture/fetchAllLectures',
+
+            fetchMeetingsFromAPI: 'meeting/fetchMeetingsFromAPI',
+            fetchMeetingsFromDB: 'meeting/fetchMeetingsFromDB',
+
+            checkAuth: 'auth/checkAuth',
+
+            fetchAllConferences: 'conference/fetchAllConferences',
+            fetchAllCountries: 'country/fetchAllCountries',
+            fetchAllCategories: 'category/fetchAllCategories',
+        }),
+    },
 }
 </script>

@@ -18,6 +18,8 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     emits: [
         'submit',
@@ -56,8 +58,14 @@ export default {
     mounted() {
         this.quill = this.$refs.editor
 
-        this.comment.user_id = this.$store.getters['auth/user'].id
+        this.comment.user_id = this.user.id
         this.comment.lecture_id = this.lecture_id
+    },
+
+    computed: {
+        ...mapGetters({
+            user: 'auth/user',
+        }),
     },
 
     methods: {

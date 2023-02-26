@@ -33,19 +33,21 @@ class AuthController extends Controller
 
         (new PlanController())->subscribeBasicPlan($createdUser);
 
-        $createdUser->{'auth_token'} = $createdUser->createToken('auth_token')->plainTextToken;
-        return response()->json($createdUser);
+        return response()->json([
+            'user' => $createdUser,
+            'auth_token' => $createdUser->createToken('auth_token')->plainTextToken,
+        ]);
     }
 
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        $authorizedUser = User::where('email', $request->validated()['email'])->firstOrFail();
 
-        $authorizedUser = User::where('email', $validated['email'])->firstOrFail();
-
-        $authorizedUser->{'auth_token'} = $authorizedUser->createToken('auth_token')->plainTextToken;
-        return response()->json($authorizedUser);
+        return response()->json([
+            'user' => $authorizedUser,
+            'auth_token' => $authorizedUser->createToken('auth_token')->plainTextToken,
+        ]);
     }
 
 
@@ -55,7 +57,7 @@ class AuthController extends Controller
         $validated['password'] = Hash::make($validated['password']);
 
         return response()->json(
-            tap(User::findOrFail($validated['id']))->update($validated)
+            tap(User::findOrFail($request->user()->id))->update($validated)
         );
     }
 

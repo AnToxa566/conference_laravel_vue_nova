@@ -34,19 +34,19 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         /* 404 - Not Found */
-        {
-            name: '404',
-            path: '/404',
-            component: NotFound,
-            meta: {
-                middleware: "guest",
-                title: `Not Found`
-            }
-        },
-        {
-            path: '/:pathMatch(.*)*',
-            redirect: '/404',
-        },
+        // {
+        //     name: '404',
+        //     path: '/404',
+        //     component: NotFound,
+        //     meta: {
+        //         middleware: "guest",
+        //         title: `Not Found`
+        //     }
+        // },
+        // {
+        //     path: '/:pathMatch(.*)*',
+        //     redirect: '/404',
+        // },
         /* 404 - Not Found */
 
 

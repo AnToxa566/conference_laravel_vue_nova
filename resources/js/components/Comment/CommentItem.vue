@@ -9,7 +9,7 @@
             <span class="text-disabled text-caption me-2">{{ this.formattedCreatedAt }}</span>
 
             <v-btn
-                v-if="this.canBeUpdated"
+                v-if="this.canBeUpdated(this.comment.id)"
                 variant="text"
                 size="small"
                 color="white"
@@ -44,6 +44,8 @@
 import CommentForm from './CommentForm.vue'
 import moment from 'moment'
 
+import { mapGetters } from 'vuex'
+
 export default {
     components: {
         CommentForm,
@@ -61,14 +63,14 @@ export default {
     },
 
     computed: {
+        ...mapGetters({
+            canBeUpdated: 'comment/canBeUpdated',
+        }),
+
         formattedCreatedAt() {
             const format = 'YYYY-MM-DD'
 
             return moment(this.comment.created_at).format(format)
-        },
-
-        canBeUpdated() {
-            return this.$store.getters['comment/canBeUpdated'](this.comment.id)
         },
     },
 
@@ -86,8 +88,3 @@ export default {
     },
 }
 </script>
-
-
-<style scoped>
-
-</style>

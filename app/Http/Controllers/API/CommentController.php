@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Comment\CommentRequest;
+use App\Http\Requests\Comment\CommentStoreRequest;
+use App\Http\Requests\Comment\CommentUpdateRequest;
 
 use App\Models\Comment;
 use App\Models\Lecture;
@@ -32,7 +33,7 @@ class CommentController extends Controller
     }
 
 
-    public function store(CommentRequest $request): JsonResponse
+    public function store(CommentStoreRequest $request): JsonResponse
     {
         $createdComment = Comment::create($request->validated());
 
@@ -48,7 +49,7 @@ class CommentController extends Controller
     }
 
 
-    public function update(CommentRequest $request, int $id): JsonResponse
+    public function update(CommentUpdateRequest $request, int $id): JsonResponse
     {
         $updatedComment = tap(Comment::findOrFail($id))->update($request->validated());
 

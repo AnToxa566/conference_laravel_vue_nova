@@ -14,11 +14,14 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Lecture;
 
+
 class LectureCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+
     public Lecture $lecture;
+
 
     public function __construct(Lecture $lecture)
     {

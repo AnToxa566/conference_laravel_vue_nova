@@ -81,7 +81,7 @@ export default {
     methods: {
         ...mapActions({
             deleteLecture: 'lecture/deleteLecture',
-            joinConference: 'user_conferences/joinConference',
+            listenerJoinConference: 'user_conferences/listenerJoinConference',
             cancelParticipation: 'user_conferences/cancelParticipation',
         }),
 
@@ -109,7 +109,7 @@ export default {
                 return
             }
 
-            this.joinConference(this.conference.id)
+            this.listenerJoinConference(this.conference.id)
         },
 
         cancelParticipationValidation(isConfirmed) {

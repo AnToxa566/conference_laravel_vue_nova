@@ -19,9 +19,11 @@ class ListenerJoined extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+
     public Conference $conference;
 
     public User $listener;
+
 
     public function __construct(User $listener, Conference $conference)
     {

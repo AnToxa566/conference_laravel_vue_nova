@@ -14,11 +14,14 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Comment;
 
+
 class CommentCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+
     public Comment $comment;
+
 
     public function __construct(Comment $comment)
     {

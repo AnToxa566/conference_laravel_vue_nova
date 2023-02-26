@@ -21,6 +21,8 @@
 import CommentItem from './CommentItem.vue'
 import axios from "axios";
 
+import { mapGetters } from 'vuex'
+
 export default {
     components: {
         CommentItem,
@@ -39,7 +41,7 @@ export default {
     },
 
     mounted() {
-        this.$store.commit('comment/SET_COMMENTS_OF_LECTURE', [])
+        this.$store.commit('comment/storeCommentsOfLecture', [])
 
         const options = {
             rootMargin: '0px',
@@ -57,12 +59,13 @@ export default {
     },
 
     computed: {
-        commentsCount() {
-            return this.$store.getters['lecture/lectures'].find(lec => lec.id == this.lecture_id).comments_count
-        },
+        ...mapGetters({
+            lectures: 'lecture/lectures',
+            comments: 'comment/commentsOfLecture',
+        }),
 
-        comments() {
-            return this.$store.getters['comment/commentsOfLecture']
+        commentsCount() {
+            return this.lectures.find(lec => lec.id == this.lecture_id).comments_count
         },
     },
 
@@ -76,7 +79,7 @@ export default {
 
                 if (result.data.length) {
                     if (this.page == 1) {
-                        this.$store.commit('comment/SET_COMMENTS_OF_LECTURE', result.data)
+                        this.$store.commit('comment/storeCommentsOfLecture', result.data)
                     }
                     else {
                         this.$store.commit('comment/PUSH_COMMENTS', result.data)

@@ -38,14 +38,13 @@ class UserConferenceController extends Controller
             $user->decrement('joins_left');
         }
 
-        if ($user->type === User::LISTENER) {
-            $conference = Conference::findOrFail($conferenceId);
-            $announcers = $conference->users()->where('type', User::ANNOUNCER)->get();
+        $conference = Conference::findOrFail($conferenceId);
+        $announcers = $conference->users()->where('type', User::ANNOUNCER)->get();
 
-            if ($announcers->isNotEmpty()) {
-                Mail::to($announcers)->send(new ListenerJoined($user, $conference));
-            }
+        if ($announcers->isNotEmpty()) {
+            Mail::to($announcers)->send(new ListenerJoined($user, $conference));
         }
+
 
         return response()->json(null, 200);
     }

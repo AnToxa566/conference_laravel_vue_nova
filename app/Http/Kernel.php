@@ -6,15 +6,9 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
+
 class Kernel extends HttpKernel
 {
-    /**
-     * The application's global HTTP middleware stack.
-     *
-     * These middleware are run during every request to your application.
-     *
-     * @var array<int, class-string|string>
-     */
     protected $middleware = [
         // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
@@ -27,11 +21,6 @@ class Kernel extends HttpKernel
         // \Illuminate\View\Middleware\ShareErrorsFromSession::class,
     ];
 
-    /**
-     * The application's route middleware groups.
-     *
-     * @var array<string, array<int, class-string|string>>
-     */
     protected $middlewareGroups = [
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
@@ -53,13 +42,6 @@ class Kernel extends HttpKernel
         ],
     ];
 
-    /**
-     * The application's route middleware.
-     *
-     * These middleware may be assigned to groups or used individually.
-     *
-     * @var array<string, class-string|string>
-     */
     protected $routeMiddleware = [
         'announcer' => \App\Http\Middleware\IsAnnouncer::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
@@ -67,8 +49,7 @@ class Kernel extends HttpKernel
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'can.delete.lecture' => \App\Http\Middleware\CanDeleteLecture::class,
-        'can.update.lecture' => \App\Http\Middleware\CanUpdateLecture::class,
+        'lecture.owner' => \App\Http\Middleware\LectureOwner::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'user.lecture' => \App\Http\Middleware\SureUserLecture::class,
         'user.comment' => \App\Http\Middleware\SureUserComment::class,

@@ -14,31 +14,19 @@ export default {
     },
 
     getters: {
-        categories(state) {
-            return state.categories
-        },
+        categories: state => state.categories,
 
-        categoryById: (state) => (id) => {
-            return state.categories.find(category => category.id == parseInt(id, 10));
-        },
+        categoryById: state => id => state.categories.find(category => category.id == parseInt(id, 10)),
 
-        roots(state) {
-            return state.roots
-        },
+        roots: state => state.roots,
 
-        nodes(state) {
-            return state.nodes
-        },
+        nodes: state => state.nodes,
 
-        lectureRoots(state) {
-            return state.lectureRoots
-        },
+        lectureRoots: state => state.lectureRoots,
 
-        lectureNodes(state) {
-            return state.lectureNodes
-        },
+        lectureNodes: state => state.lectureNodes,
 
-        getPathByLeafId: (state) => (leafId) => {
+        getPathByLeafId: state => leafId => {
             let leaf = state.categories.find(category => category.id == parseInt(leafId, 10))
             let path = []
 
@@ -56,15 +44,15 @@ export default {
     },
 
     mutations: {
-        SET_CATEGORIES (state, categories) {
+        storeCategories (state, categories) {
             state.categories = categories
         },
 
-        SET_ROOTS (state, categories) {
+        storeRoots (state, categories) {
             state.roots = categories.filter(category => !category.parent_id).map(category => category.id)
         },
 
-        SET_NODES (state, categories) {
+        storeNodes (state, categories) {
             const nodes = {}
 
             categories.forEach(category => {
@@ -85,12 +73,12 @@ export default {
             state.nodes = nodes
         },
 
-        SET_LECTURE_ROOTS (state, parentId) {
+        storeLectureRoots (state, parentId) {
             state.lectureRoots = []
             state.lectureRoots.push(parentId)
         },
 
-        SET_LECTURE_NODES (state, parentId) {
+        storeLectureNodes (state, parentId) {
             const categories = []
             const nodes = {}
 
@@ -127,10 +115,10 @@ export default {
         fetchAllCategories({ commit }) {
             axios.get('/api/categories')
                 .then(res => {
-                    commit('SET_CATEGORIES', res.data)
+                    commit('storeCategories', res.data)
 
-                    commit('SET_NODES', res.data)
-                    commit('SET_ROOTS', res.data)
+                    commit('storeNodes', res.data)
+                    commit('storeRoots', res.data)
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -138,8 +126,8 @@ export default {
         },
 
         fetchBranche({ commit }, parentId) {
-            commit('SET_LECTURE_ROOTS', parentId)
-            commit('SET_LECTURE_NODES', parentId)
+            commit('storeLectureRoots', parentId)
+            commit('storeLectureNodes', parentId)
         },
     }
 }

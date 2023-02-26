@@ -29,16 +29,19 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'app-bar-favorite',
 
     computed: {
-        badgeContent() {
-            return this.$store.getters['favorite/favoritedLecturesId'].length
-        },
+        ...mapGetters({
+            favoritedLecturesId: 'favorite/favoritedLecturesId',
+            hasFavoritedLectures: 'favorite/hasFavoritedLectures',
+        }),
 
-        hasFavoritedLectures() {
-            return this.$store.getters['favorite/hasFavoritedLectures']
+        badgeContent() {
+            return this.favoritedLecturesId.length
         },
     },
 }

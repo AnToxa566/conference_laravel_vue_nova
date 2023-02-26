@@ -23,17 +23,6 @@ use App\Http\Controllers\API\UserConferenceController;
 use App\Http\Controllers\API\UserLectureController;
 
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json($request->user());
 });
@@ -60,9 +49,11 @@ Route::controller(CategoryController::class)->group(function () {
 Route::controller(CommentController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/comments/{lecture_id}/limit/{limit}/page/{page}', 'fetchByLectureId')->name('comments.fetchByLectureId');
-
         Route::post('/comments/add', 'store')->name('comments.store');
-        Route::middleware(['user.comment'])->post('/comments/{id}/update', 'update')->name('comments.update');
+
+        Route::middleware(['user.comment'])->group(function () {
+            Route::post('/comments/{id}/update', 'update')->name('comments.update');
+        });
     });
 });
 
@@ -92,9 +83,14 @@ Route::controller(LectureController::class)->group(function () {
         Route::get('/lectures/search/{search}/limit/{limit}', 'fetchSearchedLectures')->name('lectures.fetchSearchedLectures');
         Route::get('/lectures/{id}/presentation/download', 'downloadPresentation')->name('lectures.downloadPresentation');
 
-        Route::middleware(['announcer'])->post('/lectures/add', 'store')->name('lectures.store');
-        Route::middleware(['can.update.lecture'])->post('/lectures/{id}/update', 'update')->name('lectures.update');
-        Route::middleware(['can.delete.lecture'])->get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+        Route::middleware(['announcer'])->group(function () {
+            Route::post('/lectures/add', 'store')->name('lectures.store');
+
+            Route::middleware(['lecture.owner'])->group(function () {
+                Route::post('/lectures/{id}/update', 'update')->name('lectures.update');
+                Route::get('/lectures/{id}/delete', 'destroy')->name('lectures.destroy');
+            });
+        });
     });
 });
 
@@ -123,7 +119,6 @@ Route::controller(PaymentController::class)->group(function () {
 Route::controller(PlanController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/plans', 'fetchPlans')->name('plans.fetchPlans');
-        Route::put('/plans', 'loadPlans')->name('plans.loadPlans');
 
         Route::get('/plans/{plan:slug}', 'fetchDetail')->name('plans.fetchDetail');
         Route::get('/user/current-plan', 'fetchCurrentPlan')->name('plans.fetchCurrentPlan');

@@ -4,7 +4,7 @@
     </custom-header>
 
     <custom-error-alert
-        :errorMessage='this.authErrors'
+        :errorMessage='this.errorMessage'
         class="mb-6"
     >
     </custom-error-alert>
@@ -23,7 +23,7 @@
 import UserForm from '../../components/User/UserForm.vue'
 import UserSubscription from '../../components/User/UserSubscription.vue'
 
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     components: {
@@ -37,12 +37,15 @@ export default {
     },
 
     computed: {
-        authErrors() {
-            const errors = this.$store.getters['auth/authErrors']
+        ...mapGetters({
+            authErrors: 'auth/authErrors',
+        }),
+
+        errorMessage() {
             let errorMessage = ''
 
-            for (const error in errors) {
-                errorMessage += errors[error] + '\n'
+            for (const error in this.authErrors) {
+                errorMessage += this.authErrors[error] + '\n'
             }
 
             return errorMessage

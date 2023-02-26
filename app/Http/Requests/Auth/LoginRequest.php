@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
-use App\Models\User;
 use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Http\FormRequest;
 
+use App\Models\User;
+
+
 class LoginRequest extends FormRequest
 {
-    /**
-    * @param  \Illuminate\Validation\Validator  $validator
-    * @return void
-    */
     public function withValidator(Validator $validator): void
     {
         $user = User::where('email', $validator->getData()['email'])->firstOrFail();
@@ -27,21 +25,13 @@ class LoginRequest extends FormRequest
         );
     }
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize(): bool
     {
-        return true;
+        $user = User::where('email', $this->email)->firstOrFail();
+
+        return $user->type !== User::ADMIN;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules(): array
     {
         return [

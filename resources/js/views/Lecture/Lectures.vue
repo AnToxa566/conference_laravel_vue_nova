@@ -46,6 +46,7 @@
 
 <script>
 import LectureList from '../../components/Lecture/LectureList.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
@@ -61,17 +62,11 @@ export default {
     },
 
     computed: {
-        isAuthenticated() {
-            return this.$store.getters['auth/authenticated']
-        },
-
-        filteredLectures() {
-            return this.$store.getters['lecture/filteredLectures']
-        },
-
-        error() {
-            return this.$store.getters['lecture/error']
-        },
+        ...mapGetters({
+            isAuthenticated: 'auth/authenticated',
+            filteredLectures: 'lecture/filteredLectures',
+            error: 'lecture/error',
+        }),
     },
 }
 </script>
