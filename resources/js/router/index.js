@@ -1,19 +1,10 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store'
 
 
 /* Error Components */
 const NotFound = () => import('../views/ErrorPages/NotFound.vue')
 /* Error Components */
-
-
-/* Admin Components */
-const ConferenceEdit = () => import('../views/Conference/ConferenceEdit.vue')
-const ConferenceAdd = () => import('../views/Conference/ConferenceAdd.vue')
-
-const Categories = () => import('../views/Category/Categories.vue')
-const Meetings = () => import('../views/Meeting/Meetings.vue')
-/* Admin Components */
 
 
 /* Guest Components */
@@ -37,7 +28,7 @@ const FavoriteLectures = () => import('../views/Lecture/FavoriteLectures.vue')
 
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes: [
         /* 404 - Not Found */
         {
@@ -112,24 +103,6 @@ const router = createRouter({
                 breadCrumb: 'conference',
             }
         },
-        {
-            path: '/conferences/add',
-            name: 'conferenceAdd',
-            component: ConferenceAdd,
-            meta: {
-                middleware: "admin",
-                title: `Add conference`
-            }
-        },
-        {
-            path: '/conferences/:id/edit',
-            name: 'conferenceEdit',
-            component: ConferenceEdit,
-            meta: {
-                middleware: "admin",
-                title: `Edit conference`
-            }
-        },
         /* Conference Components */
 
 
@@ -173,32 +146,6 @@ const router = createRouter({
             }
         },
         /* Lecture Components */
-
-
-        /* Category Components */
-        {
-            path: '/categories',
-            name: 'categories',
-            component: Categories,
-            meta: {
-                middleware: "admin",
-                title: `Categories`
-            }
-        },
-        /* Category Components */
-
-
-        /* Meeting Components */
-        {
-            path: '/meetings',
-            name: 'meetings',
-            component: Meetings,
-            meta: {
-                middleware: "admin",
-                title: `Meetings`
-            }
-        },
-        /* Meeting Components */
     ]
 })
 
@@ -212,14 +159,6 @@ router.beforeEach((to, from, next) => {
         }
         else {
             next({ name: "login" })
-        }
-    }
-    else if (to.meta.middleware == "admin") {
-        if (store.getters['auth/isAdmin']) {
-            next()
-        }
-        else {
-            next({ name: "404" })
         }
     }
     else if (to.meta.middleware == "guest") {

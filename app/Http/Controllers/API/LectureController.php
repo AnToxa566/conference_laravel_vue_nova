@@ -4,30 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use App\Events\LectureCreated;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
+use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
 use App\Http\Requests\Lecture\LectureFetchFilteredRequest;
 
-use App\Jobs\ExportFile;
-use App\Events\LectureDeleted;
+use App\Events\LectureCreated;
+use App\Events\LectureUpdated;
 
-use App\Mail\LectureTimeChanged;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-
-use App\Exports\CommentsByLectureExport;
-use App\Exports\LecturesByConferenceExport;
-
-use App\Models\User;
 use App\Models\Lecture;
 use App\Models\Conference;
 
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use \Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LectureController extends Controller
 {
@@ -35,8 +28,8 @@ class LectureController extends Controller
     {
         return response()->json(
             Lecture::withCount('comments')
-            ->oldest('date_time_start')
-            ->get()
+                ->oldest('date_time_start')
+                ->get()
         );
     }
 
@@ -51,7 +44,7 @@ class LectureController extends Controller
     {
         $request->validated();
 
-        $conference = Conference::find($request->get('conferenceId'));
+        $conference = Conference::findOrFail($request->get('conferenceId'));
         $query = $conference->lectures()->withCount('comments');
 
         if ($request->filled('minDuration')) {
@@ -80,24 +73,16 @@ class LectureController extends Controller
 
     public function fetchById(int $id): JsonResponse
     {
-        $response = Lecture::find($id);
+        $lecture = Lecture::findOrFail($id);
+        $lecture->{'comments_count'} = count($lecture->comments);
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
-
-        $response->{'comments_count'} = count($response->comments);
-        return response()->json($response);
+        return response()->json($lecture);
     }
 
 
     public function downloadPresentation(int $id): JsonResponse|BinaryFileResponse
     {
-        $lecture = Lecture::find($id);
-
-        if (!$lecture) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
+        $lecture = Lecture::findOrFail($id);
 
         if (!Storage::disk('local')->exists($lecture->presentation_path)) {
             return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
@@ -109,24 +94,24 @@ class LectureController extends Controller
 
     public function store(LectureStoreRequest $request): JsonResponse
     {
-        $response = $request->validated();
+        $validated = $request->validated();
 
-        $response['presentation_name'] = $request->file('presentation')->getClientOriginalName();
-        $response['presentation_path'] = Storage::disk('local')->put('presentations', $request->file('presentation'));
+        $validated['presentation_name'] = $request->file('presentation')->getClientOriginalName();
+        $validated['presentation_path'] = Storage::disk('local')->put('presentations', $request->file('presentation'));
 
-        $lecture = Lecture::create($response);
+        $createdLecture = Lecture::create($validated);
 
-        if (!$lecture) {
+        if (!$createdLecture) {
             return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        LectureCreated::dispatch($lecture);
+        LectureCreated::dispatch($createdLecture);
 
-        $meeting = $lecture->is_online ? (new MeetingController)->store($lecture->id) : null;
-        $lecture->{'comments_count'} = 0;
+        $meeting = $createdLecture->is_online ? (new MeetingController)->store($createdLecture->id) : null;
+        $createdLecture->{'comments_count'} = 0;
 
         return response()->json([
-            'lecture' => $lecture,
+            'lecture' => $createdLecture,
             'meeting' => $meeting ? $meeting->original : null,
         ]);
     }
@@ -134,54 +119,21 @@ class LectureController extends Controller
 
     public function update(LectureUpdateRequest $request, int $id): JsonResponse
     {
-        $response = tap(Lecture::find($id))->update($request->validated());
+        $updatedLecture = tap(Lecture::findOrFail($id))->update($request->validated());
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        LectureUpdated::dispatch($updatedLecture);
 
-        if ($response->wasChanged(['date_time_start', 'date_time_end'])) {
-            $listeners = Conference::find($response->conference_id)->users()->where('type', User::LISTENER)->get();
-
-            if (count($listeners)) {
-                Mail::to($listeners)->send(new LectureTimeChanged($response));
-            }
-        }
-
-        $response->{'comments_count'} = count($response->comments);
-        return response()->json($response);
+        $updatedLecture->{'comments_count'} = count($updatedLecture->comments);
+        return response()->json($updatedLecture);
     }
 
 
     public function destroy(int $id): JsonResponse
     {
-        $response = tap(Lecture::find($id))->delete();
+        $deletedLecture = tap(Lecture::findOrFail($id))->delete();
 
-        if (!$response) {
-            return response()->json(Response::$statusTexts[Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-        }
+        $deletedLecture->user->conferences()->detach($deletedLecture->conference_id);
 
-        User::find($response->user_id)->conferences()->detach($response->conference_id);
-
-        if (auth('sanctum')->user()->type === User::ADMIN) {
-            $emails = [];
-            array_push($emails, User::find($response->user_id)->email);
-
-            LectureDeleted::dispatch($emails, $response->conference->id, $response->conference->title);
-        }
-
-        return response()->json($response);
-    }
-
-
-    public function exportByConferenceId(int $conferenceId): void
-    {
-        ExportFile::dispatch('c'.$conferenceId.'_lectures.csv', new LecturesByConferenceExport($conferenceId));
-    }
-
-
-    public function exportComments(int $lectureId): void
-    {
-        ExportFile::dispatch('l'.$lectureId.'_comments.csv', new CommentsByLectureExport($lectureId));
+        return response()->json($deletedLecture);
     }
 }

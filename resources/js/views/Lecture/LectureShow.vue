@@ -127,38 +127,11 @@
         ></join-cancel-buttons>
     </div>
 
-    <!-- Buttons for admins -->
-
-    <div
-        v-if="isAdmin"
-        class="d-flex mb-6"
-    >
-        <v-spacer></v-spacer>
-
-        <v-btn variant="tonal" color="red" @click="this.confirmationDialog = true"> Delete </v-btn>
-
-        <action-confirmation
-            v-model="confirmationDialog"
-
-            title="Delete lecture?"
-            text="Are you sure you want to delete this lecture?"
-
-            @confirm="this.delete"
-        >
-        </action-confirmation>
-    </div>
 
     <!-- Comments Form and List-->
 
     <div class="d-flex justify-space-between align-center">
         <span class="py-3 text-h6 font-weight-bold"> Comments </span>
-
-        <export-button
-            v-if="isAdmin"
-            @startExport="exportComments"
-        >
-            <template v-slot:title> Export comments </template>
-        </export-button>
     </div>
 
     <comment-form
@@ -184,7 +157,6 @@ export default {
     },
 
     data: () => ({
-        confirmationDialog: false,
         isLectureWaiting: false,
         isLectureStarted: false,
         isLectureEnded: false,
@@ -229,9 +201,6 @@ export default {
             return this.$store.getters['auth/user'].id
         },
 
-        isAdmin() {
-            return this.$store.getters['auth/isAdmin']
-        },
         isJoined() {
             return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conferenceId, 10))
         },
@@ -280,16 +249,6 @@ export default {
                 id: this.lecture.id,
                 presentationName: this.lecture.presentation_name,
             })
-        },
-
-        exportComments() {
-            this.$store.dispatch('lecture/exportComments', this.lectureId)
-        },
-
-        delete(event) {
-            if (event) {
-                this.$store.dispatch('lecture/deleteLecture', this.lectureId)
-            }
         },
 
         async storeComment(comment) {

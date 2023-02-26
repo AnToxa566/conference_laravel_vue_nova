@@ -10,7 +10,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'map_key' => env('PUSHER_GOOGLE_MAPS_API_KEY'),
+    'map_key' => env('GOOGLE_MAPS_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------
@@ -214,6 +214,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\NovaServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
     ],

@@ -49,18 +49,9 @@
 
                         <!-- Join / Cancel -->
                         <join-cancel-buttons
-                            v-if="!isAdmin"
                             :isJoined="this.isJoined"
                             :conference="this.conference"
                         ></join-cancel-buttons>
-
-                        <div v-else>
-                            <!-- Update -->
-                            <v-btn variant="tonal" color="white" class="mx-1" @click="$router.push(`/conferences/${conference.id}/edit`)"> Update </v-btn>
-
-                            <!-- Delete -->
-                            <conference-delete-button :conferenceId="this.conference.id"></conference-delete-button>
-                        </div>
                     </div>
 
                     <!-- Append Buttons -->
@@ -86,13 +77,7 @@
 
 
 <script>
-import ConferenceDeleteButton from '../Conference/ConferenceDeleteButton.vue';
-
 export default {
-    components: {
-        ConferenceDeleteButton
-    },
-
     props: {
         conference: {
             type: Object,
@@ -103,9 +88,6 @@ export default {
     computed: {
         isJoined() {
             return this.$store.getters['user_conferences/joinedConferencesId'].includes(parseInt(this.conference.id, 10))
-        },
-        isAdmin() {
-            return this.$store.getters['auth/user'].type == this.$store.getters['auth/adminType']
         },
 
         formatedDateTime() {

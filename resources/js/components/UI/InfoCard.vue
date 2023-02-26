@@ -16,7 +16,3 @@ export default {
     name: 'info-card',
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -281,17 +281,6 @@ export default {
                 })
         },
 
-        updateLectureCategories({ state, dispatch }, categories) {
-            categories.forEach(category => {
-                let lectures = state.lectures.filter(lect => lect.category_id == category.id)
-
-                lectures.forEach(lect => {
-                    lect.category_id = null
-                    dispatch('updateLecture', lect)
-                })
-            })
-        },
-
         deleteLecture({ commit }, lectureId) {
             axios.get(`/api/lectures/${lectureId}/delete`, JSON.parse(localStorage.getItem('config')))
                 .then(res => {
@@ -304,27 +293,6 @@ export default {
                 })
                 .catch(err => {
                     console.log(err.response)
-                })
-        },
-
-        exportLectures({ }, conferenceId) {
-            axios.get(`/api/lectures/export/${conferenceId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
-                .then(res => {
-                    //
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        },
-
-
-        exportComments({ }, lectureId) {
-            axios.get(`/api/lectures/export/comments/${lectureId}`, { ...JSON.parse(localStorage.getItem('config')), ...{ responseType: 'blob' }})
-                .then(res => {
-                    //
-                })
-                .catch(err => {
-                    console.log(err)
                 })
         },
 

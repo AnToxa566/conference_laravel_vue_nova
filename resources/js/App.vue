@@ -28,7 +28,12 @@ export default {
             this.$store.dispatch('auth/fetchUserData')
 
             this.$store.dispatch('lecture/fetchAllLectures')
+
+            this.$store.dispatch('meeting/fetchMeetingsFromAPI')
+            this.$store.dispatch('meeting/fetchMeetingsFromDB')
         }
+
+        this.$store.dispatch('auth/checkAuth')
 
         this.$store.dispatch('conference/fetchAllConferences')
         this.$store.dispatch('country/fetchAllCountries')

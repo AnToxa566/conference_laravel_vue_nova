@@ -20,21 +20,21 @@ class User extends Authenticatable
      *
      * @var string
      */
-    const ADMIN = 'Admin';
+    public const ADMIN = 'Admin';
 
     /**
      * User Type - Listener.
      *
      * @var string
      */
-    const LISTENER = 'Listener';
+    public const LISTENER = 'Listener';
 
     /**
      * User Type - Announcer.
      *
      * @var string
      */
-    const ANNOUNCER = 'Announcer';
+    public const ANNOUNCER = 'Announcer';
 
     protected $table = 'users';
 
@@ -70,6 +70,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'birthdate' => 'date',
         'email_verified_at' => 'datetime',
     ];
 

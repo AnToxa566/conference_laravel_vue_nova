@@ -3,7 +3,7 @@
         class="mb-4"
     >
         <template v-slot:header>
-            {{ this.isUserOwnThisLecture ? 'Update lecture ' : this.$router.push({ name: '404' }) }}
+            {{ this.isUserOwnThisLecture ? 'Update lecture' : this.$router.push({ name: '404' }) }}
         </template>
     </custom-header>
 
@@ -78,8 +78,3 @@ export default {
     },
 }
 </script>
-
-
-<style scoped>
-
-</style>

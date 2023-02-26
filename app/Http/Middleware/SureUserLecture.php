@@ -22,7 +22,7 @@ class SureUserLecture
      */
     public function handle(Request $request, Closure $next): JsonResponse|RedirectResponse
     {
-        $lecture = Lecture::find($request->route()->parameter('id'));
+        $lecture = Lecture::findOrFail($request->route()->parameter('id'));
 
         if (auth('sanctum')->id() !== $lecture->user_id) {
             abort(403);

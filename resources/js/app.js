@@ -64,7 +64,6 @@ import ActionConfirmation from './components/UI/ActionConfirmation.vue'
 import AppBarSearchInput from './components/UI/AppBarSearchInput.vue'
 import BreadCrumb from './components/UI/BreadCrumb.vue'
 import DropdownMenu from './components/UI/DropdownMenu.vue'
-import ExportButton from './components/UI/ExportButton.vue'
 import FavoriteBtn from './components/UI/FavoriteBtn.vue'
 import AppBar from './components/UI/AppBar.vue'
 import CustomHeader from './components/UI/CustomHeader.vue'
@@ -124,7 +123,6 @@ app
     .component('AppBar', AppBar)
     .component('ActionConfirmation', ActionConfirmation)
     .component('DropdownMenu', DropdownMenu)
-    .component('ExportButton', ExportButton)
     .component('AppBarFavorite', AppBarFavorite)
     .component('AppBarSearchInput', AppBarSearchInput)
     .component('BreadCrumb', BreadCrumb)
@@ -150,7 +148,6 @@ app
 
     .use(VueGoogleMaps, {
         load: {
-            key: import.meta.env.VITE_PUSHER_GOOGLE_MAPS_API_KEY,
+            key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
         },
-
     }).mount('#app')

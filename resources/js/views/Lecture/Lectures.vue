@@ -26,16 +26,6 @@
             <lecture-filter-navigation
                 :conferenceId="this.conferenceId"
             ></lecture-filter-navigation>
-
-            <!-- Export Button -->
-
-            <export-button
-                v-if="isAdmin"
-                class="mt-1"
-                @startExport="exportLectures"
-            >
-                <template v-slot:title> Export lectures </template>
-            </export-button>
         </div>
 
         <!-- List of Lectures -->
@@ -75,10 +65,6 @@ export default {
             return this.$store.getters['auth/authenticated']
         },
 
-        isAdmin() {
-            return this.$store.getters['auth/isAdmin']
-        },
-
         filteredLectures() {
             return this.$store.getters['lecture/filteredLectures']
         },
@@ -87,11 +73,5 @@ export default {
             return this.$store.getters['lecture/error']
         },
     },
-
-    methods: {
-        exportLectures() {
-            this.$store.dispatch('lecture/exportLectures', this.conferenceId)
-        },
-    }
 }
 </script>

@@ -12,7 +12,6 @@ export default {
         authenticated: false,
 
         userTypes: [],
-        adminType: '',
 
         authErrors: {},
         hasAuthErrors: false,
@@ -30,12 +29,6 @@ export default {
 
         userTypes(state) {
             return state.userTypes
-        },
-        adminType(state) {
-            return state.adminType
-        },
-        isAdmin(state) {
-            return state.user.type == state.adminType
         },
 
         authErrors(state) {
@@ -59,7 +52,7 @@ export default {
             }
 
             localStorage.setItem('config', JSON.stringify(state.config))
-            localStorage.setItem('auth_token', JSON.stringify(user.auth_token))
+            localStorage.setItem('authToken', JSON.stringify(user.auth_token))
         },
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -67,9 +60,6 @@ export default {
 
         SET_USER_TYPES (state, value) {
             state.userTypes = value
-        },
-        SET_ADMIN_TYPE (state, value) {
-            state.adminType = value
         },
 
         SET_AUTH_ERRORS (state, value) {
@@ -83,7 +73,6 @@ export default {
     actions: {
         initData({ commit }) {
             commit('SET_USER_TYPES', [ userTypes.LISTENER, userTypes.ANNOUNCER ])
-            commit('SET_ADMIN_TYPE', userTypes.ADMIN)
         },
 
         fetchUserData() {
@@ -91,16 +80,42 @@ export default {
             store.dispatch('user_conferences/fetchJoinedConferences')
         },
 
+        checkAuth({ state }) {
+            axios.get('/api/auth/check', state.config)
+                .then(res => {
+                    //
+                })
+                .catch(err => {
+                    if (state.authenticated && err.response.status === 401) {
+                        commit('SET_USER', {})
+                        commit('SET_AUTHENTICATED', false)
+
+                        store.dispatch('conference/fetchPaginatedConferences', {
+                            page: 1,
+                            perPage: pagination.PER_PAGE,
+                        })
+                        store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
+
+                        router.push({ name: 'login' })
+                    }
+                })
+        },
+
         login({ commit, dispatch }, user) {
             axios.post('/api/login', user)
                 .then(res => {
-                    commit('SET_USER', res.data)
-                    commit('SET_CONFIG', res.data)
-                    commit('SET_AUTHENTICATED', true)
+                    if (res.data.type !== userTypes.ADMIN) {
+                        commit('SET_USER', res.data)
+                        commit('SET_CONFIG', res.data)
+                        commit('SET_AUTHENTICATED', true)
 
-                    dispatch('fetchUserData')
+                        dispatch('fetchUserData')
 
-                    router.push({ name: 'conferences' })
+                        router.push({ name: 'conferences' })
+                    }
+                    else {
+                        dispatch('loginToNova', user)
+                    }
                 })
                 .catch(err => {
                     commit('SET_USER', {})
@@ -109,6 +124,16 @@ export default {
                     commit('SET_AUTH_ERRORS', err.response.data.message)
                     commit('SET_HAS_AUTH_ERRORS', true)
 
+                    console.log(err.response)
+                })
+        },
+
+        loginToNova({ }, user) {
+            axios.post('/nova/login', user)
+                .then(res => {
+                    window.location.href = '/nova'
+                })
+                .catch(err => {
                     console.log(err.response)
                 })
         },
@@ -166,6 +191,7 @@ export default {
                     store.commit('user_conferences/SET_JOINED_CONFERENCES_ID', [])
 
                     localStorage.removeItem('config')
+                    localStorage.removeItem('authToken')
 
                     router.push({ name: 'conferences' })
                 })

@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Country;
 
+
 class CountryController extends Controller
 {
     public function fetchAll(): JsonResponse

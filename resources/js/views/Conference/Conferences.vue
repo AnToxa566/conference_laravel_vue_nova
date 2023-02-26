@@ -24,16 +24,6 @@
             <!-- Filter Navigation -->
 
             <conference-filter-navigation></conference-filter-navigation>
-
-            <!-- Export Button -->
-
-            <export-button
-                v-if="isAdmin"
-                class="mt-1"
-                @startExport="exportConferences"
-            >
-                <template v-slot:title> Export conferences </template>
-            </export-button>
         </div>
 
         <!-- Conferences List -->
@@ -58,19 +48,9 @@ export default {
             return this.$store.getters['auth/authenticated']
         },
 
-        isAdmin() {
-            return this.$store.getters['auth/isAdmin']
-        },
-
         error() {
             return this.$store.getters['conference/error']
         },
     },
-
-    methods: {
-        exportConferences() {
-            this.$store.dispatch('conference/exportConferences')
-        },
-    }
 }
 </script>
