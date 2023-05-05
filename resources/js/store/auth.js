@@ -75,7 +75,7 @@ export default {
             store.dispatch('user_conferences/fetchJoinedConferences')
         },
 
-        checkAuth({ state }) {
+        checkAuth({ state, commit }) {
             axios.get('/api/auth/check', state.config)
                 .then(res => {
                     //
